@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Unilead | HasOffers
+
+    This file is part of the Unilead Service Package.
+    For the full copyright and license information, please view the LICENSE
+    file that was distributed with this source code.
+
+    @package    HasOffers
+    @license    Proprietary
+    @copyright  Copyright (C) Unilead Network, All rights reserved.
+    @link       https://www.unileadnetwork.com
+-->
+<phpunit bootstrap="tests/autoload.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         syntaxCheck="true"
+         stopOnError="false"
+         stopOnFailure="false"
+         stopOnIncomplete="false"
+         stopOnSkipped="false"
+         stopOnRisky="false"
+         verbose="false"
+>
+
+    <php>
+        <env name="API_URL" value=""/>
+        <env name="API_NETWORK_ID" value=""/>
+        <env name="API_NETWORK_TOKEN" value=""/>
+    </php>
+
+    <testsuites>
+        <testsuite name="General">
+            <directory suffix="Test.php">./tests</directory>
+            <exclude>./tests/Command</exclude>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src</directory>
+        </whitelist>
+    </filter>
+</phpunit>
