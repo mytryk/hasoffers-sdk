@@ -15,74 +15,89 @@
 namespace JBZoo\PHPUnit;
 
 use JBZoo\Utils\Env;
+use Unilead\HasOffers\HasOffersClient;
 use Unilead\HasOffers\Models\Affiliate;
 
 class AffiliateTest extends PHPUnit
 {
-    protected $affiliate;
+    protected $hasOffersClient;
 
     public function setUp()
     {
-        skip('Write me.');
-
         parent::setUp();
 
-        //Env::get('API_URL')
-        //Env::get('API_NETWORK_ID')
-        //Env::get('API_NETWORK_TOKEN')
-
-        $this->affiliate = new Affiliate();
-    }
-
-    public function testUserCanGetAffiliate()
-    {
-        skip('Write me.');
-
-        $this->affiliate->create();
+        $this->hasOffersClient = new HasOffersClient(
+            Env::get('API_URL'),
+            Env::get('API_NETWORK_ID'),
+            Env::get('API_NETWORK_TOKEN')
+        );
     }
 
     public function testUserCanCreateAffiliate()
     {
-        skip('Write me.');
-    }
-    
-    public function testUserCanUpdateAffiliate()
-    {
-        skip('Write me.');
-    }
-    
-    public function testUserCanBlockAffiliate()
-    {
-        skip('Write me.');
-    }
+        $affiliate = $this->hasOffersClient->get(Affiliate::class);
 
-    public function testUserCanUnblockAffiliate()
-    {
-        skip('Write me.');
+        $affiliate->setCompany('Test Company')
+            ->setAccountManagerId(1)
+            ->setPhone('+7 845 845 84 54')
+            ->setEmail('test@test.com')
+            ->setStatus(Affiliate::STATUS_ACTIVE)
+            ->save();
+
+        $affiliateCheck = $this->hasOffersClient->get(Affiliate::class, $affiliate->id);
+
+        isSame($affiliate->id, $affiliateCheck->id);
+        isSame($affiliate->company, $affiliateCheck->company);
     }
 
     public function testUserCanDeleteAffiliate()
     {
-        skip('Write me.');
+        $affiliate = $this->hasOffersClient->get(Affiliate::class, 2);
+
+        $affiliate->delete();
+
+        isSame('deleted', $affiliate->status);
     }
 
-    public function testUserCanUpdatePaymentMethodWire()
+    public function testUserCanGetAffiliate()
     {
-        skip('Write me.');
+        skip('write me');
+//        $affiliate = $this->affiliate->get(1);
+//        isSame(5, $affiliate['id']);
     }
 
-    public function testUserCanUpdatePaymentMethodPayoneer()
+    public function testUserCanUpdateAffiliate()
     {
-        skip('Write me.');
+        skip('write me');
+//        $data = [
+//            'company' => 'Company Test',
+//            'account_manager_id' => 2
+//        ];
+//
+//        $affiliate = $this->affiliate->update(2, $data);
+//        isSame($data['company'], $affiliate['company']);
+//        isSame($data['account_manager_id'], $affiliate['account_manager_id']);
     }
 
-    public function testUserCanUpdatePaymentMethodPaypal()
+    public function testUserCanBlockAffiliate()
     {
-        skip('Write me.');
+        skip('write me');
+//        $HasOffersClient = new HasOffersClient($apiUrl, $networkId, $networkToken);
+//        $Affiliate = $HasOffersClient->get(Affiliate::class, 2);
+//
+//        $Affiliate->block();
+//
+//        isSame('blocked', $affiliate['status']);
     }
 
-    public function testUserCanUpdatePaymentMethodOther()
+    public function testUserCanUnblockAffiliate()
     {
-        skip('Write me.');
+        skip('write me');
+//        $HasOffersClient = new HasOffersClient($apiUrl, $networkId, $networkToken);
+//        $Affiliate = $HasOffersClient->get(Affiliate::class, 2);
+//
+//        $Affiliate->unblock();
+//
+//        isSame('active', $affiliate['status']);
     }
 }

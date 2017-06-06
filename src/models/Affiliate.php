@@ -14,7 +14,7 @@
 
 namespace Unilead\HasOffers\Models;
 
-use Unilead\HasOffers\Request;
+use Unilead\HasOffers\HasOffersClient;
 
 /**
  * Class Affiliate
@@ -23,69 +23,121 @@ use Unilead\HasOffers\Request;
  */
 class Affiliate
 {
-    //this
-    public function __construct()
+    const STATUS_ACTIVE = 'active';
+    const STATUS_PENDING = 'pending';
+    const STATUS_BLOCKED = 'blocked';
+    const STATUS_DELETED = 'deleted';
+    const STATUS_REJECTED = 'rejected';
+
+    private $request;
+
+    private $id;
+    private $account_manager_id;
+    private $address1;
+    private $address2;
+    private $city;
+    private $company;
+    private $country;
+    private $date_added;
+    private $modified;
+    private $payment_method;
+    private $payment_terms;
+    private $phone;
+    private $ref_id;
+    private $referral_id;
+    private $region;
+    private $status;
+    private $zipcode;
+
+    private $data = [];
+
+    public function __construct($id = null)
     {
-        $this->request = new Request();
+        if ($id !== null && is_int($id)) {
+            return $this->get($id);
+        }
     }
 
-    //or this
-    public function setRequest(Request $request)
+    public function __call($method, array $arg = [])
+    {
+        // setName
+        $prop = strtolower(str_replace('set', '', $method));
+        $this->data[$prop] = $arg[0];
+
+        return $this;
+    }
+
+    public function setRequest(HasOffersClient $request)
     {
         return $this->request = $request;
     }
 
-    public function getAll()
+    public function get($id)
+    {
+        // request to HasOffers
+        // fill object with fields
+
+
+
+        return false;
+    }
+
+    public function save()
+    {
+        return $this;
+    }
+
+    private function create()
     {
         return false;
     }
 
-    public function get()
+    private function update()
     {
         return false;
     }
 
-    public function create()
+    private function getAll()
     {
         return false;
     }
 
-    public function update()
+    private function delete()
     {
         return false;
     }
 
-    public function delete()
+    private function block()
     {
         return false;
     }
 
-    public function block()
+    private function unblock()
     {
         return false;
     }
 
-    public function unblock()
+    private function updatePaymentMethod()
     {
         return false;
     }
 
-    public function updatePaymentMethodWire()
+    private function updatePaymentMethodWire()
     {
         return false;
     }
 
-    public function updatePaymentMethodPaypal()
+    private function updatePaymentMethodPaypal()
     {
         return false;
     }
 
-    public function updatePaymentMethodPayoneer()
+    private function updatePaymentMethodPayoneer()
     {
         return false;
     }
 
-    public function updatePaymentMethodOther()
+    private function updatePaymentMethodOther()
     {
         return false;
     }
