@@ -26,12 +26,6 @@
          verbose="false"
 >
 
-    <php>
-        <env name="API_URL" value=""/>
-        <env name="API_NETWORK_ID" value=""/>
-        <env name="API_NETWORK_TOKEN" value=""/>
-    </php>
-
     <testsuites>
         <testsuite name="General">
             <directory suffix="Test.php">./tests</directory>

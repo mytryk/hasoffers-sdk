@@ -14,6 +14,7 @@
 
 namespace Unilead\HasOffers\Models;
 
+use JBZoo\Utils\Str;
 use Unilead\HasOffers\HasOffersClient;
 
 /**
@@ -29,57 +30,40 @@ class Affiliate
     const STATUS_DELETED = 'deleted';
     const STATUS_REJECTED = 'rejected';
 
-    private $request;
+    private $hasOffersClient;
 
-    private $id;
-    private $account_manager_id;
-    private $address1;
-    private $address2;
-    private $city;
-    private $company;
-    private $country;
-    private $date_added;
-    private $modified;
-    private $payment_method;
-    private $payment_terms;
-    private $phone;
-    private $ref_id;
-    private $referral_id;
-    private $region;
-    private $status;
-    private $zipcode;
-
-    private $data = [];
-
-    public function __construct($id = null)
-    {
-        if ($id !== null && is_int($id)) {
-            return $this->get($id);
-        }
-    }
+    public $data = [];
 
     public function __call($method, array $arg = [])
     {
-        // setName
-        $prop = strtolower(str_replace('set', '', $method));
+        $prop = Str::splitCamelCase((str_replace('set', '', $method)));
         $this->data[$prop] = $arg[0];
 
         return $this;
     }
 
-    public function setRequest(HasOffersClient $request)
+    public function setHasOffersClient(HasOffersClient $hasOffersClient)
     {
-        return $this->request = $request;
+        $this->hasOffersClient = $hasOffersClient;
+
+        return $this;
     }
 
     public function get($id)
     {
-        // request to HasOffers
-        // fill object with fields
+        if (null === $id) {
+            return $this;
+        }
 
+        $data = $this->hasOffersClient->apiRequest([
+            'Target' => 'Affiliate',
+            'Method' => 'findById',
+            'id'     => $id
+        ]);
 
+        $this->data = $data['Affiliate'];
 
-        return false;
+        return $this;
     }
 
     public function save()

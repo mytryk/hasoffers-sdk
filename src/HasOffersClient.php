@@ -43,10 +43,12 @@ class HasOffersClient extends HttpClient
             throw new Exception('Model with this name does not exist.');
         }
 
-        return new $model($id);
+        $object = new $model();
+        $object->setHasOffersClient($this)->get($id);
+        return $object;
     }
 
-    public function apiRequest(array $data)
+    public function apiRequest(array $data = [])
     {
         $httpClient = new HttpClient([
             'driver'     => 'auto',
@@ -59,10 +61,18 @@ class HasOffersClient extends HttpClient
             'NetworkToken' => $this->networkToken
         ]);
 
-        $url = 'https://' . $this->networkId . $this->apiUrl;
+        $url = 'https://' . $this->networkId . '.' . $this->apiUrl;
 
-        $response = $httpClient->request($url, $data, 'get');
+        $response = $httpClient->request($url, $data, 'get')->getJSON();
 
-        return $response;
+        if ($response->find('response.status') !== 1) {
+            $error = $response->find('response.errors.0.err_msg')
+                ? $response->find('response.errors.0.err_msg')
+                : $response->find('response.errors.0.publicMessage');
+            $message = $response->find('response.errorMessage');
+            throw new Exception($error . ' ' . $message);
+        }
+
+        return $response->find('response.data');
     }
 }
