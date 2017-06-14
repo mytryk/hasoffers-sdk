@@ -42,6 +42,13 @@ class Affiliate
         return $this;
     }
 
+    /**
+     * Setter for HasOffers Client.
+     *
+     * @param HasOffersClient $hasOffersClient
+     *
+     * @return $this
+     */
     public function setHasOffersClient(HasOffersClient $hasOffersClient)
     {
         $this->hasOffersClient = $hasOffersClient;
@@ -49,16 +56,23 @@ class Affiliate
         return $this;
     }
 
-    public function get($id)
+    /**
+     * Get Affiliate from HasOffers.
+     *
+     * @param int $affiliateId
+     *
+     * @return $this
+     */
+    public function get($affiliateId)
     {
-        if (null === $id) {
+        if (null === $affiliateId) {
             return $this;
         }
 
         $data = $this->hasOffersClient->apiRequest([
             'Target' => 'Affiliate',
             'Method' => 'findById',
-            'id'     => $id
+            'id'     => $affiliateId
         ]);
 
         $this->data = $data['Affiliate'];
@@ -66,17 +80,35 @@ class Affiliate
         return $this;
     }
 
+    /**
+     * Upsert affiliate to HasOffers.
+     *
+     * @return $this
+     */
     public function save()
     {
+        // if id is null
         return $this;
     }
 
+    /**
+     * Create new Affiliate in HasOffers.
+     *
+     * @return bool
+     */
     private function create()
     {
         return false;
     }
 
-    private function update()
+    /**
+     * Update affiliate in HasOffers.
+     *
+     * @param int $affiliateId
+     *
+     * @return bool
+     */
+    private function update($affiliateId)
     {
         return false;
     }

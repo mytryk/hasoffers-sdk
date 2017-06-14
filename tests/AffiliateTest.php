@@ -46,17 +46,35 @@ class AffiliateTest extends PHPUnit
 
         $affiliate
             ->setCompany('Test Company')
+            ->setAccountManagerId(1)
+            ->setPhone('+7 845 845 84 54')
+            ->setEmail('test@test.com')
+            ->setStatus(Affiliate::STATUS_ACTIVE)
+            ->save();
+
+        $affiliateCheck = $this->hasOffersClient->get(Affiliate::class, $affiliate->id);
+
+        isSame($affiliate->id, $affiliateCheck->id);
+        isSame($affiliate->company, $affiliateCheck->company);
+    }
+
+    public function testUserCanUpdateAffiliate()
+    {
+        $affiliate = $this->hasOffersClient->get(Affiliate::class);
+
+        $affiliate
+            ->setId(1004)
+            ->setCompany('Test Company')
             ->setAccountManagerId(1) //this wont work
             ->setPhone('+7 845 845 84 54')
             ->setEmail('test@test.com')
-            ->setStatus(Affiliate::STATUS_ACTIVE);
+            ->setStatus(Affiliate::STATUS_ACTIVE)
+            ->save();
 
-        var_dump($affiliate);
+        $affiliateCheck = $this->hasOffersClient->get(Affiliate::class, $affiliate->id);
 
-//        $affiliateCheck = $this->hasOffersClient->get(Affiliate::class, $affiliate->id);
-//
-//        isSame($affiliate->id, $affiliateCheck->id);
-//        isSame($affiliate->company, $affiliateCheck->company);
+        isSame($affiliate->id, $affiliateCheck->id);
+        isSame($affiliate->company, $affiliateCheck->company);
     }
 
     public function testUserCanDeleteAffiliate()
@@ -73,19 +91,6 @@ class AffiliateTest extends PHPUnit
         skip('write me');
 //        $affiliate = $this->affiliate->get(1);
 //        isSame(5, $affiliate['id']);
-    }
-
-    public function testUserCanUpdateAffiliate()
-    {
-        skip('write me');
-//        $data = [
-//            'company' => 'Company Test',
-//            'account_manager_id' => 2
-//        ];
-//
-//        $affiliate = $this->affiliate->update(2, $data);
-//        isSame($data['company'], $affiliate['company']);
-//        isSame($data['account_manager_id'], $affiliate['account_manager_id']);
     }
 
     public function testUserCanBlockAffiliate()
