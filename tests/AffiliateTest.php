@@ -41,6 +41,15 @@ class AffiliateTest extends PHPUnit
         );
     }
 
+    public function testCreatingAffiliate()
+    {
+        $affiliate1 = $this->hoClient->get(Affiliate::class);
+        $affiliate2 = $this->hoClient->get(Affiliate::class);
+
+        isNotSame($affiliate1, $affiliate2);
+        isClass(Affiliate::class, $affiliate1);
+    }
+
     public function testCanGetAffiliateById()
     {
         $someId = '1004';

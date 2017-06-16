@@ -14,7 +14,6 @@
 
 namespace Unilead\HasOffers\Entity;
 
-use Unilead\HasOffers\Exception;
 use Unilead\HasOffers\HasOffersClient;
 use Unilead\HasOffers\Traits\Data;
 

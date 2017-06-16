@@ -15,7 +15,7 @@
 namespace Unilead\HasOffers\Traits;
 
 use JBZoo\Utils\Str;
-use Unilead\HasOffers\Exception;
+use JBZoo\Data\Data as JBZooData;
 
 /**
  * Class Entity
@@ -54,11 +54,11 @@ trait Data
     }
 
     /**
-     * @return array
+     * @return JBZooData
      */
     public function data()
     {
-        return $this->data;
+        return new JBZooData($this->data);
     }
 
     /**
