@@ -85,28 +85,33 @@ class HasOffersClient
      */
     public function apiRequest(array $data)
     {
-        $httpClient = new HttpClient([
-            'timeout'    => self::HTTP_TIMEOUT,
-            'verify'     => false,
-            'exceptions' => true
-        ]);
+        try {
+            $httpClient = new HttpClient([
+                'timeout'    => self::HTTP_TIMEOUT,
+                'verify'     => false,
+                'exceptions' => true
+            ]);
 
-        $data = array_merge($data, [
-            'NetworkToken' => $this->networkToken
-        ]);
+            $data = array_merge($data, [
+                'NetworkToken' => $this->networkToken
+            ]);
 
-        $url = str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
-        $resp = $httpClient->request($url, $data, 'get')->getJSON();
+            $url = str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
+            $resp = $httpClient->request($url, $data, 'get')->getJSON();
 
-        if ($resp->find('response.status', null, 'int') !== 1) {
-            $details = $resp->find('response.errors.0.err_msg') ?: $resp->find('response.errors.0.publicMessage');
-            $errorMessage = $resp->find('response.errorMessage');
+            if ($resp->find('response.status', null, 'int') !== 1) {
+                $details = $resp->find('response.errors.0.err_msg') ?: $resp->find('response.errors.0.publicMessage');
+                $errorMessage = $resp->find('response.errorMessage');
 
-            if ($details !== $errorMessage) {
-                throw new Exception('HasOffers Error: ' . $errorMessage . ' ' . $details);
+                if ($details !== $errorMessage) {
+                    throw new Exception('HasOffers Error: ' . $errorMessage . ' ' . $details);
+                }
+
+                throw new Exception('HasOffers Error: ' . $errorMessage);
             }
-
-            throw new Exception('HasOffers Error: ' . $errorMessage);
+        } catch (\Exception $httpException) {
+            // Rewrite exception
+            throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);
         }
 
         return new JSON($resp->find('response.data'));
