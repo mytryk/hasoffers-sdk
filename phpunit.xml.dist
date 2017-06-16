@@ -26,6 +26,12 @@
          verbose="false"
 >
 
+    <php>
+        <env name="HO_API_URL" value=""/>
+        <env name="HO_API_NETWORK_ID" value=""/>
+        <env name="HO_API_NETWORK_TOKEN" value=""/>
+    </php>
+
     <testsuites>
         <testsuite name="General">
             <directory suffix="Test.php">./tests</directory>

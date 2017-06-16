@@ -1,43 +1,34 @@
 <?php
 /**
- * Unilead | BM
+ * Unilead | HasOffers
  *
  * This file is part of the Unilead Service Package.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @package     BM
+ * @package     HasOffers
  * @license     Proprietary
  * @copyright   Copyright (C) Unilead Network, All rights reserved.
  * @link        https://www.unileadnetwork.com
  */
 
-namespace Unilead\HasOffers\Models;
+namespace Unilead\HasOffers\Traits;
 
 /**
- * Class AffiliateUser
+ * Class DeletedTrait
  *
- * @package Unilead\HasOffers\Models
+ * @property $status
+ *
+ * @package Unilead\HasOffers
  */
-class AffiliateUser
+trait Deleted
 {
-    public function get()
-    {
-        return false;
-    }
-
-    public function create()
-    {
-        return false;
-    }
-
-    public function update()
-    {
-        return false;
-    }
-
+    /**
+     * @return null
+     */
     public function delete()
     {
-        return false;
+        $this->status = 'deleted'; // Replace hardcore to const...
+        return null; // No chain after delete
     }
 }

@@ -1,12 +1,12 @@
 <?php
 /**
- * Unilead | BM
+ * Unilead | HasOffers
  *
  * This file is part of the Unilead Service Package.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @package     BM
+ * @package     HasOffers
  * @license     Proprietary
  * @copyright   Copyright (C) Unilead Network, All rights reserved.
  * @link        https://www.unileadnetwork.com
@@ -14,104 +14,122 @@
 
 namespace JBZoo\PHPUnit;
 
+use JBZoo\Data\Data;
 use JBZoo\Utils\Env;
+use Unilead\HasOffers\Entity\Affiliate;
 use Unilead\HasOffers\HasOffersClient;
-use Unilead\HasOffers\Models\Affiliate;
+use Unilead\HasOffers\PaymentMethod;
 
+/**
+ * Class AffiliateTest
+ * @package JBZoo\PHPUnit
+ */
 class AffiliateTest extends PHPUnit
 {
-    protected $hasOffersClient;
+    /**
+     * @var HasOffersClient
+     */
+    protected $hoClient;
 
     public function setUp()
     {
         parent::setUp();
 
-        $this->hasOffersClient = new HasOffersClient(
-            Env::get('API_URL'),
-            Env::get('API_NETWORK_ID'),
-            Env::get('API_NETWORK_TOKEN')
+        $this->hoClient = new HasOffersClient(
+            Env::get('HO_API_NETWORK_ID'),
+            Env::get('HO_API_NETWORK_TOKEN')
         );
     }
 
-    public function testUserCanGetAffiliateById()
+    public function testCanGetAffiliateById()
     {
-        $affiliate = $this->hasOffersClient->get(Affiliate::class, 1004);
+        $someId = '1004';
+        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
 
-        isSame('1004', $affiliate->data['id']);
+        is($someId, $affiliate->id);
     }
 
-    public function testUserCanCreateAffiliate()
+    /**
+     * @expectedExceptionMessage Missing required argument: data
+     * @expectedException \Unilead\HasOffers\Exception
+     */
+    public function testCannotSaveUndefinedId()
     {
-        $affiliate = $this->hasOffersClient->get(Affiliate::class);
+        $affiliate = $this->hoClient->get(Affiliate::class);
+        $affiliate->save();
+    }
 
-        $affiliate
-            ->setCompany('Test Company')
-            ->setAccountManagerId(1)
-            ->setPhone('+7 845 845 84 54')
-            ->setEmail('test@test.com')
-            ->setStatus(Affiliate::STATUS_ACTIVE)
-            ->save();
+    /**
+     * @expectedExceptionMessage Undefined property "undefined_property" in Unilead\HasOffers\Entity\Affiliate
+     * @expectedException \Unilead\HasOffers\Exception
+     */
+    public function testCannotGetUndefinedProperty()
+    {
+        $someId = '1004';
+        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        is($someId, $affiliate->id);
 
-        $affiliateCheck = $this->hasOffersClient->get(Affiliate::class, $affiliate->id);
+        $affiliate->undefined_property;
+    }
+
+    public function testGetAffiliatePaymentMethodType()
+    {
+        $someId = '1004';
+        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $paymentMethod = $affiliate->getPaymentMethod();
+
+        isSame(PaymentMethod::TYPE_PAYPAL, $paymentMethod->getType());
+
+        $paymentRawData = $paymentMethod->getRawData();
+        isClass(Data::class, $paymentRawData);
+        isSame('abelov83@belov.ru', $paymentRawData->email);
+        isSame('abelov83@belov.ru', $paymentMethod->email);
+    }
+
+    public function testCanCreateAffiliate()
+    {
+        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class);
+        $affiliate->company = 'Test Company';
+        $affiliate->phone = '+7 845 845 84 54';
+        $affiliate->save();
+
+        /** @var Affiliate $affiliateCheck */
+        $affiliateCheck = $this->hoClient->get(Affiliate::class, $affiliate->id);
 
         isSame($affiliate->id, $affiliateCheck->id);
         isSame($affiliate->company, $affiliateCheck->company);
+        isSame($affiliate->phone, $affiliateCheck->phone);
     }
 
-    public function testUserCanUpdateAffiliate()
+    public function testCanUpdateAffiliate()
     {
-        $affiliate = $this->hasOffersClient->get(Affiliate::class);
+        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class);
 
-        $affiliate
-            ->setId(1004)
-            ->setCompany('Test Company')
-            ->setAccountManagerId(1) //this wont work
-            ->setPhone('+7 845 845 84 54')
-            ->setEmail('test@test.com')
-            ->setStatus(Affiliate::STATUS_ACTIVE)
-            ->save();
+        $affiliate->id = 1004;
+        $affiliate->company = 'Test Company';
+        $affiliate->phone = '+7 845 845 84 54';
+        $affiliate->status = Affiliate::STATUS_ACTIVE;
+        $affiliate->save();
 
-        $affiliateCheck = $this->hasOffersClient->get(Affiliate::class, $affiliate->id);
+        /** @var Affiliate $affiliateCheck */
+        $affiliateCheck = $this->hoClient->get(Affiliate::class, $affiliate->id);
 
         isSame($affiliate->id, $affiliateCheck->id);
         isSame($affiliate->company, $affiliateCheck->company);
+        isSame($affiliate->phone, $affiliateCheck->phone);
     }
 
-    public function testUserCanDeleteAffiliate()
+    public function testCanDeleteAffiliate()
     {
-        $affiliate = $this->hasOffersClient->get(Affiliate::class, 2);
-
+        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
         $affiliate->delete();
 
-        isSame('deleted', $affiliate->status);
-    }
-
-    public function testUserCanGetAffiliate()
-    {
-        skip('write me');
-//        $affiliate = $this->affiliate->get(1);
-//        isSame(5, $affiliate['id']);
-    }
-
-    public function testUserCanBlockAffiliate()
-    {
-        skip('write me');
-//        $HasOffersClient = new HasOffersClient($apiUrl, $networkId, $networkToken);
-//        $Affiliate = $HasOffersClient->get(Affiliate::class, 2);
-//
-//        $Affiliate->block();
-//
-//        isSame('blocked', $affiliate['status']);
-    }
-
-    public function testUserCanUnblockAffiliate()
-    {
-        skip('write me');
-//        $HasOffersClient = new HasOffersClient($apiUrl, $networkId, $networkToken);
-//        $Affiliate = $HasOffersClient->get(Affiliate::class, 2);
-//
-//        $Affiliate->unblock();
-//
-//        isSame('active', $affiliate['status']);
+        isSame(Affiliate::STATUS_DELETED, $affiliate->status);
     }
 }

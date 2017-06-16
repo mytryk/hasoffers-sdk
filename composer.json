@@ -11,9 +11,9 @@
         }
     ],
     "require"           : {
-        "php" : ">=7.0",
+        "php"               : ">=7.0",
         "jbzoo/http-client" : "^1.1",
-        "jbzoo/utils" : "^1.0"
+        "jbzoo/utils"       : "^1.0"
     },
     "require-dev"       : {
         "jbzoo/phpunit"     : "^2.0",
