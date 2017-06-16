@@ -56,6 +56,7 @@ try {
  - Add `$hoClient->setRequestsLimit()`
  - Add `$hoClient->setTimeout()`
  - Fix tests for `$affiliate->delete()`
+ - Fix reload for new objects (entityId variable)
  - Add `JBZoo/Event` support and triggers
     - ho.init
     - ho.api.request.(before|after)
