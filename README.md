@@ -10,11 +10,13 @@
 use Unilead\HasOffers\Exception;
 use Unilead\HasOffers\Entity\Affiliate;
 use Unilead\HasOffers\HasOffersClient;
+use Unilead\HasOffers\PaymentMethod;
 
 // Init HasOffers Client
 try {
     $hoClient = new HasOffersClient('networkId', 'token');
     
+    /** @var Affiliate $affiliate */
     $affiliate = $hoClient->get(Affiliate::class);
     $affiliate2 = $hoClient->get(Affiliate::class, 1004);
     
@@ -38,6 +40,7 @@ try {
     $affiliate->delete(); // set deleted status
     
     // Work with related objects
+    /** @var PaymentMethod $paymentMethod */
     $paymentMethod = $affiliate->getPaymentMethod();
     $paymentType = $paymentMethod->getType(); 
     $payPalEmail = $paymentMethod->email; 
