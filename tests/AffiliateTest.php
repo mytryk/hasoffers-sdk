@@ -41,13 +41,21 @@ class AffiliateTest extends PHPUnit
         );
     }
 
-    public function testCreatingAffiliate()
+    public function testCreatingAffiliateWays()
     {
-        $affiliate1 = $this->hoClient->get(Affiliate::class);
-        $affiliate2 = $this->hoClient->get(Affiliate::class);
+        $affiliate1 = $this->hoClient->get(Affiliate::class); // recomended!
+        $affiliate2 = $this->hoClient->get('Affiliate');
+        $affiliate3 = $this->hoClient->get('Unilead\\HasOffers\\Entity\\Affiliate');
+        $affiliate4 = new Affiliate(1004);
+        $affiliate4->setClient($this->hoClient);
+
+        isClass(Affiliate::class, $affiliate1);
+        isClass(Affiliate::class, $affiliate2);
+        isClass(Affiliate::class, $affiliate3);
+        isClass(Affiliate::class, $affiliate4);
 
         isNotSame($affiliate1, $affiliate2);
-        isClass(Affiliate::class, $affiliate1);
+        isNotSame($affiliate1, $affiliate3);
     }
 
     public function testCanGetAffiliateById()

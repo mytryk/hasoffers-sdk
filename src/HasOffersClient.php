@@ -56,19 +56,19 @@ class HasOffersClient
     }
 
     /**
-     * @param string $model
+     * @param string $modelClassName
      * @param int    $entityId
      * @return AbstractEntity
      * @throws Exception
      */
-    public function get($model, $entityId = null)
+    public function get($modelClassName, $entityId = null)
     {
-        if (class_exists($model)) {
-            $willCreate = $model;
-        } elseif (class_exists(__NAMESPACE__ . '\\' . $model)) {
-            $willCreate = __NAMESPACE__ . '\\' . $model;
+        if (class_exists($modelClassName)) {
+            $willCreate = $modelClassName;
+        } elseif (class_exists(__NAMESPACE__ . '\\Entity\\' . $modelClassName)) {
+            $willCreate = __NAMESPACE__ . '\\Entity\\' . $modelClassName;
         } else {
-            throw new Exception("Model with class name \"{$model}\" does not exist.");
+            throw new Exception("Model with class name \"{$modelClassName}\" does not exist.");
         }
 
         /** @var AbstractEntity $object */
