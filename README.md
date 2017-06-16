@@ -36,14 +36,15 @@ try {
     
     // CRUD
     $affiliate->save();
-    $affiliate->reload(); // forced loading actial info from HO
+    $affiliate->reload(); // forced loading actual info from HO
     $affiliate->delete(); // set deleted status
     
     // Work with related objects
     /** @var PaymentMethod $paymentMethod */
     $paymentMethod = $affiliate->getPaymentMethod();
     $paymentType = $paymentMethod->getType(); 
-    $payPalEmail = $paymentMethod->email; 
+    $paypalEmail1 = $paymentMethod->email; 
+    $paypalEmail2 = $paymentMethod->data()->find('email'); 
 
 } catch(Exception $exception) {
     echo $exception->getMessage(); // API or SDK errors
@@ -55,7 +56,14 @@ try {
  - add `$hoClient->setRequestsLimit()`
  - add `$hoClient->setTimeout()`
  - fix tests for `$affiliate->delete()`
- - add JBZoo/Event support and triggers (save, create, init entites, init HO, ...)
+ - add JBZoo/Event support and triggers
+    - save (before, after)
+    - save.new (before, after)
+    - create (before, after)
+    - init entites (before, after)
+    - api request (before, after)
+    - api on limit (sleep) from config  
+    - init HO
 
 ## Unit tests and check code style
 ```sh
