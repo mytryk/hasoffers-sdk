@@ -53,17 +53,19 @@ try {
 ```
 
 ## TODO list
- - add `$hoClient->setRequestsLimit()`
- - add `$hoClient->setTimeout()`
- - fix tests for `$affiliate->delete()`
- - add JBZoo/Event support and triggers
-    - save (before, after)
-    - save.new (before, after)
-    - create (before, after)
-    - init entites (before, after)
-    - api request (before, after)
-    - api on limit (sleep) from config  
-    - init HO
+ - Add `$hoClient->setRequestsLimit()`
+ - Add `$hoClient->setTimeout()`
+ - Fix tests for `$affiliate->delete()`
+ - Add `JBZoo/Event` support and triggers
+    - ho.init
+    - ho.api.request.(before|after)
+    - ho.api.sleep    
+    - ho.{entity}.init
+    - ho.{entity}.save.(before|after).(new)
+    - ho.{entity}.delete.(before|after)
+    - ho.{entity}.status.(before|after)
+    - ho.{entity}.reload.(before|after)
+    - ho.{entity}.related.init.(before|after)
 
 ## Unit tests and check code style
 ```sh
