@@ -1,6 +1,6 @@
 # Unilead HasOffers     [![build status](http://code.unilead.net/unilead/hasoffers/badges/master/build.svg)](http://code.unilead.net/unilead/hasoffers/commits/master)
 
-#### SORM/SDK for HasOffers API
+#### ORM/SDK for HasOffers API
 
 ### Example
 
