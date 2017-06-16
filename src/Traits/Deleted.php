@@ -29,6 +29,6 @@ trait Deleted
     public function delete()
     {
         $this->status = 'deleted'; // Replace hardcore to const...
-        return null; // No chain after delete
+        // $this->save(); // TODO: Fix Unit tests
     }
 }

@@ -46,7 +46,7 @@ class AffiliateTest extends PHPUnit
         $affiliate1 = $this->hoClient->get(Affiliate::class); // recomended!
         $affiliate2 = $this->hoClient->get('Affiliate');
         $affiliate3 = $this->hoClient->get('Unilead\\HasOffers\\Entity\\Affiliate');
-        $affiliate4 = new Affiliate(1004);
+        $affiliate4 = new Affiliate();
         $affiliate4->setClient($this->hoClient);
 
         isClass(Affiliate::class, $affiliate1);

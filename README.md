@@ -45,11 +45,17 @@ try {
     $paymentType = $paymentMethod->getType(); 
     $payPalEmail = $paymentMethod->email; 
 
-} catch(Exception $e) {
-    echo $e->getMessage(); // API or SDK Errors
+} catch(Exception $exception) {
+    echo $exception->getMessage(); // API or SDK errors
 }
 
 ```
+
+## TODO list
+ - add `$hoClient->setRequestsLimit()`
+ - add `$hoClient->setTimeout()`
+ - fix tests for `$affiliate->delete()`
+ - add JBZoo/Event support and triggers (save, create, init entites, init HO, ...)
 
 ## Unit tests and check code style
 ```sh
