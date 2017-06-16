@@ -29,6 +29,9 @@ try {
         'company' => 'Test Company',
     ]);
     
+    $affiliate->data()->find('company');
+    $affiliate->data()->find('some.nested.key');
+    
     // CRUD
     $affiliate->save();
     $affiliate->reload(); // forced loading actial info from HO
