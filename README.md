@@ -12,6 +12,7 @@ use Unilead\HasOffers\Entity\Affiliate;
 use Unilead\HasOffers\HasOffersClient;
 use Unilead\HasOffers\PaymentMethod;
 use JBZoo\Event\EventManager;
+use JBZoo\Event\ExceptionStop;
 
 // Init HasOffers Client
 try {
@@ -59,6 +60,11 @@ try {
         ->on('ho.affiliate.save.before', function(Affiliate $affiliate){
             saveToLog($affiliate->data(), 'Snapshort before save');
         })
+        ->on('ho.affiliate.save.before', function(Affiliate $affiliate){
+            if('__some__condition__') {
+                throw new ExceptionStop('Breake event chain');
+            }
+        })
         ->on('ho.affiliate.save.after', function(Affiliate $affiliate){
             saveToLog($affiliate->data(), 'Snapshort after save');
         });
@@ -69,9 +75,9 @@ try {
 
 ```
 
-## Event list (JBZoo/Event)
- - ho.init    
+## Event list (JBZoo/Event) 
  - ho.api.sleep    
+ - ho.api.request.(before|after)
  - ho.{entity}.init
  - ho.{entity}.save.(before|after)
  - ho.{entity}.delete.(before|after)

@@ -74,8 +74,6 @@ class HasOffersClient
         $this->networkId = $networkId;
         $this->networkToken = $token;
         $this->apiUrl = $apiUrl;
-
-        $this->trigger('init', [$this]);
     }
 
     /**
