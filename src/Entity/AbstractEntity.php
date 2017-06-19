@@ -69,6 +69,8 @@ abstract class AbstractEntity
             throw new Exception("Undefined target alias for entity \"{$this->objectId}\"");
         }
 
+        $this->hoClient->trigger("{$this->target}.reload.before", [$this]);
+
         $data = $this->hoClient->apiRequest([
             'Target'  => $this->target,
             'Method'  => 'findById',
@@ -82,6 +84,8 @@ abstract class AbstractEntity
             $this->createRelated($data);
         }
 
+        $this->hoClient->trigger("{$this->target}.reload.after", [$this]);
+
         return $this;
     }
 
@@ -90,9 +94,25 @@ abstract class AbstractEntity
      */
     protected function createRelated($data)
     {
+        $this->hoClient->trigger("{$this->target}.related.init.before", [$this]);
+
         foreach ($this->contain as $objectName => $className) {
-            $this->related[$objectName] = new $className($data[$objectName], $this);
+            $objectData = $data[$objectName];
+
+            $this->hoClient->trigger(
+                "{$this->target}.related.{$objectName}.init.before",
+                [$this, &$objectData]
+            );
+
+            $this->related[$objectName] = new $className($objectData, $this);
+
+            $this->hoClient->trigger(
+                "{$this->target}.related.{$objectName}.init.after",
+                [$this, $this->related[$objectName]]
+            );
         }
+
+        $this->hoClient->trigger("{$this->target}.related.init.after", [$this]);
     }
 
     /**
@@ -101,23 +121,32 @@ abstract class AbstractEntity
      */
     public function save()
     {
-        if ($this->objectId) {
-            $data = $this->hoClient->apiRequest([
-                'Method'        => 'update',
-                'Target'        => $this->target,
-                'data'          => $this->data,
-                'return_object' => 1,
-            ]);
-        } else {
+        $isNew = !$this->objectId;
+        $this->hoClient->trigger("{$this->target}.save.before", [$this, $isNew]);
+
+        if ($isNew) {
             $data = $this->hoClient->apiRequest([
                 'Method'        => 'create',
                 'Target'        => $this->target,
                 'data'          => $this->data,
                 'return_object' => 1,
             ]);
+        } else {
+            $dataRequet = $this->data;
+            $dataRequet['id'] = $this->objectId;
+
+            $data = $this->hoClient->apiRequest([
+                'Method'        => 'update',
+                'Target'        => $this->target,
+                'data'          => $dataRequet,
+                'id'            => $this->objectId,
+                'return_object' => 1,
+            ]);
         }
 
         $this->bindData($data[$this->target]);
+
+        $this->hoClient->trigger("{$this->target}.save.after", [$this, $isNew]);
 
         return $this;
     }
@@ -131,5 +160,13 @@ abstract class AbstractEntity
     {
         $this->hoClient = $hoClient;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTarget()
+    {
+        return $this->target;
     }
 }

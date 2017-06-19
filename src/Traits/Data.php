@@ -95,7 +95,9 @@ trait Data
 
         if (strpos($method, 'set') === 0) {
             if (array_key_exists('0', $argements)) {
+                $this->hoClient->trigger("{$this->target}.set.before", [&$propName, &$argements[0], $this->data]);
                 $this->data[$propName] = $argements[0];
+                $this->hoClient->trigger("{$this->target}.set.after", [&$propName, &$argements[0], $this->data]);
             } else {
                 throw new Exception("First argement is required for \"{$propName}\" setter  in " . static::class);
             }
@@ -129,8 +131,12 @@ trait Data
      */
     public function __set($propName, $value)
     {
+        $this->hoClient->trigger("{$this->target}.set.before", [&$propName, &$value, $this->data]);
+
         $propName = Str::splitCamelCase($propName);
         $this->data[$propName] = $value;
+
+        $this->hoClient->trigger("{$this->target}.set.after", [$propName, $value, $this->data]);
     }
 
     /**
@@ -145,10 +151,19 @@ trait Data
 
     /**
      * @param $propName
+     * @throws Exception
      */
     public function __unset($propName)
     {
+        $this->hoClient->trigger("{$this->target}.unset.before", [&$propName, $this->data]);
+
         $propName = Str::splitCamelCase($propName);
-        $this->data[$propName] = null;
+        if (array_key_exists($propName, $this->data)) {
+            $this->data[$propName] = null;
+        } else {
+            throw new Exception("Undefined property \"{$propName}\" in " . static::class);
+        }
+
+        $this->hoClient->trigger("{$this->target}.unset.after", [&$propName, $this->data]);
     }
 }

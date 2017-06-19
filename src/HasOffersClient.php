@@ -15,6 +15,7 @@
 namespace Unilead\HasOffers;
 
 use JBZoo\Data\JSON;
+use JBZoo\Event\EventManager;
 use JBZoo\HttpClient\HttpClient;
 use Unilead\HasOffers\Entity\AbstractEntity;
 
@@ -26,6 +27,21 @@ class HasOffersClient
 {
     const HTTP_TIMEOUT    = 30;
     const DEFAULT_API_URL = 'https://__NETWORK_ID__.api.hasoffers.com/Apiv3/json';
+
+    /**
+     * @var int
+     */
+    protected $requestCounter = 0;
+
+    /**
+     * @var int
+     */
+    protected $limitCounter = 0;
+
+    /**
+     * @var int
+     */
+    protected $timeout = 0;
 
     /**
      * @var string
@@ -43,6 +59,11 @@ class HasOffersClient
     protected $networkToken;
 
     /**
+     * @var EventManager|null
+     */
+    protected $eManager;
+
+    /**
      * HasOffersClient constructor.
      * @param string $networkId
      * @param string $token
@@ -53,6 +74,8 @@ class HasOffersClient
         $this->networkId = $networkId;
         $this->networkToken = $token;
         $this->apiUrl = $apiUrl;
+
+        $this->trigger('init', [$this]);
     }
 
     /**
@@ -74,6 +97,7 @@ class HasOffersClient
         /** @var AbstractEntity $object */
         $object = new $willCreate($entityId);
         $object->setClient($this);
+        $this->trigger("{$object->getTarget()}.init", [$object]);
 
         return $object;
     }
@@ -85,7 +109,19 @@ class HasOffersClient
      */
     public function apiRequest(array $data)
     {
+        $this->trigger('api.request.before', [$this, &$data]);
+
         try {
+            $this->requestCounter++;
+
+            if ($this->limitCounter > 0 &&
+                $this->timeout > 0 &&
+                $this->requestCounter % $this->limitCounter === 0
+            ) {
+                sleep($this->timeout);
+                $this->trigger('api.request.sleep', [$this, &$data]);
+            }
+
             $httpClient = new HttpClient([
                 'timeout'    => self::HTTP_TIMEOUT,
                 'verify'     => false,
@@ -114,6 +150,56 @@ class HasOffersClient
             throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);
         }
 
-        return new JSON($resp->find('response.data'));
+        $result = new JSON($resp->find('response.data'));
+
+        $this->trigger('api.request.after', [$this, $result, $resp]);
+
+        return $result;
+    }
+
+    /**
+     * Setter for external EventManager
+     * @param EventManager $eManager
+     * @return $this
+     */
+    public function setEventManager(EventManager $eManager)
+    {
+        $this->eManager = $eManager;
+        return $this;
+    }
+
+    /**
+     * Emits an event.
+     *
+     * @param string   $eventName
+     * @param array    $arguments
+     * @param callback $continueCallback
+     * @return int|string
+     * @throws Exception
+     */
+    public function trigger($eventName, array $arguments = [], $continueCallback = null)
+    {
+        if ($this->eManager) {
+            $eventName = strtolower("ho.{$eventName}");
+            return $this->eManager->trigger($eventName, $arguments, $continueCallback);
+        }
+
+        return 0;
+    }
+
+    /**
+     * @param int $limitCounter
+     */
+    public function setRequestsLimit($limitCounter)
+    {
+        $this->limitCounter = (int)$limitCounter;
+    }
+
+    /**
+     * @param int $seconds
+     */
+    public function setTimeout($seconds)
+    {
+        $this->timeout = (int)$seconds;
     }
 }

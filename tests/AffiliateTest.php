@@ -15,6 +15,7 @@
 namespace JBZoo\PHPUnit;
 
 use JBZoo\Data\Data;
+use JBZoo\Event\EventManager;
 use JBZoo\Utils\Env;
 use Unilead\HasOffers\Entity\Affiliate;
 use Unilead\HasOffers\HasOffersClient;
@@ -39,6 +40,41 @@ class AffiliateTest extends PHPUnit
             Env::get('HO_API_NETWORK_ID'),
             Env::get('HO_API_NETWORK_TOKEN')
         );
+    }
+
+    public function testEventManagerAttach()
+    {
+        $eManager = new EventManager();
+        $this->hoClient->setEventManager($eManager);
+
+        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+
+        $checkerCounter = 0;
+        $eManager->on('ho.*.reload.*', function () use (&$checkerCounter) {
+            $checkerCounter++;
+        });
+
+        $affiliate->reload();
+
+        isSame(2, $checkerCounter);
+    }
+
+    public function testLimitOption()
+    {
+        $this->hoClient->setTimeout(5);
+        $this->hoClient->setRequestsLimit(2);
+
+        $startTime = time();
+        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate->reload();
+        $affiliate->reload();
+        $affiliate->reload();
+        $affiliate->reload();
+        $finishTime = time();
+
+        isTrue($finishTime - $startTime > 10, 'Timeout is ' . ($finishTime - $startTime));
     }
 
     public function testCreatingAffiliateWays()

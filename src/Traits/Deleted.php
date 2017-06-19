@@ -28,7 +28,16 @@ trait Deleted
      */
     public function delete()
     {
+        if ($this->hoClient) {
+            $this->hoClient->trigger("{$this->target}.detete.before", [$this]);
+        }
+
+        $this->reload();
         $this->status = 'deleted'; // Replace hardcore to const...
-        // $this->save(); // TODO: Fix Unit tests
+        $this->save();
+
+        if ($this->hoClient) {
+            $this->hoClient->trigger("{$this->target}.detete.after");
+        }
     }
 }

@@ -11,10 +11,18 @@ use Unilead\HasOffers\Exception;
 use Unilead\HasOffers\Entity\Affiliate;
 use Unilead\HasOffers\HasOffersClient;
 use Unilead\HasOffers\PaymentMethod;
+use JBZoo\Event\EventManager;
 
 // Init HasOffers Client
 try {
+    // Init HasOffers Client
     $hoClient = new HasOffersClient('networkId', 'token');
+    $eManager = new EventManager();
+    $hoClient->setEventManager($eManager);
+
+    // Sleep 10 seconds each 100 requests to API
+    $hoClient->setTimeout(10);
+    $hoClient->setRequestsLimit(100);
     
     /** @var Affiliate $affiliate */
     $affiliate = $hoClient->get(Affiliate::class);
@@ -44,7 +52,16 @@ try {
     $paymentMethod = $affiliate->getPaymentMethod();
     $paymentType = $paymentMethod->getType(); 
     $paypalEmail1 = $paymentMethod->email; 
-    $paypalEmail2 = $paymentMethod->data()->find('email'); 
+    $paypalEmail2 = $paymentMethod->data()->find('email');
+    
+    // Attach event handlers
+    $eManager
+        ->on('ho.affiliate.save.before', function(Affiliate $affiliate){
+            saveToLog($affiliate->data(), 'Snapshort before save');
+        })
+        ->on('ho.affiliate.save.after', function(Affiliate $affiliate){
+            saveToLog($affiliate->data(), 'Snapshort after save');
+        });
 
 } catch(Exception $exception) {
     echo $exception->getMessage(); // API or SDK errors
@@ -52,20 +69,16 @@ try {
 
 ```
 
-## TODO list
- - Add `$hoClient->setRequestsLimit()`
- - Add `$hoClient->setTimeout()`
- - Fix tests for `$affiliate->delete()`
- - Add `JBZoo/Event` support and triggers
-    - ho.init
-    - ho.api.request.(before|after)
-    - ho.api.sleep    
-    - ho.{entity}.init
-    - ho.{entity}.save.(before|after).(new)
-    - ho.{entity}.delete.(before|after)
-    - ho.{entity}.status.(before|after)
-    - ho.{entity}.reload.(before|after)
-    - ho.{entity}.related.init.(before|after)
+## Event list (JBZoo/Event)
+ - ho.init    
+ - ho.api.sleep    
+ - ho.{entity}.init
+ - ho.{entity}.save.(before|after)
+ - ho.{entity}.delete.(before|after)
+ - ho.{entity}.reload.(before|after)
+ - ho.{entity}.related.init.(before|after)
+ - ho.{entity}.related.{related-object}.init.(before|after)
+
 
 ## Unit tests and check code style
 ```sh
