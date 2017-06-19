@@ -145,6 +145,7 @@ abstract class AbstractEntity
         }
 
         $this->bindData($data[$this->target]);
+        $this->objectId = $data[$this->target]['id'];
 
         $this->hoClient->trigger("{$this->target}.save.after", [$this, $isNew]);
 
