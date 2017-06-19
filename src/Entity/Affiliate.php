@@ -42,7 +42,9 @@ use Unilead\HasOffers\Traits\Deleted;
  * @property string $fraud_activity_block_threshold The activity fraud threshold (percent out of 100) at which point
  *                                                  the account will be automatically blocked (status set to "blocked")
  *                                                  when its recent activity is flagged as potentially fraudulent.
- *                                                  Applicable only if the "affiliate_fraud_activity" Preference is enabled. For more information, see: http://support.hasoffers.com/hc/en-us/articles/202674578-Affiliate-Activity-Fraud.
+ *                                                  Applicable only if the "affiliate_fraud_activity" Preference is
+ *                                                  enabled. For more information, see:
+ *                                                  http://support.hasoffers.com/hc/en-us/articles/202674578-Affiliate-Activity-Fraud.
  * @property string $fraud_activity_score           Activity fraud score for the Affiliate.
  *                                                  Applicable only if the "affiliate_fraud_activity" Preference
  *                                                  is enabled. This should not be manually updated/overridden
@@ -97,10 +99,10 @@ class Affiliate extends AbstractEntity
 {
     use Deleted;
 
-    const STATUS_ACTIVE   = 'active';
-    const STATUS_PENDING  = 'pending';
-    const STATUS_BLOCKED  = 'blocked';
-    const STATUS_DELETED  = 'deleted';
+    const STATUS_ACTIVE = 'active';
+    const STATUS_PENDING = 'pending';
+    const STATUS_BLOCKED = 'blocked';
+    const STATUS_DELETED = 'deleted';
     const STATUS_REJECTED = 'rejected';
 
     /**
@@ -114,4 +116,28 @@ class Affiliate extends AbstractEntity
     protected $contain = [
         'PaymentMethod' => PaymentMethod::class,
     ];
+
+    /**
+     * Block Affiliate in HasOffers.
+     *
+     * @return $this
+     */
+    public function block()
+    {
+        $this->status = self::STATUS_BLOCKED;
+
+        return $this->save();
+    }
+
+    /**
+     * Unblock Affiliate in HasOffers.
+     *
+     * @return $this
+     */
+    public function unblock()
+    {
+        $this->status = self::STATUS_ACTIVE;
+
+        return $this->save();
+    }
 }

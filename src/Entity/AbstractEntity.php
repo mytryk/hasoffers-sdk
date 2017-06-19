@@ -132,13 +132,13 @@ abstract class AbstractEntity
                 'return_object' => 1,
             ]);
         } else {
-            $dataRequet = $this->data;
-            $dataRequet['id'] = $this->objectId;
+            $dataRequest = $this->data;
+            $dataRequest['id'] = $this->objectId;
 
             $data = $this->hoClient->apiRequest([
                 'Method'        => 'update',
                 'Target'        => $this->target,
-                'data'          => $dataRequet,
+                'data'          => $dataRequest,
                 'id'            => $this->objectId,
                 'return_object' => 1,
             ]);

@@ -185,4 +185,22 @@ class AffiliateTest extends PHPUnit
 
         isSame(Affiliate::STATUS_DELETED, $affiliate->status);
     }
+
+    public function testCanBlockAffiliate()
+    {
+        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate->block();
+
+        isSame(Affiliate::STATUS_BLOCKED, $affiliate->status);
+    }
+
+    public function testCanUnblockAffiliate()
+    {
+        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate->unblock();
+
+        isSame(Affiliate::STATUS_ACTIVE, $affiliate->status);
+    }
 }
