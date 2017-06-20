@@ -79,7 +79,7 @@ class AffiliateTest extends PHPUnit
 
     public function testCreatingAffiliateWays()
     {
-        $affiliate1 = $this->hoClient->get(Affiliate::class); // recomended!
+        $affiliate1 = $this->hoClient->get(Affiliate::class); // recommended!
         $affiliate2 = $this->hoClient->get('Affiliate');
         $affiliate3 = $this->hoClient->get('Unilead\\HasOffers\\Entity\\Affiliate');
         $affiliate4 = new Affiliate();

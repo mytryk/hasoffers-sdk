@@ -29,7 +29,7 @@ trait Deleted
     public function delete()
     {
         if ($this->hoClient) {
-            $this->hoClient->trigger("{$this->target}.detete.before", [$this]);
+            $this->hoClient->trigger("{$this->target}.delete.before", [$this]);
         }
 
         $this->reload();
@@ -37,7 +37,7 @@ trait Deleted
         $this->save();
 
         if ($this->hoClient) {
-            $this->hoClient->trigger("{$this->target}.detete.after");
+            $this->hoClient->trigger("{$this->target}.delete.after");
         }
     }
 }
