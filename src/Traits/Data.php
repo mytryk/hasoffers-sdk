@@ -35,21 +35,31 @@ trait Data
 
     /**
      * @param array $data
+     *
      * @return $this
      */
     public function bindData(array $data)
     {
+        foreach ($data as $key => $item) {
+            if (strpos($key, '_') !== false) {
+                unset($data[$key]);
+            }
+        }
+
         $this->data = (array)$data;
+
         return $this;
     }
 
     /**
      * @param array $data
+     *
      * @return $this
      */
     public function mergeData(array $data)
     {
         $this->data = array_merge($this->data, (array)$data);
+
         return $this;
     }
 
@@ -64,6 +74,7 @@ trait Data
     /**
      * @param string $method
      * @param array  $argements
+     *
      * @return $this|string
      * @throws Exception
      */
@@ -108,6 +119,7 @@ trait Data
 
     /**
      * @param string $propName
+     *
      * @return mixed
      * @throws Exception
      */
@@ -141,16 +153,19 @@ trait Data
 
     /**
      * @param string $propName
+     *
      * @return bool
      */
     public function __isset($propName)
     {
         $propName = Str::splitCamelCase($propName);
+
         return isset($this->data[$propName]);
     }
 
     /**
      * @param $propName
+     *
      * @throws Exception
      */
     public function __unset($propName)

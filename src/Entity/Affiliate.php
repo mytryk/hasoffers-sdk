@@ -69,7 +69,7 @@ use Unilead\HasOffers\Traits\Deleted;
  *                                                  updated/overridden as the API will update this score automatically.
  *                                                  For more information, see:
  *                                                  http://support.hasoffers.com/hc/en-us/articles/202267053-Affiliate-Profile-Fraud.
- * @property string $id                             Id of unique objectentifier for the Affiliate
+ * @property string $id                             Id of unique object identifier for the Affiliate
  * @property string $modified                       The last time this account was updated
  * @property string $method_data                    DEPRECATED. Ignore the contents of this field.
  * @property string $other                          DEPRECATED. Ignore the contents of this field.
