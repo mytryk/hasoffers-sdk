@@ -131,26 +131,34 @@ class HasOffersClient
             ]);
 
             $url = str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
-            $resp = $httpClient->request($url, $data, 'get')->getJSON();
+            $response = $httpClient->request($url, $data, 'get');
+            $json = $response->getJSON();
 
-            if ($resp->find('response.status', null, 'int') !== 1) {
-                $details = $resp->find('response.errors.0.err_msg') ?: $resp->find('response.errors.0.publicMessage');
-                $errorMessage = $resp->find('response.errorMessage');
+            $apiStatus = $json->find('response.status', null, 'int');
+            if ($apiStatus !== 1) {
+                $errorMessage = $json->find('response.errorMessage');
+                $details = $json->find('response.errors.0.err_msg')
+                    ?: $json->find('response.errors.0.publicMessage');
 
                 if ($details !== $errorMessage) {
-                    throw new Exception('HasOffers Error: ' . $errorMessage . ' ' . $details);
+                    throw new Exception('HasOffers Error (details): ' . $errorMessage . ' ' . $details);
                 }
 
-                throw new Exception('HasOffers Error: ' . $errorMessage);
+                if ($errorMessage) {
+                    throw new Exception('HasOffers Error: ' . $errorMessage);
+                }
+
+                throw new Exception('HasOffers Error. Dump of response: ' . print_r($response, true));
             }
+
+            $result = new JSON($json->find('response.data'));
+
         } catch (\Exception $httpException) {
             // Rewrite exception
             throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);
         }
 
-        $result = new JSON($resp->find('response.data'));
-
-        $this->trigger('api.request.after', [$this, $result, $resp]);
+        $this->trigger('api.request.after', [$this, $result, $json]);
 
         return $result;
     }
