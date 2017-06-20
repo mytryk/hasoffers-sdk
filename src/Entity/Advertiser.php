@@ -19,7 +19,7 @@ use Unilead\HasOffers\Traits\Deleted;
 /* @noinspection ClassOverridesFieldOfSuperClassInspection */
 
 /**
- * Class Affiliate
+ * Class Advertiser
  *
  * @property string $account_manager_id             The ID of the Employee from the Network who is assigned as
  *                                                  the account manager for the Advertiser
@@ -75,11 +75,19 @@ class Advertiser extends AbstractEntity
     protected $target = 'Advertiser';
 
     /**
+     * @var string
+     */
+    protected $getMethod = 'findById';
+
+    /**
      * @var array
      */
     protected $contain = [];
 
     /**
+     * Restore Advertiser in HasOffers.
+     * Sets status to active.
+     *
      * @return $this
      */
     public function restore()

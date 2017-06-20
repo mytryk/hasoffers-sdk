@@ -22,6 +22,7 @@ use Unilead\HasOffers\Traits\Data;
  *
  * @property string $target
  * @property array  $contain
+ * @property string $getMethod
  *
  * @package Unilead\HasOffers
  */
@@ -73,7 +74,7 @@ abstract class AbstractEntity
 
         $data = $this->hoClient->apiRequest([
             'Target'  => $this->target,
-            'Method'  => 'findById',
+            'Method'  => $this->getMethod,
             'id'      => $this->objectId,
             'contain' => array_keys($this->contain),
         ]);
