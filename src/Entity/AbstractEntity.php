@@ -21,8 +21,9 @@ use Unilead\HasOffers\Traits\Data;
  * Class AbstractEntity
  *
  * @property string $target
+ * @property string $targetAlias
  * @property array  $contain
- * @property string $getMethod
+ * @property array  $methods
  *
  * @package Unilead\HasOffers
  */
@@ -47,6 +48,7 @@ abstract class AbstractEntity
 
     /**
      * Entity constructor.
+     *
      * @param int   $entityId
      * @param array $data
      */
@@ -74,12 +76,13 @@ abstract class AbstractEntity
 
         $data = $this->hoClient->apiRequest([
             'Target'  => $this->target,
-            'Method'  => $this->getMethod,
+            'Method'  => $this->methods['get'],
             'id'      => $this->objectId,
             'contain' => array_keys($this->contain),
         ]);
 
-        $this->bindData($data[$this->target]);
+        $key = ($this->targetAlias) ? $this->targetAlias : $this->target;
+        $this->bindData($data[$key]);
 
         if (count($this->contain) > 0) {
             $this->createRelated($data);
@@ -127,7 +130,7 @@ abstract class AbstractEntity
 
         if ($isNew) {
             $data = $this->hoClient->apiRequest([
-                'Method'        => 'create',
+                'Method'        => $this->methods['create'],
                 'Target'        => $this->target,
                 'data'          => $this->data,
                 'return_object' => 1,
@@ -137,7 +140,7 @@ abstract class AbstractEntity
             $dataRequest['id'] = $this->objectId;
 
             $data = $this->hoClient->apiRequest([
-                'Method'        => 'update',
+                'Method'        => $this->methods['update'],
                 'Target'        => $this->target,
                 'data'          => $dataRequest,
                 'id'            => $this->objectId,
@@ -145,8 +148,9 @@ abstract class AbstractEntity
             ]);
         }
 
-        $this->bindData($data[$this->target]);
-        $this->objectId = $data[$this->target]['id'];
+        $key = ($this->targetAlias) ? $this->targetAlias : $this->target;
+        $this->bindData($data[$key]);
+        $this->objectId = $data[$key]['id'];
 
         $this->hoClient->trigger("{$this->target}.save.after", [$this, $isNew]);
 
@@ -155,12 +159,15 @@ abstract class AbstractEntity
 
     /**
      * Setter for HasOffers Client.
+     *
      * @param HasOffersClient $hoClient
+     *
      * @return $this
      */
     public function setClient(HasOffersClient $hoClient)
     {
         $this->hoClient = $hoClient;
+
         return $this;
     }
 
