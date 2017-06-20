@@ -75,7 +75,7 @@ abstract class AbstractEntity
             'Target'  => $this->target,
             'Method'  => 'findById',
             'id'      => $this->objectId,
-            'contain' => $this->contain,
+            'contain' => array_keys($this->contain),
         ]);
 
         $this->bindData($data[$this->target]);

@@ -79,6 +79,9 @@ class Advertiser extends AbstractEntity
      */
     protected $contain = [];
 
+    /**
+     * @return $this
+     */
     public function restore()
     {
         $this->status = self::STATUS_ACTIVE;
