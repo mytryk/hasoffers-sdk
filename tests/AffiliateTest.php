@@ -16,32 +16,15 @@ namespace JBZoo\PHPUnit;
 
 use JBZoo\Data\Data;
 use JBZoo\Event\EventManager;
-use JBZoo\Utils\Env;
 use Unilead\HasOffers\Entity\Affiliate;
-use Unilead\HasOffers\HasOffersClient;
 use Unilead\HasOffers\PaymentMethod;
 
 /**
  * Class AffiliateTest
  * @package JBZoo\PHPUnit
  */
-class AffiliateTest extends PHPUnit
+class AffiliateTest extends HasoffersPHPUnit
 {
-    /**
-     * @var HasOffersClient
-     */
-    protected $hoClient;
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->hoClient = new HasOffersClient(
-            Env::get('HO_API_NETWORK_ID'),
-            Env::get('HO_API_NETWORK_TOKEN')
-        );
-    }
-
     public function testEventManagerAttach()
     {
         $eManager = new EventManager();

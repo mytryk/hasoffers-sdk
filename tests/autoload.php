@@ -12,6 +12,8 @@
  * @link        https://www.unileadnetwork.com
  */
 
+use JBZoo\Utils\FS;
+
 if (!defined('ROOT_PATH')) { // for PHPUnit process isolation
     define('ROOT_PATH', realpath('.'));
 }
@@ -19,6 +21,9 @@ if (!defined('ROOT_PATH')) { // for PHPUnit process isolation
 // main autoload
 if ($autoload = realpath('./vendor/autoload.php')) {
     require_once $autoload;
+
+    FS::rmdir(PROJECT_BUILD . '/dumps');
+    mkdir(PROJECT_BUILD . '/dumps', 0777, true);
 } else {
     echo 'Please execute "composer update" !' . PHP_EOL;
     exit(1);

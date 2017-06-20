@@ -151,14 +151,13 @@ class HasOffersClient
                 throw new Exception('HasOffers Error. Dump of response: ' . print_r($response, true));
             }
 
-            $result = new JSON($json->find('response.data'));
-
         } catch (\Exception $httpException) {
             // Rewrite exception
             throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);
         }
 
-        $this->trigger('api.request.after', [$this, $result, $json]);
+        $this->trigger('api.request.after', [$this, $json, $response]);
+        $result = new JSON($json->find('response.data'));
 
         return $result;
     }
