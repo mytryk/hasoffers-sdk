@@ -14,31 +14,14 @@
 
 namespace JBZoo\PHPUnit;
 
-use JBZoo\Utils\Env;
 use Unilead\HasOffers\Entity\Advertiser;
-use Unilead\HasOffers\HasOffersClient;
 
 /**
  * Class AdvertiserTest
  * @package JBZoo\PHPUnit
  */
-class AdvertiserTest extends PHPUnit
+class AdvertiserTest extends HasoffersPHPUnit
 {
-    /**
-     * @var HasOffersClient
-     */
-    protected $hoClient;
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->hoClient = new HasOffersClient(
-            Env::get('HO_API_NETWORK_ID'),
-            Env::get('HO_API_NETWORK_TOKEN')
-        );
-    }
-
     public function testCreatingAdvertiserWays()
     {
         $advertiser1 = $this->hoClient->get(Advertiser::class); // recommended!
