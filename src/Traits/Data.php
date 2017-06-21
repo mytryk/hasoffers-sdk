@@ -40,13 +40,21 @@ trait Data
      */
     public function bindData(array $data)
     {
-        foreach ($data as $key => $item) {
+        if (property_exists($this, 'hoClient') && $this->hoClient) {
+            $this->hoClient->trigger("{$this->target}.bind.before", [$this, &$data, &$this->data]);
+        }
+
+        foreach (array_keys($data) as $key) {
             if (strpos($key, '_') !== false) {
                 unset($data[$key]);
             }
         }
 
         $this->data = (array)$data;
+
+        if (property_exists($this, 'hoClient') && $this->hoClient) {
+            $this->hoClient->trigger("{$this->target}.bind.after", [$this, &$this->data]);
+        }
 
         return $this;
     }
@@ -58,7 +66,7 @@ trait Data
      */
     public function mergeData(array $data)
     {
-        $this->data = array_merge($this->data, (array)$data);
+        $this->bindData(array_merge($this->data, (array)$data));
 
         return $this;
     }
@@ -144,16 +152,17 @@ trait Data
      */
     public function __set($propName, $value)
     {
+        $propName = Str::splitCamelCase($propName);
+
         if (strtolower($propName) === 'id') {
             throw new Exception("Property \"{$propName}\" read only in " . static::class);
         }
 
-        $this->hoClient->trigger("{$this->target}.set.before", [&$propName, &$value, $this->data]);
+        $this->hoClient->trigger("{$this->target}.set.{$propName}.before", [$this, &$propName, &$value, &$this->data]);
 
-        $propName = Str::splitCamelCase($propName);
         $this->data[$propName] = $value;
 
-        $this->hoClient->trigger("{$this->target}.set.after", [$propName, $value, $this->data]);
+        $this->hoClient->trigger("{$this->target}.set.{$propName}.after", [$this, $propName, $value, &$this->data]);
     }
 
     /**
@@ -175,7 +184,7 @@ trait Data
      */
     public function __unset($propName)
     {
-        $this->hoClient->trigger("{$this->target}.unset.before", [&$propName, $this->data]);
+        $this->hoClient->trigger("{$this->target}.unset.{$propName}.before", [$this, &$propName, &$this->data]);
 
         $propName = Str::splitCamelCase($propName);
         if (array_key_exists($propName, $this->data)) {
@@ -184,6 +193,6 @@ trait Data
             throw new Exception("Undefined property \"{$propName}\" in " . static::class);
         }
 
-        $this->hoClient->trigger("{$this->target}.unset.after", [&$propName, $this->data]);
+        $this->hoClient->trigger("{$this->target}.unset.{$propName}.after", [$this, $propName, &$this->data]);
     }
 }

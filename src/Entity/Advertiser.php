@@ -91,8 +91,13 @@ class Advertiser extends AbstractEntity
      */
     public function restore()
     {
-        $this->status = self::STATUS_ACTIVE;
+        $this->hoClient->trigger("{$this->target}.restore.before", [$this]);
 
-        return $this->save();
+        $this->status = self::STATUS_ACTIVE;
+        $result = $this->save();
+
+        $this->hoClient->trigger("{$this->target}.restore.after", [$this]);
+
+        return $result;
     }
 }
