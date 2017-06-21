@@ -16,6 +16,7 @@ namespace JBZoo\PHPUnit;
 
 use JBZoo\Data\Data;
 use JBZoo\Event\EventManager;
+use JBZoo\Utils\Str;
 use Unilead\HasOffers\Entity\Affiliate;
 use Unilead\HasOffers\Contain\PaymentMethod;
 
@@ -136,28 +137,23 @@ class AffiliateTest extends HasoffersPHPUnit
         /** @var Affiliate $affiliateCheck */
         $affiliateCheck = $this->hoClient->get(Affiliate::class, $affiliate->id);
 
-        isSame($affiliate->id, $affiliateCheck->id);
+        isSame($affiliate->id, $affiliateCheck->id); // Check is new id bind to object
         isSame($affiliate->company, $affiliateCheck->company);
         isSame($affiliate->phone, $affiliateCheck->phone);
     }
 
     public function testCanUpdateAffiliate()
     {
-        /** @var Affiliate $affiliate */
-        $affiliate = $this->hoClient->get(Affiliate::class);
+        /** @var Affiliate $affiliateBeforeSave */
+        $affiliateBeforeSave = $this->hoClient->get(Affiliate::class, 1004);
 
-        $affiliate->id = 1004;
-        $affiliate->company = 'Test Company';
-        $affiliate->phone = '+7 845 845 84 54';
-        $affiliate->status = Affiliate::STATUS_ACTIVE;
-        $affiliate->save();
+        $beforeCompany = $affiliateBeforeSave->company;
+        $affiliateBeforeSave->company = Str::random();
+        $affiliateBeforeSave->save();
 
-        /** @var Affiliate $affiliateCheck */
-        $affiliateCheck = $this->hoClient->get(Affiliate::class, $affiliate->id);
-
-        isSame($affiliate->id, $affiliateCheck->id);
-        isSame($affiliate->company, $affiliateCheck->company);
-        isSame($affiliate->phone, $affiliateCheck->phone);
+        /** @var Affiliate $affiliateAfterSave */
+        $affiliateAfterSave = $this->hoClient->get(Affiliate::class, 1004);
+        isNotSame($beforeCompany, $affiliateAfterSave->company);
     }
 
     public function testCanDeleteAffiliate()
@@ -166,7 +162,10 @@ class AffiliateTest extends HasoffersPHPUnit
         $affiliate = $this->hoClient->get(Affiliate::class, 1004);
         $affiliate->delete();
 
-        isSame(Affiliate::STATUS_DELETED, $affiliate->status);
+        /** @var Affiliate $affiliateAfterSave */
+        $affiliateAfterSave = $this->hoClient->get(Affiliate::class, 1004);
+
+        isSame(Affiliate::STATUS_DELETED, $affiliateAfterSave->status);
     }
 
     public function testCanBlockAffiliate()
@@ -175,7 +174,9 @@ class AffiliateTest extends HasoffersPHPUnit
         $affiliate = $this->hoClient->get(Affiliate::class, 1004);
         $affiliate->block();
 
-        isSame(Affiliate::STATUS_BLOCKED, $affiliate->status);
+        /** @var Affiliate $affiliateAfterSave */
+        $affiliateAfterSave = $this->hoClient->get(Affiliate::class, 1004);
+        isSame(Affiliate::STATUS_BLOCKED, $affiliateAfterSave->status);
     }
 
     public function testCanUnblockAffiliate()
@@ -185,5 +186,9 @@ class AffiliateTest extends HasoffersPHPUnit
         $affiliate->unblock();
 
         isSame(Affiliate::STATUS_ACTIVE, $affiliate->status);
+
+        /** @var Affiliate $affiliateAfterSave */
+        $affiliateAfterSave = $this->hoClient->get(Affiliate::class, 1004);
+        isSame(Affiliate::STATUS_ACTIVE, $affiliateAfterSave->status);
     }
 }

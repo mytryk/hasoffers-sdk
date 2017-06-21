@@ -39,6 +39,16 @@ class AdvertiserTest extends HasoffersPHPUnit
         isNotSame($advertiser1, $advertiser3);
     }
 
+    /**
+     * @expectedException           \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage    Property "id" read only in Unilead\HasOffers\Entity\Advertiser
+     */
+    public function testIdReadOnly()
+    {
+        $advertiser = $this->hoClient->get(Advertiser::class);
+        $advertiser->id = 42;
+    }
+
     public function testCanGetAdvertiserById()
     {
         $someId = '504';
@@ -95,7 +105,6 @@ class AdvertiserTest extends HasoffersPHPUnit
         /** @var Advertiser $advertiser */
         $advertiser = $this->hoClient->get(Advertiser::class);
 
-        $advertiser->id = 5004;
         $advertiser->company = 'Test Company';
         $advertiser->phone = '+7 845 845 84 54';
         $advertiser->status = Advertiser::STATUS_ACTIVE;

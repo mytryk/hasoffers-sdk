@@ -101,16 +101,16 @@ trait Data
                     . static::class);
             }
 
-            return $this->data[$propName];
+            return $this->__get($propName);
         }
 
         if (strpos($method, 'set') === 0) {
             if (array_key_exists('0', $arguments)) {
                 $this->hoClient->trigger("{$this->target}.set.before", [&$propName, &$arguments[0], $this->data]);
-                $this->data[$propName] = $arguments[0];
+                $this->__set($propName, $arguments[0]);
                 $this->hoClient->trigger("{$this->target}.set.after", [&$propName, &$arguments[0], $this->data]);
             } else {
-                throw new Exception("First argement is required for \"{$propName}\" setter  in " . static::class);
+                throw new Exception("First argument is required for \"{$propName}\" setter  in " . static::class);
             }
         }
 
@@ -140,9 +140,14 @@ trait Data
     /**
      * @param string $propName
      * @param mixed  $value
+     * @throws Exception
      */
     public function __set($propName, $value)
     {
+        if (strtolower($propName) === 'id') {
+            throw new Exception("Property \"{$propName}\" read only in " . static::class);
+        }
+
         $this->hoClient->trigger("{$this->target}.set.before", [&$propName, &$value, $this->data]);
 
         $propName = Str::splitCamelCase($propName);
