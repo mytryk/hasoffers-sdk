@@ -32,7 +32,6 @@ trait Deleted
             $this->hoClient->trigger("{$this->target}.delete.before", [$this]);
         }
 
-        $this->reload();
         $this->status = 'deleted'; // Replace hardcore to const...
         $this->save();
 
