@@ -111,6 +111,20 @@ class Affiliate extends AbstractEntity
     protected $target = 'Affiliate';
 
     /**
+     * @var string
+     */
+    protected $targetAlias = 'Affiliate';
+
+    /**
+     * @var array
+     */
+    protected $methods = [
+        'get'    => 'findById',
+        'create' => 'create',
+        'update' => 'update',
+    ];
+
+    /**
      * @var array
      */
     protected $contain = [

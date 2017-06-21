@@ -73,12 +73,12 @@ trait Data
 
     /**
      * @param string $method
-     * @param array  $argements
+     * @param array  $arguments
      *
      * @return $this|string
      * @throws Exception
      */
-    public function __call($method, array $argements = [])
+    public function __call($method, array $arguments = [])
     {
         if (strpos($method, 'get') !== 0 && strpos($method, 'set') !== 0) {
             throw new Exception('Undefined method ' . static::class . "::{$method}()");
@@ -105,10 +105,10 @@ trait Data
         }
 
         if (strpos($method, 'set') === 0) {
-            if (array_key_exists('0', $argements)) {
-                $this->hoClient->trigger("{$this->target}.set.before", [&$propName, &$argements[0], $this->data]);
-                $this->data[$propName] = $argements[0];
-                $this->hoClient->trigger("{$this->target}.set.after", [&$propName, &$argements[0], $this->data]);
+            if (array_key_exists('0', $arguments)) {
+                $this->hoClient->trigger("{$this->target}.set.before", [&$propName, &$arguments[0], $this->data]);
+                $this->data[$propName] = $arguments[0];
+                $this->hoClient->trigger("{$this->target}.set.after", [&$propName, &$arguments[0], $this->data]);
             } else {
                 throw new Exception("First argement is required for \"{$propName}\" setter  in " . static::class);
             }

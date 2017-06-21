@@ -75,11 +75,28 @@ class Advertiser extends AbstractEntity
     protected $target = 'Advertiser';
 
     /**
+     * @var string
+     */
+    protected $targetAlias = 'Advertiser';
+
+    /**
+     * @var array
+     */
+    protected $methods = [
+        'get'    => 'findById',
+        'create' => 'create',
+        'update' => 'update',
+    ];
+
+    /**
      * @var array
      */
     protected $contain = [];
 
     /**
+     * Restore Advertiser in HasOffers.
+     * Sets status to active.
+     *
      * @return $this
      */
     public function restore()
