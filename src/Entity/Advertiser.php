@@ -57,27 +57,22 @@ use Unilead\HasOffers\Traits\Deleted;
  * @property string $website                        DEPRECATED. Ignore the contents of this field.
  * @property string $zipcode                        The zipcode / postal code of the account's physical address
  *
- * @package      Unilead\HasOffers
+ * @package Unilead\HasOffers\Entity
  */
 class Advertiser extends AbstractEntity
 {
     use Deleted;
 
-    const STATUS_ACTIVE = 'active';
-    const STATUS_PENDING = 'pending';
-    const STATUS_BLOCKED = 'blocked';
-    const STATUS_DELETED = 'deleted';
+    const STATUS_ACTIVE   = 'active';
+    const STATUS_PENDING  = 'pending';
+    const STATUS_BLOCKED  = 'blocked';
+    const STATUS_DELETED  = 'deleted';
     const STATUS_REJECTED = 'rejected';
 
     /**
      * @var string
      */
     protected $target = 'Advertiser';
-
-    /**
-     * @var string
-     */
-    protected $targetAlias = 'Advertiser';
 
     /**
      * @var array
@@ -87,11 +82,6 @@ class Advertiser extends AbstractEntity
         'create' => 'create',
         'update' => 'update',
     ];
-
-    /**
-     * @var array
-     */
-    protected $contain = [];
 
     /**
      * Restore Advertiser in HasOffers.

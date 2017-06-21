@@ -14,7 +14,7 @@
 
 namespace Unilead\HasOffers\Entity;
 
-use Unilead\HasOffers\PaymentMethod;
+use Unilead\HasOffers\Contain\PaymentMethod;
 use Unilead\HasOffers\Traits\Deleted;
 
 /* @noinspection ClassOverridesFieldOfSuperClassInspection */
@@ -93,27 +93,22 @@ use Unilead\HasOffers\Traits\Deleted;
  *
  * @method PaymentMethod getPaymentMethod()
  *
- * @package      Unilead\HasOffers
+ * @package Unilead\HasOffers\Entity
  */
 class Affiliate extends AbstractEntity
 {
     use Deleted;
 
-    const STATUS_ACTIVE = 'active';
-    const STATUS_PENDING = 'pending';
-    const STATUS_BLOCKED = 'blocked';
-    const STATUS_DELETED = 'deleted';
+    const STATUS_ACTIVE   = 'active';
+    const STATUS_PENDING  = 'pending';
+    const STATUS_BLOCKED  = 'blocked';
+    const STATUS_DELETED  = 'deleted';
     const STATUS_REJECTED = 'rejected';
 
     /**
      * @var string
      */
     protected $target = 'Affiliate';
-
-    /**
-     * @var string
-     */
-    protected $targetAlias = 'Affiliate';
 
     /**
      * @var array

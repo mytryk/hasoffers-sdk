@@ -20,11 +20,6 @@ use Unilead\HasOffers\Traits\Data;
 /**
  * Class AbstractEntity
  *
- * @property string $target
- * @property string $targetAlias
- * @property array  $contain
- * @property array  $methods
- *
  * @package Unilead\HasOffers
  */
 abstract class AbstractEntity
@@ -47,14 +42,34 @@ abstract class AbstractEntity
     protected $related;
 
     /**
+     * @var array
+     */
+    protected $contain = [];
+
+    /**
+     * @var array
+     */
+    protected $methods = [];
+
+    /**
+     * @var string
+     */
+    protected $target;
+
+    /**
+     * @var string
+     */
+    protected $targetAlias;
+
+    /**
      * Entity constructor.
      *
-     * @param int   $entityId
+     * @param int   $objectId
      * @param array $data
      */
-    public function __construct($entityId = null, array $data = [])
+    public function __construct($objectId = null, array $data = [])
     {
-        $this->objectId = (int)$entityId;
+        $this->objectId = (int)$objectId;
         $this->bindData($data);
     }
 
@@ -81,7 +96,7 @@ abstract class AbstractEntity
             'contain' => array_keys($this->contain),
         ]);
 
-        $key = ($this->targetAlias) ? $this->targetAlias : $this->target;
+        $key = $this->targetAlias ?: $this->target;
         $this->bindData($data[$key]);
 
         if (count($this->contain) > 0) {
@@ -148,7 +163,7 @@ abstract class AbstractEntity
             ]);
         }
 
-        $key = ($this->targetAlias) ? $this->targetAlias : $this->target;
+        $key = $this->targetAlias ?: $this->target;
         $this->bindData($data[$key]);
         $this->objectId = $data[$key]['id'];
 

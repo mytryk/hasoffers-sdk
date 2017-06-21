@@ -31,6 +31,8 @@ try {
     
     // Get & set props
     $affiliate->company = 'Test Company';
+    $sdasd = $affiliate->company;
+    
     $affiliate->phone = '+7 845 845 84 54';
     $affiliate->bindData([
         'company' => 'Test Company',

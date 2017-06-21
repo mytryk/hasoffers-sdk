@@ -12,7 +12,7 @@
  * @link        https://www.unileadnetwork.com
  */
 
-namespace Unilead\HasOffers;
+namespace Unilead\HasOffers\Contain;
 
 use JBZoo\Data\Data;
 use Unilead\HasOffers\Traits\Data as DataTrait;

@@ -122,7 +122,7 @@ class HasOffersClient
 
             $httpClient = new HttpClient([
                 'timeout'    => self::HTTP_TIMEOUT,
-                'verify'     => false,
+                'verify'     => true,
                 'exceptions' => true
             ]);
 
@@ -157,9 +157,8 @@ class HasOffersClient
         }
 
         $this->trigger('api.request.after', [$this, $json, $response]);
-        $result = new JSON($json->find('response.data'));
 
-        return $result;
+        return new JSON($json->find('response.data'));
     }
 
     /**
