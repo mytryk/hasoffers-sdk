@@ -45,7 +45,7 @@ trait Data
         }
 
         foreach (array_keys($data) as $key) {
-            if (strpos($key, '_') !== false) {
+            if (substr($key, 0, strlen('_')) === '_') {
                 unset($data[$key]);
             }
         }

@@ -52,6 +52,11 @@ abstract class AbstractEntity
     protected $methods = [];
 
     /**
+     * @var array
+     */
+    protected $excludeKeys = [];
+
+    /**
      * @var string
      */
     protected $target;
