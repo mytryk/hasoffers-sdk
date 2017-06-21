@@ -71,6 +71,7 @@ abstract class AbstractEntity
     {
         $this->objectId = (int)$objectId;
         $this->bindData($data);
+        //$this->createRelated($data);
     }
 
     /**

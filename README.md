@@ -75,7 +75,6 @@ try {
 } catch(Exception $exception) {
     echo $exception->getMessage(); // API or SDK errors
 }
-
 ```
 
 ## Full Event List 
