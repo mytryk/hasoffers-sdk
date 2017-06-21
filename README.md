@@ -8,9 +8,10 @@
 <?php
 // Get needed classes
 use Unilead\HasOffers\Exception;
+use Unilead\HasOffers\Entity\AbstractEntity;
 use Unilead\HasOffers\Entity\Affiliate;
 use Unilead\HasOffers\HasOffersClient;
-use Unilead\HasOffers\PaymentMethod;
+use Unilead\HasOffers\Contain\PaymentMethod;
 use JBZoo\Event\EventManager;
 use JBZoo\Event\ExceptionStop;
 
@@ -59,16 +60,16 @@ try {
     
     // Attach event handlers
     $eManager
-        ->on('ho.affiliate.save.before', function(Affiliate $affiliate){
-            saveToLog($affiliate->data(), 'Snapshort before save');
+        ->on('ho.*.save.before', function(AbstractEntity $entity){
+            saveToLog($entity->data(), 'Snapshort before save');
         })
-        ->on('ho.affiliate.save.before', function(Affiliate $affiliate){
+        ->on('ho.*.save.before', function(AbstractEntity $entity){
             if('__some__condition__') {
-                throw new ExceptionStop('Breake event chain');
+                throw new ExceptionStop('Break event chain');
             }
         })
-        ->on('ho.affiliate.save.after', function(Affiliate $affiliate){
-            saveToLog($affiliate->data(), 'Snapshort after save');
+        ->on('ho.*.save.after', function(AbstractEntity $entity){
+            saveToLog($entity->data(), 'Snapshort after save');
         });
 
 } catch(Exception $exception) {
@@ -77,16 +78,22 @@ try {
 
 ```
 
-## Event list (JBZoo/Event) 
+## Full Event List 
+```
  - ho.api.sleep    
  - ho.api.request.(before|after)
  - ho.{entity}.init
  - ho.{entity}.save.(before|after)
+ - ho.{entity}.set.{property}.(before|after)
+ - ho.{entity}.unset.{property}.(before|after)
+ - ho.{entity}.bind.(before|after)
  - ho.{entity}.delete.(before|after)
  - ho.{entity}.reload.(before|after)
- - ho.{entity}.related.init.(before|after)
- - ho.{entity}.related.{related-object}.init.(before|after)
-
+ - ho.{entity}.restore.(before|after)               // Only Advertiser
+ - ho.{entity}.block.(before|after)                 // Only Affiliate
+ - ho.{entity}.unblock.(before|after)               // Only Affiliate
+ - ho.{entity}.related.{related}.init.(before|after)
+```
 
 ## Unit tests and check code style
 ```sh

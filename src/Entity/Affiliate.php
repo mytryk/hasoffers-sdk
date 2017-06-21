@@ -133,9 +133,14 @@ class Affiliate extends AbstractEntity
      */
     public function block()
     {
-        $this->status = self::STATUS_BLOCKED;
+        $this->hoClient->trigger("{$this->target}.block.before", [$this]);
 
-        return $this->save();
+        $this->status = self::STATUS_BLOCKED;
+        $result = $this->save();
+
+        $this->hoClient->trigger("{$this->target}.block.after", [$this]);
+
+        return $result;
     }
 
     /**
@@ -145,8 +150,13 @@ class Affiliate extends AbstractEntity
      */
     public function unblock()
     {
-        $this->status = self::STATUS_ACTIVE;
+        $this->hoClient->trigger("{$this->target}.unblock.before", [$this]);
 
-        return $this->save();
+        $this->status = self::STATUS_ACTIVE;
+        $result = $this->save();
+
+        $this->hoClient->trigger("{$this->target}.unblock.after", [$this]);
+
+        return $result;
     }
 }

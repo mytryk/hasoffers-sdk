@@ -17,8 +17,6 @@ namespace Unilead\HasOffers\Traits;
 /**
  * Class DeletedTrait
  *
- * @property $status
- *
  * @package Unilead\HasOffers
  */
 trait Deleted
@@ -28,15 +26,11 @@ trait Deleted
      */
     public function delete()
     {
-        if ($this->hoClient) {
-            $this->hoClient->trigger("{$this->target}.delete.before", [$this]);
-        }
+        $this->hoClient->trigger("{$this->target}.delete.before", [$this]);
 
         $this->status = 'deleted'; // Replace hardcore to const...
         $this->save();
 
-        if ($this->hoClient) {
-            $this->hoClient->trigger("{$this->target}.delete.after");
-        }
+        $this->hoClient->trigger("{$this->target}.delete.after");
     }
 }

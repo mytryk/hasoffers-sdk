@@ -20,7 +20,7 @@ use Unilead\HasOffers\Traits\Data;
 /**
  * Class AbstractEntity
  *
- * @package Unilead\HasOffers
+ * @package Unilead\HasOffers\Entity
  */
 abstract class AbstractEntity
 {
@@ -118,8 +118,6 @@ abstract class AbstractEntity
      */
     protected function createRelated($data)
     {
-        $this->hoClient->trigger("{$this->target}.related.init.before", [$this]);
-
         foreach ($this->contain as $objectName => $className) {
             $objectData = $data[$objectName];
 
@@ -135,8 +133,6 @@ abstract class AbstractEntity
                 [$this, $this->related[$objectName]]
             );
         }
-
-        $this->hoClient->trigger("{$this->target}.related.init.after", [$this]);
     }
 
     /**
