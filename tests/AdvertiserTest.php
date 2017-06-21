@@ -14,6 +14,7 @@
 
 namespace JBZoo\PHPUnit;
 
+use JBZoo\Utils\Str;
 use Unilead\HasOffers\Entity\Advertiser;
 
 /**
@@ -102,22 +103,16 @@ class AdvertiserTest extends HasoffersPHPUnit
 
     public function testCanUpdateAdvertiser()
     {
-        /** @var Advertiser $advertiser */
-        $advertiser = $this->hoClient->get(Advertiser::class);
+        /** @var Advertiser $advertiserBeforeSave */
+        $advertiserBeforeSave = $this->hoClient->get(Advertiser::class, 504);
 
-        $advertiser->company = 'Test Company';
-        $advertiser->phone = '+7 845 845 84 54';
-        $advertiser->status = Advertiser::STATUS_ACTIVE;
-        $advertiser->zipcode = '432543';
-        $advertiser->save();
+        $beforeCompany = $advertiserBeforeSave->company;
+        $advertiserBeforeSave->company = Str::random();
+        $advertiserBeforeSave->save();
 
-        /** @var Advertiser $advertiserCheck */
-        $advertiserCheck = $this->hoClient->get(Advertiser::class, $advertiser->id);
-
-        isSame($advertiser->id, $advertiserCheck->id);
-        isSame($advertiser->company, $advertiserCheck->company);
-        isSame($advertiser->phone, $advertiserCheck->phone);
-        isSame($advertiser->zipcode, $advertiserCheck->zipcode);
+        /** @var Advertiser $advertiserAfterSave */
+        $advertiserAfterSave = $this->hoClient->get(Advertiser::class, 504);
+        isNotSame($beforeCompany, $advertiserAfterSave->company);
     }
 
     public function testCanDeleteAdvertiser()
