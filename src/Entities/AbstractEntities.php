@@ -52,6 +52,8 @@ abstract class AbstractEntities
      */
     public function find(array $conditions = [])
     {
+        $this->hoClient->trigger("{$this->target}.find.before", [$this, &$conditions]);
+
         $conditions = new Data($conditions);
 
         /** @var array $response */
@@ -70,6 +72,8 @@ abstract class AbstractEntities
         foreach ($response as $itemId => $itemData) {
             $result[$itemId] = $this->hoClient->get($this->className, $itemId);
         }
+
+        $this->hoClient->trigger("{$this->target}.find.after", [$this, &$result]);
 
         return $result;
     }

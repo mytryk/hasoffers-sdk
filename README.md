@@ -79,8 +79,8 @@ try {
 
 ## Full Event List 
 ```
- - ho.api.sleep    
  - ho.api.request.(before|after)
+ - ho.api.sleep    
  - ho.{entity}.init
  - ho.{entity}.save.(before|after)
  - ho.{entity}.set.{property}.(before|after)
@@ -88,10 +88,11 @@ try {
  - ho.{entity}.bind.(before|after)
  - ho.{entity}.delete.(before|after)
  - ho.{entity}.reload.(before|after)
- - ho.{entity}.restore.(before|after)               // Only Advertiser
- - ho.{entity}.block.(before|after)                 // Only Affiliate
- - ho.{entity}.unblock.(before|after)               // Only Affiliate
+ - ho.{entity}.restore.(before|after)                   // Only Advertiser
+ - ho.{entity}.block.(before|after)                     // Only Affiliate
+ - ho.{entity}.unblock.(before|after)                   // Only Affiliate
  - ho.{entity}.related.{related}.init.(before|after)
+ - ho.{entity}.fiid.(before|after)
 ```
 
 ## Unit tests and check code style
