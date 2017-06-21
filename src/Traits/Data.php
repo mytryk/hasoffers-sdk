@@ -114,9 +114,7 @@ trait Data
 
         if (strpos($method, 'set') === 0) {
             if (array_key_exists('0', $arguments)) {
-                $this->hoClient->trigger("{$this->target}.set.before", [&$propName, &$arguments[0], $this->data]);
                 $this->__set($propName, $arguments[0]);
-                $this->hoClient->trigger("{$this->target}.set.after", [&$propName, &$arguments[0], $this->data]);
             } else {
                 throw new Exception("First argument is required for \"{$propName}\" setter  in " . static::class);
             }
