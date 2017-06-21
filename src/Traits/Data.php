@@ -41,7 +41,7 @@ trait Data
     public function bindData(array $data)
     {
         foreach ($data as $key => $item) {
-            if (strpos($key, '_') !== false) {
+            if (substr($key, 0, strlen('_')) === '_') {
                 unset($data[$key]);
             }
         }
