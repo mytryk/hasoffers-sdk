@@ -41,9 +41,13 @@ class HasoffersPHPUnit extends PHPUnit
     {
         parent::setUp();
 
+        $apiUrl = Env::get('HO_API_URL') ?: HasOffersClient::DEFAULT_API_URL;
+        $isFakeServer = $apiUrl !== HasOffersClient::DEFAULT_API_URL;
+
         $this->hoClient = new HasOffersClient(
             Env::get('HO_API_NETWORK_ID'),
-            Env::get('HO_API_NETWORK_TOKEN')
+            Env::get('HO_API_NETWORK_TOKEN'),
+            $apiUrl
         );
         $this->hoClient->setRequestsLimit(1);
         $this->hoClient->setTimeout(1);
@@ -51,15 +55,25 @@ class HasoffersPHPUnit extends PHPUnit
         $this->eManager = new EventManager();
         $this->hoClient->setEventManager($this->eManager);
 
-        $this->eManager->on('ho.api.request.before', function ($client, $data) {
-            $dumpFile = $this->getDumpFilename('request');
-            file_put_contents($dumpFile . '.json', (new JSON($data))->__toString());
-        });
+        $this->eManager->on(
+            'ho.api.request.before',
+            function ($client, &$data, &$url) use ($isFakeServer) {
+                $dumpFile = $this->getDumpFilename('request');
+                file_put_contents($dumpFile . '.json', (new JSON($data))->__toString());
 
-        $this->eManager->on('ho.api.request.after', function ($client, $jsonResult, Response $response) {
-            $dumpFile = $this->getDumpFilename('response');
-            file_put_contents($dumpFile . '.json', $response->getJSON());
-        });
+                if ($isFakeServer) {
+                    $url = rtrim($url, '/') . '/ho_sdk_' . $this->getTestName();
+                }
+            }
+        );
+
+        $this->eManager->on(
+            'ho.api.request.after',
+            function ($client, $jsonResult, Response $response) {
+                $dumpFile = $this->getDumpFilename('response');
+                file_put_contents($dumpFile . '.json', $response->getJSON());
+            }
+        );
     }
 
     /**
@@ -68,7 +82,7 @@ class HasoffersPHPUnit extends PHPUnit
      */
     private function getDumpFilename($postfix)
     {
-        $testName = $this->getTestName(debug_backtrace());
+        $testName = $this->getTestName();
         $dumpFile = PROJECT_BUILD . "/dumps/{$testName}-{$postfix}-0";
         while (file_exists($dumpFile . '.json')) {
             $dumpFile = Str::inc($dumpFile, 'dash');
@@ -82,14 +96,15 @@ class HasoffersPHPUnit extends PHPUnit
      * @return string
      * @throws Exception
      */
-    private function getTestName(array $trace)
+    private function getTestName()
     {
+        $trace = debug_backtrace();
         foreach ($trace as $traceRow) {
             if (strpos($traceRow['function'], 'test') === 0) {
-                $testName = str_replace('test-', '', Str::splitCamelCase($traceRow['function'], '-'));
+                $testName = str_replace('test_', '', Str::splitCamelCase($traceRow['function'], '_'));
                 $entity = str_replace([__NAMESPACE__ . '\\', 'Test'], '', static::class);
 
-                return strtolower($entity . '-' . $testName);
+                return strtolower($entity . '_' . $testName);
             }
         }
 

@@ -107,8 +107,6 @@ class HasOffersClient
      */
     public function apiRequest(array $data)
     {
-        $this->trigger('api.request.before', [$this, &$data]);
-
         try {
             $this->requestCounter++;
 
@@ -116,8 +114,12 @@ class HasOffersClient
                 $this->timeout > 0 &&
                 $this->requestCounter % $this->limitCounter === 0
             ) {
-                sleep($this->timeout);
-                $this->trigger('api.request.sleep', [$this, &$data]);
+                $isSleep = true;
+                $this->trigger('api.request.sleep.before', [$this, &$isSleep]);
+                if ($isSleep) {
+                    sleep($this->timeout);
+                }
+                $this->trigger('api.request.sleep.after', [$this, $isSleep]);
             }
 
             $httpClient = new HttpClient([
@@ -126,11 +128,13 @@ class HasOffersClient
                 'exceptions' => true
             ]);
 
+            $url = str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
+            $this->trigger('api.request.before', [$this, &$data, &$url]);
+
             $data = array_merge($data, [
                 'NetworkToken' => $this->networkToken
             ]);
 
-            $url = str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
             $response = $httpClient->request($url, $data, 'get');
             $json = $response->getJSON();
 

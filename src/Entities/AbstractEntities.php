@@ -58,8 +58,8 @@ abstract class AbstractEntities
 
         /** @var array $response */
         $response = $this->hoClient->apiRequest([
-            'Target'  => $this->target,
             'Method'  => 'findAll',
+            'Target'  => $this->target,
             'fields'  => $conditions->get('fields', [], 'arr'),
             'filters' => $conditions->get('filters', [], 'arr'),
             'sort'    => $conditions->get('sort', [], 'arr'),
