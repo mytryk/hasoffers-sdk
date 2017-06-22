@@ -20,6 +20,12 @@
         "jbzoo/phpunit"     : "^2.0",
         "unilead/codestyle" : "^1.0"
     },
+    "repositories"      : {
+        "unilead/codestyle" : {
+            "type" : "git",
+            "url"  : "http://code.unilead.net/unilead/codestyle.git"
+        }
+    },
     "autoload"          : {
         "psr-4" : {
             "Unilead\\HasOffers\\" : "src"
