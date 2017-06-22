@@ -87,9 +87,9 @@ try {
  - ho.{entity}.unset.{property}.(before|after)
  - ho.{entity}.bind.(before|after)
  - ho.{entity}.delete.(before|after)
+ - ho.{entity}.block.(before|after)
  - ho.{entity}.reload.(before|after)
- - ho.{entity}.restore.(before|after)                   // Only Advertiser
- - ho.{entity}.block.(before|after)                     // Only Affiliate
+ - ho.{entity}.restore.(before|after)                   // Only Advertiser 
  - ho.{entity}.unblock.(before|after)                   // Only Affiliate
  - ho.{entity}.related.{related}.init.(before|after)
  - ho.{entity}.fiid.(before|after)
