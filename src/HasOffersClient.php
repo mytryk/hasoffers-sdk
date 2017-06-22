@@ -129,11 +129,9 @@ class HasOffersClient
             ]);
 
             $url = str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
-            $this->trigger('api.request.before', [$this, &$data, &$url]);
+            $data = array_merge($data, ['NetworkToken' => $this->networkToken]);
 
-            $data = array_merge($data, [
-                'NetworkToken' => $this->networkToken
-            ]);
+            $this->trigger('api.request.before', [$this, &$data, &$url]);
 
             $response = $httpClient->request($url, $data, 'get');
             $json = $response->getJSON();
