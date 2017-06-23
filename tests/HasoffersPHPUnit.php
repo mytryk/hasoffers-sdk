@@ -131,4 +131,15 @@ class HasoffersPHPUnit extends PHPUnit
 
         throw new Exception('Test name not found');
     }
+
+    /**
+     * @return bool
+     */
+    protected function skipIfFakeServer()
+    {
+        $apiUrl = Env::get('HO_API_URL') ?: HasOffersClient::DEFAULT_API_URL;
+        if ($apiUrl !== HasOffersClient::DEFAULT_API_URL) {
+            skip('Skip test for fake server: ' . $this->getTestName());
+        }
+    }
 }

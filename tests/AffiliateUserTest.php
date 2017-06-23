@@ -85,6 +85,8 @@ class AffiliateUserTest extends HasoffersPHPUnit
 
     public function testCanCreateAffiliateUser()
     {
+        $this->skipIfFakeServer();
+
         $password = Str::random(13);
         $email = Str::random(10) . '@' . Str::random(5) . '.com';
         /** @var AffiliateUser $affiliateUser */
@@ -108,6 +110,8 @@ class AffiliateUserTest extends HasoffersPHPUnit
 
     public function testCanUpdateAffiliateUser()
     {
+        $this->skipIfFakeServer();
+
         /** @var AffiliateUser $affiliateUserBeforeSave */
         $affiliateUserBeforeSave = $this->hoClient->get(AffiliateUser::class, 14);
 
