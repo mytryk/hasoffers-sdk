@@ -14,13 +14,12 @@
 
 namespace JBZoo\PHPUnit;
 
-use JBZoo\Data\JSON;
+use function JBZoo\Data\json;
 use JBZoo\Event\EventManager;
 use JBZoo\HttpClient\HttpClient;
 use JBZoo\HttpClient\Response;
 use JBZoo\Utils\Env;
 use JBZoo\Utils\Str;
-use JBZoo\Utils\Url;
 use Unilead\HasOffers\HasOffersClient;
 use Unilead\HasOffers\Helper;
 

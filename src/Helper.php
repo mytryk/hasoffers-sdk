@@ -14,7 +14,6 @@
 
 namespace Unilead\HasOffers;
 
-use JBZoo\Data\JSON;
 use JBZoo\Utils\Url;
 use function JBZoo\Data\json;
 

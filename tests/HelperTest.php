@@ -14,7 +14,7 @@
 
 namespace JBZoo\PHPUnit;
 
-use JBZoo\Data\JSON;
+use function JBZoo\Data\json;
 use Unilead\HasOffers\Helper;
 
 /**
