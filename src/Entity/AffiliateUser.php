@@ -71,6 +71,11 @@ class AffiliateUser extends AbstractEntity
     /**
      * @var array
      */
+    protected $excludeKeys = ['is_creator', 'access', 'modified'];
+
+    /**
+     * @var array
+     */
     protected $methods = [
         'get'    => 'findById',
         'create' => 'create',

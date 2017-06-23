@@ -14,7 +14,6 @@
 
 namespace Unilead\HasOffers\Entity;
 
-use Unilead\HasOffers\Contain\PaymentMethod;
 use Unilead\HasOffers\Traits\Blocked;
 use Unilead\HasOffers\Traits\Deleted;
 
@@ -66,6 +65,11 @@ class AdvertiserUser extends AbstractEntity
      * @var string
      */
     protected $target = 'AdvertiserUser';
+
+    /**
+     * @var array
+     */
+    protected $excludeKeys = ['is_creator', 'access', 'modified'];
 
     /**
      * @var array

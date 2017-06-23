@@ -52,7 +52,7 @@ class AdvertiserUserTest extends HasoffersPHPUnit
 
     public function testCanGetAdvertiserUserById()
     {
-        $someId = '504';
+        $someId = '12';
         /** @var AdvertiserUser $advertiserUser */
         $advertiserUser = $this->hoClient->get(AdvertiserUser::class, $someId);
 
@@ -75,7 +75,7 @@ class AdvertiserUserTest extends HasoffersPHPUnit
      */
     public function testCannotGetUndefinedProperty()
     {
-        $someId = '504';
+        $someId = '12';
         /** @var AdvertiserUser $advertiserUser */
         $advertiserUser = $this->hoClient->get(AdvertiserUser::class, $someId);
         is($someId, $advertiserUser->id);
@@ -85,40 +85,45 @@ class AdvertiserUserTest extends HasoffersPHPUnit
 
     public function testCanCreateAdvertiserUser()
     {
+        $password = Str::random(13);
+        $email = Str::random(10) . '@' . Str::random(5) . '.com';
         /** @var AdvertiserUser $advertiserUser */
         $advertiserUser = $this->hoClient->get(AdvertiserUser::class);
-        $advertiserUser->company = 'Test Company';
+        $advertiserUser->advertiser_id = '524';
+        $advertiserUser->first_name = 'Test Company';
         $advertiserUser->phone = '+7 845 845 84 54';
-        $advertiserUser->zipcode = '432543';
+        $advertiserUser->email = $email;
+        $advertiserUser->password = $password;
+        $advertiserUser->password_confirmation = $password;
         $advertiserUser->save();
 
         /** @var AdvertiserUser $advertiserCheck */
         $advertiserCheck = $this->hoClient->get(AdvertiserUser::class, $advertiserUser->id);
 
         isSame($advertiserUser->id, $advertiserCheck->id);
-        isSame($advertiserUser->company, $advertiserCheck->company);
+        isSame($advertiserUser->first_name, $advertiserCheck->first_name);
         isSame($advertiserUser->phone, $advertiserCheck->phone);
-        isSame($advertiserUser->zipcode, $advertiserCheck->zipcode);
+        isSame($advertiserUser->email, $advertiserCheck->email);
     }
 
     public function testCanUpdateAdvertiserUser()
     {
         /** @var AdvertiserUser $advertiserUserBeforeSave */
-        $advertiserUserBeforeSave = $this->hoClient->get(AdvertiserUser::class, 504);
+        $advertiserUserBeforeSave = $this->hoClient->get(AdvertiserUser::class, 12);
 
-        $beforeCompany = $advertiserUserBeforeSave->company;
-        $advertiserUserBeforeSave->company = Str::random();
+        $beforeFirstName = $advertiserUserBeforeSave->first_name;
+        $advertiserUserBeforeSave->first_name = Str::random();
         $advertiserUserBeforeSave->save();
 
         /** @var AdvertiserUser $advertiserAfterSave */
-        $advertiserAfterSave = $this->hoClient->get(AdvertiserUser::class, 504);
-        isNotSame($beforeCompany, $advertiserAfterSave->company);
+        $advertiserAfterSave = $this->hoClient->get(AdvertiserUser::class, 12);
+        isNotSame($beforeFirstName, $advertiserAfterSave->first_name);
     }
 
     public function testCanDeleteAdvertiserUser()
     {
         /** @var AdvertiserUser $advertiserUser */
-        $advertiserUser = $this->hoClient->get(AdvertiserUser::class, 504);
+        $advertiserUser = $this->hoClient->get(AdvertiserUser::class, 12);
 
         $advertiserUser->delete();
 

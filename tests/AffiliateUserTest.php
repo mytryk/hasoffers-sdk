@@ -52,7 +52,7 @@ class AffiliateUserTest extends HasoffersPHPUnit
 
     public function testCanGetAffiliateUserById()
     {
-        $someId = '504';
+        $someId = '14';
         /** @var AffiliateUser $affiliateUser */
         $affiliateUser = $this->hoClient->get(AffiliateUser::class, $someId);
 
@@ -75,7 +75,7 @@ class AffiliateUserTest extends HasoffersPHPUnit
      */
     public function testCannotGetUndefinedProperty()
     {
-        $someId = '504';
+        $someId = '14';
         /** @var AffiliateUser $affiliateUser */
         $affiliateUser = $this->hoClient->get(AffiliateUser::class, $someId);
         is($someId, $affiliateUser->id);
@@ -85,40 +85,45 @@ class AffiliateUserTest extends HasoffersPHPUnit
 
     public function testCanCreateAffiliateUser()
     {
+        $password = Str::random(13);
+        $email = Str::random(10) . '@' . Str::random(5) . '.com';
         /** @var AffiliateUser $affiliateUser */
         $affiliateUser = $this->hoClient->get(AffiliateUser::class);
-        $affiliateUser->company = 'Test Company';
+        $affiliateUser->affiliate_id = '1004';
+        $affiliateUser->first_name = 'Test Company';
         $affiliateUser->phone = '+7 845 845 84 54';
-        $affiliateUser->zipcode = '432543';
+        $affiliateUser->email = $email;
+        $affiliateUser->password = $password;
+        $affiliateUser->password_confirmation = $password;
         $affiliateUser->save();
 
         /** @var AffiliateUser $affiliateCheck */
         $affiliateCheck = $this->hoClient->get(AffiliateUser::class, $affiliateUser->id);
 
         isSame($affiliateUser->id, $affiliateCheck->id);
-        isSame($affiliateUser->company, $affiliateCheck->company);
+        isSame($affiliateUser->first_name, $affiliateCheck->first_name);
         isSame($affiliateUser->phone, $affiliateCheck->phone);
-        isSame($affiliateUser->zipcode, $affiliateCheck->zipcode);
+        isSame($affiliateUser->email, $affiliateCheck->email);
     }
 
     public function testCanUpdateAffiliateUser()
     {
         /** @var AffiliateUser $affiliateUserBeforeSave */
-        $affiliateUserBeforeSave = $this->hoClient->get(AffiliateUser::class, 504);
+        $affiliateUserBeforeSave = $this->hoClient->get(AffiliateUser::class, 14);
 
-        $beforeCompany = $affiliateUserBeforeSave->company;
-        $affiliateUserBeforeSave->company = Str::random();
+        $beforeFirstName = $affiliateUserBeforeSave->first_name;
+        $affiliateUserBeforeSave->first_name = Str::random();
         $affiliateUserBeforeSave->save();
 
         /** @var AffiliateUser $affiliateAfterSave */
-        $affiliateAfterSave = $this->hoClient->get(AffiliateUser::class, 504);
-        isNotSame($beforeCompany, $affiliateAfterSave->company);
+        $affiliateAfterSave = $this->hoClient->get(AffiliateUser::class, 14);
+        isNotSame($beforeFirstName, $affiliateAfterSave->first_name);
     }
 
     public function testCanDeleteAffiliateUser()
     {
         /** @var AffiliateUser $affiliateUser */
-        $affiliateUser = $this->hoClient->get(AffiliateUser::class, 504);
+        $affiliateUser = $this->hoClient->get(AffiliateUser::class, 14);
 
         $affiliateUser->delete();
 
