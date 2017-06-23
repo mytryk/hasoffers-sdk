@@ -15,6 +15,7 @@
 namespace Unilead\HasOffers\Entity;
 
 use Unilead\HasOffers\Contain\PaymentMethod;
+use Unilead\HasOffers\Traits\Blocked;
 use Unilead\HasOffers\Traits\Deleted;
 
 /* @noinspection ClassOverridesFieldOfSuperClassInspection */
@@ -98,6 +99,7 @@ use Unilead\HasOffers\Traits\Deleted;
 class Affiliate extends AbstractEntity
 {
     use Deleted;
+    use Blocked;
 
     const STATUS_ACTIVE   = 'active';
     const STATUS_PENDING  = 'pending';
@@ -125,23 +127,6 @@ class Affiliate extends AbstractEntity
     protected $contain = [
         'PaymentMethod' => PaymentMethod::class,
     ];
-
-    /**
-     * Block Affiliate in HasOffers.
-     *
-     * @return $this
-     */
-    public function block()
-    {
-        $this->hoClient->trigger("{$this->target}.block.before", [$this]);
-
-        $this->status = self::STATUS_BLOCKED;
-        $result = $this->save();
-
-        $this->hoClient->trigger("{$this->target}.block.after", [$this]);
-
-        return $result;
-    }
 
     /**
      * Unblock Affiliate in HasOffers.
