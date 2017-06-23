@@ -24,7 +24,7 @@ trait Blocked
     /**
      * @return null
      */
-    public function delete()
+    public function blocked()
     {
         $this->hoClient->trigger("{$this->target}.block.before", [$this]);
 
