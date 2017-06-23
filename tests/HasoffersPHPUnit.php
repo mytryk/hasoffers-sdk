@@ -16,10 +16,13 @@ namespace JBZoo\PHPUnit;
 
 use JBZoo\Data\JSON;
 use JBZoo\Event\EventManager;
+use JBZoo\HttpClient\HttpClient;
 use JBZoo\HttpClient\Response;
 use JBZoo\Utils\Env;
 use JBZoo\Utils\Str;
+use JBZoo\Utils\Url;
 use Unilead\HasOffers\HasOffersClient;
+use Unilead\HasOffers\Helper;
 
 /**
  * Class HasoffersPHPUnit
@@ -42,6 +45,8 @@ class HasoffersPHPUnit extends PHPUnit
         parent::setUp();
 
         $apiUrl = Env::get('HO_API_URL') ?: HasOffersClient::DEFAULT_API_URL;
+        $isLearing = Env::get('HO_FAKE_SERVER_LEARNING', Env::VAR_BOOL);
+        $fakeServerUrl = Env::get('HO_FAKE_SERVER_URL', Env::VAR_BOOL);
         $isFakeServer = $apiUrl !== HasOffersClient::DEFAULT_API_URL;
 
         $this->hoClient = new HasOffersClient(
@@ -58,18 +63,30 @@ class HasoffersPHPUnit extends PHPUnit
         $this->eManager->on(
             'ho.api.request.before',
             function ($client, &$data, &$url) use ($isFakeServer) {
+                if ($isFakeServer) {
+                    $url = rtrim($url, '/') . '/get/' . Helper::hash($data);
+                }
+
                 $dumpFile = $this->getDumpFilename('request');
                 file_put_contents($dumpFile . '.json', (new JSON($data))->__toString());
-
-                if ($isFakeServer) {
-                    $url = rtrim($url, '/') . '/ho_sdk_' . $this->getTestName();
-                }
             }
         );
 
         $this->eManager->on(
             'ho.api.request.after',
-            function ($client, $jsonResult, Response $response) {
+            function ($client, $jsonResult, Response $response, $data) use ($isLearing, $fakeServerUrl) {
+                if ($isLearing) {
+                    $learnData = [
+                        'key'      => Helper::hash($data),
+                        'request'  => (new JSON($data))->__toString(),
+                        'response' => '' . $response->getJSON(),
+                        'comment'  => 'HO Tests: ' . $this->getTestName()
+                    ];
+
+                    $httpClient = new HttpClient();
+                    $httpClient->request($fakeServerUrl . '/learn', $learnData, 'post');
+                }
+
                 $dumpFile = $this->getDumpFilename('response');
                 file_put_contents($dumpFile . '.json', $response->getJSON());
             }

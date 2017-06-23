@@ -71,12 +71,13 @@ abstract class AbstractEntity
      *
      * @param int   $objectId
      * @param array $data
+     * @param array $containData
      */
-    public function __construct($objectId = null, array $data = [])
+    public function __construct($objectId = null, array $data = [], array $containData = [])
     {
         $this->objectId = (int)$objectId;
         $this->bindData($data);
-        //$this->createRelated($data);
+        $this->createRelated($containData);
     }
 
     /**
@@ -103,7 +104,7 @@ abstract class AbstractEntity
         ]);
 
         $key = $this->targetAlias ?: $this->target;
-        $this->bindData($data[$key]);
+        $this->bindData($data[$key] ?? []);
 
         if (count($this->contain) > 0) {
             $this->createRelated($data);
@@ -120,19 +121,26 @@ abstract class AbstractEntity
     protected function createRelated($data)
     {
         foreach ($this->contain as $objectName => $className) {
-            $objectData = $data[$objectName];
+            $objectData = $data[$objectName] ?? null;
+            if (!$objectData) {
+                continue;
+            }
 
-            $this->hoClient->trigger(
-                "{$this->target}.related.{$objectName}.init.before",
-                [$this, &$objectData]
-            );
+            if (property_exists($this, 'hoClient') && $this->hoClient) {
+                $this->hoClient->trigger(
+                    "{$this->target}.related.{$objectName}.init.before",
+                    [$this, &$objectData]
+                );
+            }
 
             $this->related[$objectName] = new $className($objectData, $this);
 
-            $this->hoClient->trigger(
-                "{$this->target}.related.{$objectName}.init.after",
-                [$this, $this->related[$objectName]]
-            );
+            if (property_exists($this, 'hoClient') && $this->hoClient) {
+                $this->hoClient->trigger(
+                    "{$this->target}.related.{$objectName}.init.after",
+                    [$this, $this->related[$objectName]]
+                );
+            }
         }
     }
 
@@ -160,8 +168,8 @@ abstract class AbstractEntity
                 'Method'        => $this->methods['update'],
                 'Target'        => $this->target,
                 'data'          => $dataRequest,
-                'id'            => $this->objectId,
-                'return_object' => 1,
+                'id'            => '' . $this->objectId,
+                'return_object' => '1',
             ]);
         }
 

@@ -55,9 +55,7 @@ abstract class AbstractEntities
         $this->hoClient->trigger("{$this->target}.find.before", [$this, &$conditions]);
 
         $conditions = new Data($conditions);
-
-        /** @var array $response */
-        $response = $this->hoClient->apiRequest([
+        $apiRequest = [
             'Method'  => 'findAll',
             'Target'  => $this->target,
             'fields'  => $conditions->get('fields', [], 'arr'),
@@ -65,12 +63,15 @@ abstract class AbstractEntities
             'sort'    => $conditions->get('sort', [], 'arr'),
             'limit'   => $conditions->get('limit', self::DEFAULT_LIMIT, 'int'),
             'page'    => $conditions->get('page', 0, 'int'),
-            'contain' => $conditions->get('contain', $this->contain, 'arr'),
-        ])->get('data', [], 'arr');
+            'contain' => $conditions->get('contain', array_keys($this->contain), 'arr'),
+        ];
+
+        /** @var array $response */
+        $response = $this->hoClient->apiRequest($apiRequest)->get('data', [], 'arr');
 
         $result = [];
         foreach ($response as $itemId => $itemData) {
-            $result[$itemId] = $this->hoClient->get($this->className, $itemId);
+            $result[$itemId] = $this->hoClient->get($this->className, $itemId, $itemData[$this->target], $itemData);
         }
 
         $this->hoClient->trigger("{$this->target}.find.after", [$this, &$result]);
