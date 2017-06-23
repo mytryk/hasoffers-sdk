@@ -104,7 +104,7 @@ abstract class AbstractEntity
         ]);
 
         $key = $this->targetAlias ?: $this->target;
-        $this->bindData($data[$key]);
+        $this->bindData($data[$key] ?? []);
 
         if (count($this->contain) > 0) {
             $this->createRelated($data);
