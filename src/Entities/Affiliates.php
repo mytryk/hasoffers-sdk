@@ -15,7 +15,7 @@
 namespace Unilead\HasOffers\Entities;
 
 use Unilead\HasOffers\Contain\PaymentMethod;
-use Unilead\HasOffers\Entity\Advertiser;
+use Unilead\HasOffers\Entity\Affiliate;
 
 /**
  * Class Affiliates
@@ -27,12 +27,12 @@ class Affiliates extends AbstractEntities
     /**
      * @var string
      */
-    protected $target = 'Advertiser';
+    protected $target = 'Affiliate';
 
     /**
      * @var string
      */
-    protected $className = Advertiser::class;
+    protected $className = Affiliate::class;
 
     /**
      * @var array

@@ -14,6 +14,7 @@
 
 namespace JBZoo\PHPUnit;
 
+use Unilead\HasOffers\Contain\PaymentMethod;
 use Unilead\HasOffers\Entities\Affiliates;
 use Unilead\HasOffers\Entity\Affiliate;
 
@@ -23,17 +24,17 @@ use Unilead\HasOffers\Entity\Affiliate;
  */
 class AffiliatesTest extends HasoffersPHPUnit
 {
-    public function testCreateWays()
+    public function testFindList()
     {
         /** @var Affiliates $affiliates */
         $affiliates = $this->hoClient->get(Affiliates::class);
         $list = $affiliates->find();
 
         /** @var Affiliate $affiliate */
-        $affiliate = $list[500];
+        $affiliate = $list[1004];
 
-        is('ACME Games Ltd.', $affiliate->company);
-        //$paymentMethod = $affiliate->getPaymentMethod();
-        //dump($paymentMethod);
+        isSame('Moscow', $affiliate->city);
+        $paymentMethod = $affiliate->getPaymentMethod();
+        isSame(PaymentMethod::TYPE_PAYPAL, $paymentMethod->getType());
     }
 }

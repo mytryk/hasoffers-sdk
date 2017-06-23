@@ -79,10 +79,12 @@ class HasOffersClient
     /**
      * @param string $modelClassName
      * @param int    $entityId
+     * @param array  $data
+     * @param array  $containData
      * @return AbstractEntity
      * @throws Exception
      */
-    public function get($modelClassName, $entityId = null)
+    public function get($modelClassName, $entityId = null, array $data = [], array $containData = [])
     {
         if (class_exists($modelClassName)) {
             $willCreate = $modelClassName;
@@ -93,19 +95,19 @@ class HasOffersClient
         }
 
         /** @var AbstractEntity $object */
-        $object = new $willCreate($entityId);
+        $object = new $willCreate($entityId, $data, $containData);
         $object->setClient($this);
-        $this->trigger("{$object->getTarget()}.init", [$object]);
+        $this->trigger("{$object->getTarget()}.init", [$object, $data]);
 
         return $object;
     }
 
     /**
-     * @param array $data
+     * @param array $requestParams
      * @return mixed
      * @throws Exception
      */
-    public function apiRequest(array $data)
+    public function apiRequest(array $requestParams)
     {
         try {
             $this->requestCounter++;
@@ -129,11 +131,11 @@ class HasOffersClient
             ]);
 
             $url = str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
-            $data = array_merge($data, ['NetworkToken' => $this->networkToken]);
+            $requestParams = array_merge($requestParams, ['NetworkToken' => $this->networkToken]);
 
-            $this->trigger('api.request.before', [$this, &$data, &$url]);
+            $this->trigger('api.request.before', [$this, &$requestParams, &$url]);
 
-            $response = $httpClient->request($url, $data, 'get');
+            $response = $httpClient->request($url, $requestParams, 'get');
             $json = $response->getJSON();
 
             $apiStatus = $json->find('response.status', null, 'int');
@@ -158,7 +160,7 @@ class HasOffersClient
             throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);
         }
 
-        $this->trigger('api.request.after', [$this, $json, $response]);
+        $this->trigger('api.request.after', [$this, $json, $response, $requestParams]);
 
         return new JSON($json->find('response.data'));
     }
