@@ -149,11 +149,11 @@ abstract class AbstractEntity
             $data = $this->hoClient->apiRequest([
                 'Method'        => $this->methods['create'],
                 'Target'        => $this->target,
-                'data'          => $this->data,
+                'data'          => $this->removeExcludeKeys($this->data),
                 'return_object' => 1,
             ]);
         } else {
-            $dataRequest = $this->data;
+            $dataRequest = $this->removeExcludeKeys($this->data);
             $dataRequest['id'] = $this->objectId;
 
             $data = $this->hoClient->apiRequest([
@@ -194,5 +194,23 @@ abstract class AbstractEntity
     public function getTarget()
     {
         return $this->target;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return mixed
+     */
+    private function removeExcludeKeys($data)
+    {
+        if (empty($this->excludeKeys)) {
+            return $data;
+        }
+
+        foreach ($this->excludeKeys as $value) {
+            unset($data[$value]);
+        }
+
+        return $data;
     }
 }
