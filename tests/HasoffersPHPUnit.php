@@ -68,7 +68,7 @@ class HasoffersPHPUnit extends PHPUnit
                 }
 
                 $dumpFile = $this->getDumpFilename('request');
-                file_put_contents($dumpFile . '.json', (new JSON($data))->__toString());
+                file_put_contents($dumpFile . '.json', '' . json($data));
             }
         );
 
@@ -78,7 +78,7 @@ class HasoffersPHPUnit extends PHPUnit
                 if ($isLearing) {
                     $learnData = [
                         'key'      => Helper::hash($data),
-                        'request'  => (new JSON($data))->__toString(),
+                        'request'  => '' . json($data),
                         'response' => '' . $response->getJSON(),
                         'comment'  => 'HO Tests: ' . $this->getTestName()
                     ];

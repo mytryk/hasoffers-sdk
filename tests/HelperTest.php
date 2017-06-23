@@ -14,6 +14,7 @@
 
 namespace JBZoo\PHPUnit;
 
+use JBZoo\Data\JSON;
 use Unilead\HasOffers\Helper;
 
 /**
@@ -74,5 +75,18 @@ class HelperTest extends HasoffersPHPUnit
     {
         $hash = Helper::hash(self::$originalArray);
         isSame('ho_sdk_b82bbf7bb34c6a3424b037fa0036b7ab0d503ba4', $hash);
+    }
+
+    public function testJsonNormolize()
+    {
+        isSame(
+            '' . json(Helper::normolizeArray(self::$originalArray)),
+            Helper::normolizeJson(self::$originalArray)
+        );
+
+        isSame(
+            '' . json(Helper::normolizeArray(self::$originalArray)),
+            Helper::normolizeJson('' . json(self::$originalArray))
+        );
     }
 }

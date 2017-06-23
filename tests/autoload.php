@@ -12,10 +12,30 @@
  * @link        https://www.unileadnetwork.com
  */
 
+use JBZoo\Data\JSON;
 use JBZoo\Utils\FS;
 
 if (!defined('ROOT_PATH')) { // for PHPUnit process isolation
     define('ROOT_PATH', realpath('.'));
+}
+
+/**
+ * @param array|null|string $data
+ * @return JSON
+ */
+function json($data = null)
+{
+    if ($data instanceof JSON) {
+        return $data;
+    }
+
+    if (is_string($data)) {
+        $result = new JSON($data);
+    } else {
+        $result = new JSON((array)$data);
+    }
+
+    return $result;
 }
 
 // main autoload
