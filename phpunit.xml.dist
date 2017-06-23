@@ -27,9 +27,14 @@
 >
 
     <php>
-        <env name="HO_API_URL" value=""/>
+        <!--<env name="HO_API_URL" value=""/>-->
         <env name="HO_API_NETWORK_ID" value=""/>
         <env name="HO_API_NETWORK_TOKEN" value=""/>
+        <env name="HO_API_REQUEST_LIMIT" value="1"/>
+        <env name="HO_API_REQUEST_TIMEOUT" value="1"/>
+
+        <env name="HO_FAKE_SERVER_URL" value="http://localhost:8888"/>
+        <env name="HO_FAKE_SERVER_LEARNING" value="0"/>
     </php>
 
     <testsuites>

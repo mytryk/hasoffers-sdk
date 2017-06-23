@@ -42,6 +42,10 @@ class HelperTest extends HasoffersPHPUnit
             'number'    => 0,
             'bool'      => false,
         ],
+        'data'         => [
+            'phone'   => '+7 845 845 84 54',
+            'company' => 'Test Company',
+        ],
         'string'       => '',
         'number'       => 0,
         'false'        => false,
@@ -51,6 +55,10 @@ class HelperTest extends HasoffersPHPUnit
     public function testArrayNormolize()
     {
         $expectedArray = [
+            'data'      => [
+                'company' => 'Test Company',
+                'phone'   => '+7 845 845 84 54'
+            ],
             'false'     => '0',
             'number'    => '0',
             'some'      => 'parameter',
@@ -74,7 +82,7 @@ class HelperTest extends HasoffersPHPUnit
     public function testHashFromArray()
     {
         $hash = Helper::hash(self::$originalArray);
-        isSame('ho_sdk_b82bbf7bb34c6a3424b037fa0036b7ab0d503ba4', $hash);
+        isSame('ho_sdk_95c09190e9d7b742ff5a57a49c24af58c610820f', $hash);
     }
 
     public function testJsonNormolize()

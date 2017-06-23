@@ -44,8 +44,8 @@ class HasoffersPHPUnit extends PHPUnit
         parent::setUp();
 
         $apiUrl = Env::get('HO_API_URL') ?: HasOffersClient::DEFAULT_API_URL;
-        $isLearing = Env::get('HO_FAKE_SERVER_LEARNING', Env::VAR_BOOL);
-        $fakeServerUrl = Env::get('HO_FAKE_SERVER_URL', Env::VAR_BOOL);
+        $isLearing = Env::get('HO_FAKE_SERVER_LEARNING', false, Env::VAR_BOOL);
+        $fakeServerUrl = Env::get('HO_FAKE_SERVER_URL');
         $isFakeServer = $apiUrl !== HasOffersClient::DEFAULT_API_URL;
 
         $this->hoClient = new HasOffersClient(
@@ -53,43 +53,48 @@ class HasoffersPHPUnit extends PHPUnit
             Env::get('HO_API_NETWORK_TOKEN'),
             $apiUrl
         );
-        $this->hoClient->setRequestsLimit(1);
-        $this->hoClient->setTimeout(1);
+        $this->hoClient->setRequestsLimit(Env::get('HO_API_REQUEST_LIMIT', 1, Env::VAR_INT));
+        $this->hoClient->setTimeout(Env::get('HO_API_REQUEST_TIMEOUT', 1, Env::VAR_INT));
 
         $this->eManager = new EventManager();
         $this->hoClient->setEventManager($this->eManager);
 
-        $this->eManager->on(
-            'ho.api.request.before',
-            function ($client, &$data, &$url) use ($isFakeServer) {
-                if ($isFakeServer) {
-                    $url = rtrim($url, '/') . '/get/' . Helper::hash($data);
+        $this->eManager
+            ->on('ho.api.request.before',
+                function ($client, &$requestParams, &$url) use ($isFakeServer) {
+                    if ($isFakeServer) {
+                        $url = rtrim($url, '/') . '/get/' . Helper::hash($requestParams);
+                    }
+
+                    $dumpFile = $this->getDumpFilename('request');
+                    file_put_contents($dumpFile . '.json', '' . json($requestParams));
                 }
+            )
+            ->on('ho.api.request.after',
+                function ($client, $jsonResult, Response $response, $data) use ($isLearing, $fakeServerUrl) {
+                    if ($isLearing) {
+                        $learnData = [
+                            'key'      => Helper::hash($data),
+                            'request'  => '' . json($data),
+                            'response' => '' . $response->getJSON(),
+                            'comment'  => 'HO Tests: ' . $this->getTestName()
+                        ];
 
-                $dumpFile = $this->getDumpFilename('request');
-                file_put_contents($dumpFile . '.json', '' . json($data));
-            }
-        );
+                        $httpClient = new HttpClient();
+                        $response = $httpClient->request($fakeServerUrl . '/learn', $learnData, 'post');
 
-        $this->eManager->on(
-            'ho.api.request.after',
-            function ($client, $jsonResult, Response $response, $data) use ($isLearing, $fakeServerUrl) {
-                if ($isLearing) {
-                    $learnData = [
-                        'key'      => Helper::hash($data),
-                        'request'  => '' . json($data),
-                        'response' => '' . $response->getJSON(),
-                        'comment'  => 'HO Tests: ' . $this->getTestName()
-                    ];
+                        if (!$response->getJSON()->is('status', 'ok')) {
+                            throw new Exception(
+                                'Fake server cannot save fixture: ' . print_r($learnData, true) .
+                                'Reponse: ' . print_r($response, true)
+                            );
+                        }
+                    }
 
-                    $httpClient = new HttpClient();
-                    $httpClient->request($fakeServerUrl . '/learn', $learnData, 'post');
+                    $dumpFile = $this->getDumpFilename('response');
+                    file_put_contents($dumpFile . '.json', $response->getJSON());
                 }
-
-                $dumpFile = $this->getDumpFilename('response');
-                file_put_contents($dumpFile . '.json', $response->getJSON());
-            }
-        );
+            );
     }
 
     /**

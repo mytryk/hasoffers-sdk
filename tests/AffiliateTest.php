@@ -28,14 +28,11 @@ class AffiliateTest extends HasoffersPHPUnit
 {
     public function testEventManagerAttach()
     {
-        $eManager = new EventManager();
-        $this->hoClient->setEventManager($eManager);
-
         /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class, 1004);
 
         $checkerCounter = 0;
-        $eManager->on('ho.*.reload.*', function () use (&$checkerCounter) {
+        $this->eManager->on('ho.*.reload.*', function () use (&$checkerCounter) {
             $checkerCounter++;
         });
 
@@ -58,7 +55,7 @@ class AffiliateTest extends HasoffersPHPUnit
         $affiliate->reload();
         $finishTime = time();
 
-        isTrue($finishTime - $startTime > 10, 'Timeout is ' . ($finishTime - $startTime));
+        isTrue($finishTime - $startTime > 9, 'Timeout is ' . ($finishTime - $startTime));
     }
 
     public function testCreatingAffiliateWays()
@@ -88,8 +85,8 @@ class AffiliateTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage Missing required argument: data
-     * @expectedException \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage    Missing required argument: data
+     * @expectedException           \Unilead\HasOffers\Exception
      */
     public function testCannotSaveUndefinedId()
     {

@@ -138,6 +138,8 @@ class HasOffersClient
             $response = $httpClient->request($url, $requestParams, 'get');
             $json = $response->getJSON();
 
+            $this->trigger('api.request.after', [$this, $json, $response, $requestParams]);
+
             $apiStatus = $json->find('response.status', null, 'int');
             if ($apiStatus !== 1) {
                 $errorMessage = $json->find('response.errorMessage');
@@ -156,11 +158,8 @@ class HasOffersClient
             }
 
         } catch (\Exception $httpException) {
-            // Rewrite exception
             throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);
         }
-
-        $this->trigger('api.request.after', [$this, $json, $response, $requestParams]);
 
         return json($json->find('response.data'));
     }
