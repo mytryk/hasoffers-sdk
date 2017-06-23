@@ -104,7 +104,13 @@ abstract class AbstractEntity
         ]);
 
         $key = $this->targetAlias ?: $this->target;
-        $this->bindData($data[$key] ?? []);
+        if (!isset($data[$key])) {
+            throw new Exception(
+                "Key \"{$key}\" not found in HO data, ObjectId=\"{$this->objectId}\": "
+                . print_r($data, true)
+            );
+        }
+        $this->bindData($data[$key]);
 
         if (count($this->contain) > 0) {
             $this->createRelated($data);
