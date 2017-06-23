@@ -16,6 +16,7 @@ namespace Unilead\HasOffers;
 
 use JBZoo\Data\JSON;
 use JBZoo\Utils\Url;
+use function JBZoo\Data\json;
 
 /**
  * Class Helper
@@ -72,9 +73,9 @@ class Helper
      */
     public static function normolizeJson($jsonOrArray)
     {
-        $array = (new JSON($jsonOrArray))->getArrayCopy();
+        $array = json($jsonOrArray)->getArrayCopy();
         $array = self::normolizeArray($array);
-        $json = new JSON($array);
+        $json = json($array);
         return $json->__toString();
     }
 

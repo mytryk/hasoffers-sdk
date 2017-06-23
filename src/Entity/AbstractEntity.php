@@ -54,7 +54,7 @@ abstract class AbstractEntity
     /**
      * @var array
      */
-    protected $excludeKeys = [];
+    protected $excludedKeys = [];
 
     /**
      * @var string
@@ -106,8 +106,8 @@ abstract class AbstractEntity
         $key = $this->targetAlias ?: $this->target;
         if (!isset($data[$key])) {
             throw new Exception(
-                "Key \"{$key}\" not found in HO data, ObjectId=\"{$this->objectId}\": "
-                . print_r($data, true)
+                "Key \"{$key}\" not found in HO data, ObjectId=\"{$this->objectId}\": " .
+                print_r($data, true)
             );
         }
         $this->bindData($data[$key]);
@@ -163,11 +163,11 @@ abstract class AbstractEntity
             $data = $this->hoClient->apiRequest([
                 'Method'        => $this->methods['create'],
                 'Target'        => $this->target,
-                'data'          => $this->removeExcludeKeys($this->data),
+                'data'          => $this->removeExcludedKeys($this->data),
                 'return_object' => 1,
             ]);
         } else {
-            $dataRequest = $this->removeExcludeKeys($this->data);
+            $dataRequest = $this->removeExcludedKeys($this->data);
             $dataRequest['id'] = $this->objectId;
 
             $data = $this->hoClient->apiRequest([
@@ -215,14 +215,16 @@ abstract class AbstractEntity
      *
      * @return mixed
      */
-    private function removeExcludeKeys($data)
+    private function removeExcludedKeys($data)
     {
-        if (empty($this->excludeKeys)) {
+        if (empty($this->excludedKeys)) {
             return $data;
         }
 
-        foreach ($this->excludeKeys as $value) {
-            unset($data[$value]);
+        foreach ($this->excludedKeys as $value) {
+            if (array_key_exists($value, $data)) {
+                unset($data[$value]);
+            }
         }
 
         return $data;

@@ -57,7 +57,7 @@ class AdvertiserUser extends AbstractEntity
     use Deleted;
     use Blocked;
 
-    const STATUS_ACTIVE = 'active';
+    const STATUS_ACTIVE  = 'active';
     const STATUS_BLOCKED = 'blocked';
     const STATUS_DELETED = 'deleted';
 
@@ -69,7 +69,7 @@ class AdvertiserUser extends AbstractEntity
     /**
      * @var array
      */
-    protected $excludeKeys = ['is_creator', 'access', 'modified'];
+    protected $excludedKeys = ['is_creator', 'access', 'modified'];
 
     /**
      * @var array

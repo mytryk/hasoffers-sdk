@@ -14,9 +14,9 @@
 
 namespace Unilead\HasOffers;
 
-use JBZoo\Data\JSON;
 use JBZoo\Event\EventManager;
 use JBZoo\HttpClient\HttpClient;
+use function JBZoo\Data\json;
 use Unilead\HasOffers\Entity\AbstractEntity;
 
 /**
@@ -162,7 +162,7 @@ class HasOffersClient
 
         $this->trigger('api.request.after', [$this, $json, $response, $requestParams]);
 
-        return new JSON($json->find('response.data'));
+        return json($json->find('response.data'));
     }
 
     /**
