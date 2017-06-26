@@ -76,7 +76,7 @@ class EmployeeTest extends HasoffersPHPUnit
 
     public function testCanCreateEmployee()
     {
-        $password = Str::random(13);
+        $password = Str::random(12);
         $email = Str::random(10) . '@' . Str::random(5) . '.com';
 
         /** @var Employee $employee */
@@ -100,13 +100,12 @@ class EmployeeTest extends HasoffersPHPUnit
 
     public function testCanUpdateEmployee()
     {
-
-        skip('password is sent but should not.');
         /** @var Employee $employeeBeforeSave */
         $employeeBeforeSave = $this->hoClient->get(Employee::class, 8);
 
         $beforeCompany = $employeeBeforeSave->first_name;
         $employeeBeforeSave->first_name = Str::random();
+
         $employeeBeforeSave->save();
 
         /** @var Employee $employeeAfterSave */
@@ -116,13 +115,18 @@ class EmployeeTest extends HasoffersPHPUnit
 
     public function testCanDeleteEmployee()
     {
-        /** @var Employee $affiliate */
-        $affiliate = $this->hoClient->get(Employee::class, 8);
-        $affiliate->delete();
+        /** @var Employee $affiliateReset */
+        $affiliateReset = $this->hoClient->get(Employee::class, 8);
+        $affiliateReset->status = 'active';
+        $affiliateReset->save();
 
-        /** @var Employee $affiliateAfterSave */
-        $affiliateAfterSave = $this->hoClient->get(Employee::class, 8);
+        /** @var Employee $employee */
+        $employee = $this->hoClient->get(Employee::class, 8);
+        $employee->delete();
 
-        isSame(Employee::STATUS_DELETED, $affiliateAfterSave->status);
+        /** @var Employee $employeeAfterSave */
+        $employeeAfterSave = $this->hoClient->get(Employee::class, 8);
+
+        isSame(Employee::STATUS_DELETED, $employeeAfterSave->status);
     }
 }
