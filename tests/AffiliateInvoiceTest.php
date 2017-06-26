@@ -14,7 +14,7 @@
 
 namespace JBZoo\PHPUnit;
 
-use Unilead\HasOffers\Entity\AdvertiserInvoiceItem;
+use Unilead\HasOffers\Entity\AffiliateInvoice;
 
 /**
  * Class AffiliateInvoiceTest
@@ -24,17 +24,16 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
 {
     public function testCreatingAffiliateInvoiceWays()
     {
-        skip();
-        $bill1 = $this->hoClient->get(AdvertiserInvoiceItem::class); // recommended!
+        $bill1 = $this->hoClient->get(AffiliateInvoice::class); // recommended!
         $bill2 = $this->hoClient->get('AffiliateInvoice');
-        $bill3 = $this->hoClient->get('Unilead\\HasOffers\\Entity\\AdvertiserInvoiceItem');
-        $bill4 = new AdvertiserInvoiceItem();
+        $bill3 = $this->hoClient->get('Unilead\\HasOffers\\Entity\\AffiliateInvoice');
+        $bill4 = new AffiliateInvoice();
         $bill4->setClient($this->hoClient);
 
-        isClass(AdvertiserInvoiceItem::class, $bill1);
-        isClass(AdvertiserInvoiceItem::class, $bill2);
-        isClass(AdvertiserInvoiceItem::class, $bill3);
-        isClass(AdvertiserInvoiceItem::class, $bill4);
+        isClass(AffiliateInvoice::class, $bill1);
+        isClass(AffiliateInvoice::class, $bill2);
+        isClass(AffiliateInvoice::class, $bill3);
+        isClass(AffiliateInvoice::class, $bill4);
 
         isNotSame($bill1, $bill2);
         isNotSame($bill1, $bill3);
@@ -46,8 +45,7 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
      */
     public function testCannotSaveUndefinedId()
     {
-        skip();
-        $bill = $this->hoClient->get(AdvertiserInvoiceItem::class);
+        $bill = $this->hoClient->get(AffiliateInvoice::class);
         $bill->save();
     }
 
@@ -57,10 +55,9 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
      */
     public function testCannotGetUndefinedProperty()
     {
-        skip();
-        $someId = '22';
-        /** @var AdvertiserInvoiceItem $bill */
-        $bill = $this->hoClient->get(AdvertiserInvoiceItem::class, $someId);
+        $someId = '24';
+        /** @var AffiliateInvoice $bill */
+        $bill = $this->hoClient->get(AffiliateInvoice::class, $someId);
         is($someId, $bill->id);
 
         $bill->undefined_property;
@@ -68,28 +65,26 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
 
     public function testCanGetAffiliateInvoiceById()
     {
-        skip();
-        $someId = '22';
-        /** @var AdvertiserInvoiceItem $bill */
-        $bill = $this->hoClient->get(AdvertiserInvoiceItem::class, $someId);
+        $someId = '24';
+        /** @var AffiliateInvoice $bill */
+        $bill = $this->hoClient->get(AffiliateInvoice::class, $someId);
 
         is($someId, $bill->id);
     }
 
     public function testCanCreateAffiliateInvoice()
     {
-        skip();
         $rand = mt_rand(1262055681, 1262055681);
 
-        /** @var AdvertiserInvoiceItem $bill */
-        $bill = $this->hoClient->get(AdvertiserInvoiceItem::class);
+        /** @var AffiliateInvoice $bill */
+        $bill = $this->hoClient->get(AffiliateInvoice::class);
         $bill->affiliate_id = 1004;
         $bill->start_date = date("Y-m-d H:i:s", $rand);
         $bill->end_date = date("Y-m-d H:i:s", $rand);
         $bill->save();
 
-        /** @var AdvertiserInvoiceItem $invoiceCheck */
-        $invoiceCheck = $this->hoClient->get(AdvertiserInvoiceItem::class, $bill->id);
+        /** @var AffiliateInvoice $invoiceCheck */
+        $invoiceCheck = $this->hoClient->get(AffiliateInvoice::class, $bill->id);
 
         isSame($bill->id, $invoiceCheck->id);
         isSame($bill->start_date, $invoiceCheck->start_date);
@@ -98,16 +93,15 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
 
     public function testCanUpdateAffiliateInvoice()
     {
-        skip();
-        /** @var AdvertiserInvoiceItem $bill */
-        $bill = $this->hoClient->get(AdvertiserInvoiceItem::class, 22);
+        /** @var AffiliateInvoice $bill */
+        $bill = $this->hoClient->get(AffiliateInvoice::class, 24);
         $bill->currency = 'EUR';
         $bill->memo = 'test';
-        $bill->status = AdvertiserInvoiceItem::STATUS_ACTIVE;
+        $bill->status = AffiliateInvoice::STATUS_ACTIVE;
         $bill->save();
 
-        /** @var AdvertiserInvoiceItem $billCheck */
-        $billCheck = $this->hoClient->get(AdvertiserInvoiceItem::class, $bill->id);
+        /** @var AffiliateInvoice $billCheck */
+        $billCheck = $this->hoClient->get(AffiliateInvoice::class, $bill->id);
 
         isSame($bill->id, $billCheck->id);
         isSame($bill->currency, $billCheck->currency);
@@ -116,11 +110,16 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
 
     public function testCanDeleteAffiliateInvoice()
     {
-        skip();
-        /** @var AdvertiserInvoiceItem $bill */
-        $bill = $this->hoClient->get(AdvertiserInvoiceItem::class, 22);
+        $billId = 24;
+        /** @var AffiliateInvoice $billReset */
+        $billReset = $this->hoClient->get(AffiliateInvoice::class, $billId);
+        $billReset->status = AffiliateInvoice::STATUS_ACTIVE;
+        $billReset->save();
+
+        /** @var AffiliateInvoice $bill */
+        $bill = $this->hoClient->get(AffiliateInvoice::class, $billId);
         $bill->delete();
 
-        isSame(AdvertiserInvoiceItem::STATUS_DELETED, $bill->status);
+        isSame(AffiliateInvoice::STATUS_DELETED, $bill->status);
     }
 }

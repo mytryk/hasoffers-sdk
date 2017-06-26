@@ -55,7 +55,7 @@ class AdvertiserInvoiceTest extends HasoffersPHPUnit
      */
     public function testCannotGetUndefinedProperty()
     {
-        $someId = '6';
+        $someId = 32;
         /** @var AdvertiserInvoice $invoice */
         $invoice = $this->hoClient->get(AdvertiserInvoice::class, $someId);
         is($someId, $invoice->id);
@@ -65,7 +65,7 @@ class AdvertiserInvoiceTest extends HasoffersPHPUnit
 
     public function testCanGetAdvertiserInvoiceById()
     {
-        $someId = '6';
+        $someId = 32;
         /** @var AdvertiserInvoice $invoice */
         $invoice = $this->hoClient->get(AdvertiserInvoice::class, $someId);
 
@@ -92,7 +92,7 @@ class AdvertiserInvoiceTest extends HasoffersPHPUnit
     public function testCanUpdateAdvertiserInvoice()
     {
         /** @var AdvertiserInvoice $invoice */
-        $invoice = $this->hoClient->get(AdvertiserInvoice::class, 6);
+        $invoice = $this->hoClient->get(AdvertiserInvoice::class, 32);
         $invoice->currency = 'EUR';
         $invoice->memo = 'test';
         $invoice->status = AdvertiserInvoice::STATUS_ACTIVE;
@@ -108,8 +108,16 @@ class AdvertiserInvoiceTest extends HasoffersPHPUnit
 
     public function testCanDeleteAdvertiserInvoice()
     {
+        $invoiceId = 32;
+        /** @var AdvertiserInvoice $invoiceReset */
+        $invoiceReset = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
+        if ($invoiceReset->status !== AdvertiserInvoice::STATUS_ACTIVE) {
+            $invoiceReset->status = AdvertiserInvoice::STATUS_ACTIVE;
+            $invoiceReset->save();
+        }
+
         /** @var AdvertiserInvoice $invoice */
-        $invoice = $this->hoClient->get(AdvertiserInvoice::class, 6);
+        $invoice = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
         $invoice->delete();
 
         isSame(AdvertiserInvoice::STATUS_DELETED, $invoice->status);
