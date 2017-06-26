@@ -46,7 +46,6 @@ class AdvertiserInvoice extends AbstractEntity
 
     const STATUS_ACTIVE     = 'active';
     const STATUS_DELETED    = 'deleted';
-    const STATUS_INCOMPLETE = 'incomplete';
 
     /**
      * @var string
@@ -65,5 +64,12 @@ class AdvertiserInvoice extends AbstractEntity
         'get'    => 'findInvoiceById',
         'create' => 'createInvoice',
         'update' => 'updateInvoice',
+    ];
+
+    /**
+     * @var array
+     */
+    protected $contain = [
+        'AdvertiserInvoiceItem' => AdvertiserInvoiceItem::class,
     ];
 }

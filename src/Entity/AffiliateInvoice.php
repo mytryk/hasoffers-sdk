@@ -15,6 +15,7 @@
 namespace Unilead\HasOffers\Entity;
 
 use Unilead\HasOffers\Traits\Deleted;
+use Unilead\HasOffers\Contain\InvoiceItem;
 
 /* @noinspection ClassOverridesFieldOfSuperClassInspection */
 
@@ -51,7 +52,6 @@ class AffiliateInvoice extends AbstractEntity
 
     const STATUS_ACTIVE     = 'active';
     const STATUS_DELETED    = 'deleted';
-    const STATUS_INCOMPLETE = 'incomplete';
 
     /**
      * @var string
@@ -70,5 +70,12 @@ class AffiliateInvoice extends AbstractEntity
         'get'    => 'findInvoiceById',
         'create' => 'createInvoice',
         'update' => 'updateInvoice',
+    ];
+
+    /**
+     * @var array
+     */
+    protected $contain = [
+        'InvoiceItem' => InvoiceItem::class,
     ];
 }
