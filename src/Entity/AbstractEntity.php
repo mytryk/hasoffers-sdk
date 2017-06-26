@@ -159,30 +159,46 @@ abstract class AbstractEntity
     {
         $isNew = !$this->objectId;
         $this->hoClient->trigger("{$this->target}.save.before", [$this, $isNew]);
+        $targetKey = $this->targetAlias ?: $this->target;
 
         if ($isNew) {
+            $dataRequest = $this->removeExcludedKeys($this->changedData);
+            if (count($dataRequest) === 0) {
+                throw new Exception('No data to create new object "' . static::class . '" in HasOffers');
+            }
+
             $data = $this->hoClient->apiRequest([
                 'Method'        => $this->methods['create'],
                 'Target'        => $this->target,
-                'data'          => $this->removeExcludedKeys($this->changedData),
+                'data'          => $dataRequest,
                 'return_object' => 1,
             ]);
         } else {
             $dataRequest = $this->removeExcludedKeys($this->getChangedFields());
-            $dataRequest['id'] = $this->objectId;
+            if (count($dataRequest) > 0) {
+                $dataRequest['id'] = $this->objectId;
 
-            $data = $this->hoClient->apiRequest([
-                'Method'        => $this->methods['update'],
-                'Target'        => $this->target,
-                'data'          => $dataRequest,
-                'id'            => '' . $this->objectId,
-                'return_object' => '1',
-            ]);
+                $data = $this->hoClient->apiRequest([
+                    'Method'        => $this->methods['update'],
+                    'Target'        => $this->target,
+                    'data'          => $dataRequest,
+                    'id'            => $this->objectId,
+                    'return_object' => '1',
+                ]);
+            } else {
+                $this->reloadIfNeed();
+                $data = [$targetKey => $this->origData];
+            }
         }
 
-        $key = $this->targetAlias ?: $this->target;
-        $this->origData = (array)$data[$key];
-        $this->objectId = $data[$key]['id'];
+        if (!isset($data[$targetKey])) {
+            throw new Exception('Returned object from HasOffers is not found; '
+                . static::class
+                . '; Data = ' . print_r($data, true));
+        }
+
+        $this->origData = (array)$data[$targetKey];
+        $this->objectId = $data[$targetKey]['id'];
         $this->changedData = [];
 
         $this->hoClient->trigger("{$this->target}.save.after", [$this, $isNew]);

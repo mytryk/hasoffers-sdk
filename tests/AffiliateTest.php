@@ -85,7 +85,7 @@ class AffiliateTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage    Missing required argument: data
+     * @expectedExceptionMessage    No data to create new object "Unilead\HasOffers\Entity\Affiliate" in HasOffers
      * @expectedException           \Unilead\HasOffers\Exception
      */
     public function testCannotSaveUndefinedId()
@@ -212,5 +212,14 @@ class AffiliateTest extends HasoffersPHPUnit
         $affiliate->save();
 
         isSame([], $affiliate->getChangedFields());
+    }
+
+    public function testNoDataToUpdateIsNotError()
+    {
+        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate->save();
+
+        is(1004, $affiliate->id);
     }
 }

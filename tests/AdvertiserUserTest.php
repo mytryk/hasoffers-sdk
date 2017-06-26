@@ -60,8 +60,8 @@ class AdvertiserUserTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage Missing required argument: data
-     * @expectedException \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage    No data to create new object "Unilead\HasOffers\Entity\AdvertiserUser" in HasOffers
+     * @expectedException           \Unilead\HasOffers\Exception
      */
     public function testCannotSaveUndefinedId()
     {
