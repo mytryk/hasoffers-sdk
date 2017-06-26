@@ -43,7 +43,12 @@ trait Data
      */
     public function reloadIfNeed()
     {
-        if (count($this->origData) === 0) {
+        $isPropExists = property_exists($this, 'objectId');
+        $isEmpty = count($this->origData) === 0;
+
+        if ($isEmpty && $isPropExists && $this->objectId > 0) { // for entities
+            $this->reload();
+        } elseif ($isEmpty && !$isPropExists) { // for contain
             $this->reload();
         }
     }
