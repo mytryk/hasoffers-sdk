@@ -194,4 +194,23 @@ class AffiliateTest extends HasoffersPHPUnit
         $affiliateAfterSave = $this->hoClient->get(Affiliate::class, 1004);
         isSame(Affiliate::STATUS_ACTIVE, $affiliateAfterSave->status);
     }
+
+    public function testUpdateOnlyChangedFields()
+    {
+        $randomValue = Str::random();
+
+        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate->company = $randomValue;
+        $affiliate->phone = $randomValue;
+
+        isSame([
+            'company' => $randomValue,
+            'phone'   => $randomValue,
+        ], $affiliate->getChangedFields());
+
+        $affiliate->save();
+
+        isSame([], $affiliate->getChangedFields());
+    }
 }

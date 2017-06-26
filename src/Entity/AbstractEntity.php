@@ -110,7 +110,8 @@ abstract class AbstractEntity
                 print_r($data, true)
             );
         }
-        $this->bindData($data[$key]);
+
+        $this->origData = (array)$data[$key];
 
         if (count($this->contain) > 0) {
             $this->createRelated($data);
@@ -163,11 +164,11 @@ abstract class AbstractEntity
             $data = $this->hoClient->apiRequest([
                 'Method'        => $this->methods['create'],
                 'Target'        => $this->target,
-                'data'          => $this->removeExcludedKeys($this->data),
+                'data'          => $this->removeExcludedKeys($this->changedData),
                 'return_object' => 1,
             ]);
         } else {
-            $dataRequest = $this->removeExcludedKeys($this->data);
+            $dataRequest = $this->removeExcludedKeys($this->getChangedFields());
             $dataRequest['id'] = $this->objectId;
 
             $data = $this->hoClient->apiRequest([
@@ -180,8 +181,9 @@ abstract class AbstractEntity
         }
 
         $key = $this->targetAlias ?: $this->target;
-        $this->bindData($data[$key]);
+        $this->origData = (array)$data[$key];
         $this->objectId = $data[$key]['id'];
+        $this->changedData = [];
 
         $this->hoClient->trigger("{$this->target}.save.after", [$this, $isNew]);
 
@@ -200,6 +202,16 @@ abstract class AbstractEntity
         $this->hoClient = $hoClient;
 
         return $this;
+    }
+
+    /**
+     * Getter for HasOffers Client.
+     *
+     * @return HasOffersClient
+     */
+    public function getClient()
+    {
+        return $this->hoClient;
     }
 
     /**

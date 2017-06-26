@@ -100,6 +100,12 @@ class PaymentMethod
      */
     public function reload()
     {
-        $this->bindData($this->getRawData()->getArrayCopy());
+        $data = $this->getRawData()->getArrayCopy();
+
+        $this->affiliate->getClient()->trigger('paymentmethod.reload.before', [$this, &$data]);
+
+        $this->bindData($data);
+
+        $this->affiliate->getClient()->trigger('paymentmethod.reload.after', [$this, $data]);
     }
 }

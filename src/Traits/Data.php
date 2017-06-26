@@ -26,12 +26,27 @@ trait Data
     /**
      * @var array
      */
-    public $data;
+    public $origData = [];
+
+    /**
+     * @var array
+     */
+    public $changedData = [];
 
     /**
      * @return $this
      */
     abstract public function reload();
+
+    /**
+     * Check internal state and reload it if need
+     */
+    public function reloadIfNeed()
+    {
+        if (count($this->origData) === 0) {
+            $this->reload();
+        }
+    }
 
     /**
      * @param array $data
@@ -41,19 +56,19 @@ trait Data
     public function bindData(array $data)
     {
         if (property_exists($this, 'hoClient') && $this->hoClient) {
-            $this->hoClient->trigger("{$this->target}.bind.before", [$this, &$data, &$this->data]);
+            $this->hoClient->trigger("{$this->target}.bind.before", [$this, &$data, &$this->changedData]);
         }
 
         foreach (array_keys($data) as $key) {
-            if (substr($key, 0, strlen('_')) === '_') {
+            if (0 === strpos($key, '_')) {
                 unset($data[$key]);
             }
         }
 
-        $this->data = (array)$data;
+        $this->changedData = (array)$data;
 
         if (property_exists($this, 'hoClient') && $this->hoClient) {
-            $this->hoClient->trigger("{$this->target}.bind.after", [$this, &$this->data]);
+            $this->hoClient->trigger("{$this->target}.bind.after", [$this, &$this->changedData]);
         }
 
         return $this;
@@ -66,7 +81,7 @@ trait Data
      */
     public function mergeData(array $data)
     {
-        $this->bindData(array_merge($this->data, (array)$data));
+        $this->bindData(array_merge($this->origData, (array)$data));
 
         return $this;
     }
@@ -76,7 +91,16 @@ trait Data
      */
     public function data()
     {
-        return new JBZooData($this->data);
+        return new JBZooData(array_merge($this->origData, $this->changedData));
+    }
+
+    /**
+     * @return array
+     */
+    public function getChangedFields()
+    {
+        $this->reloadIfNeed();
+        return array_diff_assoc($this->changedData, $this->origData);
     }
 
     /**
@@ -96,15 +120,13 @@ trait Data
         $relatedObjectName = str_replace(['set', 'get'], '', $method);
 
         if (strpos($method, 'get') === 0) {
-            if (!$this->data) {
-                $this->reload();
-            }
+            $this->reloadIfNeed();
 
             if (array_key_exists($relatedObjectName, $this->related)) {
                 return $this->related[$relatedObjectName];
             }
 
-            if (!array_key_exists($propName, $this->data)) {
+            if (!array_key_exists($propName, $this->origData)) {
                 throw new Exception("Undefined property \"{$propName}\" or related object \"{$relatedObjectName}\" in "
                     . static::class);
             }
@@ -131,16 +153,18 @@ trait Data
      */
     public function __get($propName)
     {
-        if (!$this->data) {
-            $this->reload();
-        }
+        $this->reloadIfNeed();
 
         $propName = Str::splitCamelCase($propName);
-        if (!array_key_exists($propName, $this->data)) {
+        if (!array_key_exists($propName, $this->origData) && !array_key_exists($propName, $this->changedData)) {
             throw new Exception("Undefined property \"{$propName}\" in " . static::class);
         }
 
-        return $this->data[$propName];
+        if (array_key_exists($propName, $this->changedData)) {
+            return $this->changedData[$propName];
+        }
+
+        return $this->origData[$propName];
     }
 
     /**
@@ -156,11 +180,13 @@ trait Data
             throw new Exception("Property \"{$propName}\" read only in " . static::class);
         }
 
-        $this->hoClient->trigger("{$this->target}.set.{$propName}.before", [$this, &$propName, &$value, &$this->data]);
+        $this->hoClient->trigger("{$this->target}.set.{$propName}.before",
+            [$this, &$propName, &$value, &$this->origData]);
 
-        $this->data[$propName] = $value;
+        $this->changedData[$propName] = $value;
 
-        $this->hoClient->trigger("{$this->target}.set.{$propName}.after", [$this, $propName, $value, &$this->data]);
+        $this->hoClient->trigger("{$this->target}.set.{$propName}.after",
+            [$this, $propName, $value, &$this->origData]);
     }
 
     /**
@@ -170,9 +196,10 @@ trait Data
      */
     public function __isset($propName)
     {
+        $this->reloadIfNeed();
         $propName = Str::splitCamelCase($propName);
 
-        return isset($this->data[$propName]);
+        return isset($this->origData[$propName]);
     }
 
     /**
@@ -182,15 +209,16 @@ trait Data
      */
     public function __unset($propName)
     {
-        $this->hoClient->trigger("{$this->target}.unset.{$propName}.before", [$this, &$propName, &$this->data]);
+        $this->hoClient->trigger("{$this->target}.unset.{$propName}.before", [$this, &$propName, &$this->origData]);
 
         $propName = Str::splitCamelCase($propName);
-        if (array_key_exists($propName, $this->data)) {
-            $this->data[$propName] = null;
+        if (array_key_exists($propName, $this->origData)) {
+            $this->origData[$propName] = null;
+            unset($this->changedData[$propName]);
         } else {
             throw new Exception("Undefined property \"{$propName}\" in " . static::class);
         }
 
-        $this->hoClient->trigger("{$this->target}.unset.{$propName}.after", [$this, $propName, &$this->data]);
+        $this->hoClient->trigger("{$this->target}.unset.{$propName}.after", [$this, $propName, &$this->origData]);
     }
 }
