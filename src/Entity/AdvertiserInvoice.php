@@ -15,6 +15,7 @@
 namespace Unilead\HasOffers\Entity;
 
 use Unilead\HasOffers\Traits\Deleted;
+use Unilead\HasOffers\Contain\AdvertiserInvoiceItem;
 
 /* @noinspection ClassOverridesFieldOfSuperClassInspection */
 
