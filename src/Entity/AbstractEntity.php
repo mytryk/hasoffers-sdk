@@ -128,6 +128,7 @@ abstract class AbstractEntity
     protected function createRelated($data)
     {
         foreach ($this->contain as $objectName => $className) {
+            $objectName = $objectName === 'InvoiceItem' ? 'AffiliateInvoiceItem' : $objectName;
             $objectData = $data[$objectName] ?? null;
             if (!$objectData) {
                 continue;
