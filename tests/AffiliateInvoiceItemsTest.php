@@ -23,49 +23,66 @@ use Unilead\HasOffers\Entity\AffiliateInvoiceItem;
  */
 class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
 {
-    //todo: get by invoice id
-    //todo: add by invoice id
-    //todo: remove by invoice id
-
     public function testCanGetItemsByInvoiceId()
     {
-        skip('containt items does not work');
-        $someId = '24';
+        $someId = 24;
         /** @var AffiliateInvoice $bill */
         $bill = $this->hoClient->get(AffiliateInvoice::class, $someId);
 
-        dump($bill->InvoiceItem);
+        $items = $bill->getAffiliateInvoiceItem()->getRawData();
 
-        is($someId, $bill->id);
+        is($someId, $items[0]['invoice_id']);
     }
 
     public function testCanCreateInvoiceItem()
     {
-        skip('containt items does not work');
-        $rand = mt_rand(1262055681, 1262055681);
+        $billId = 56;
+        $rand = mt_rand(1, 500);
+        $memo = 'Test Bill Item';
+        $type = 'stats';
 
-        /** @var AffiliateInvoiceItem $bill */
-        $bill = $this->hoClient->get(AffiliateInvoiceItem::class);
-        $bill->affiliate_id = 1004;
-        $bill->start_date = date("Y-m-d H:i:s", $rand);
-        $bill->end_date = date("Y-m-d H:i:s", $rand);
-        $bill->save();
+        /** @var AffiliateInvoiceItem $billItem */
+        $billItem = $this->hoClient->get(AffiliateInvoiceItem::class);
+        $billItem->invoice_id = $billId;
+        $billItem->offer_id = 8;
+        $billItem->memo = $memo;
+        $billItem->actions = $rand;
+        $billItem->amount = $rand;
+        $billItem->type = $type;
+        $billItem->payout_type = 'cpa_flat';
+        $billItem->create();
 
-        /** @var AffiliateInvoiceItem $invoiceCheck */
-        $invoiceCheck = $this->hoClient->get(AffiliateInvoiceItem::class, $bill->id);
+        /** @var AffiliateInvoiceItem $billCheck */
+        $billCheck = $this->hoClient->get(AffiliateInvoice::class, $billId);
 
-        isSame($bill->id, $invoiceCheck->id);
-        isSame($bill->start_date, $invoiceCheck->start_date);
-        isSame($bill->end_date, $invoiceCheck->end_date);
+        $items = $billCheck->getAffiliateInvoiceItem()->getRawData();
+
+        $itemKey = array_search(strval($billItem->id[0]), array_column($items, 'id'));
+        isNotSame(false, $itemKey);
+        isSame(strval($rand), $items[$itemKey]['actions']);
+        isSame($memo, $items[$itemKey]['memo']);
+        isSame($type, $items[$itemKey]['type']);
     }
 
     public function testCanDeleteInvoiceItem()
     {
-        skip('containt items does not work');
-        /** @var AffiliateInvoiceItem $bill */
-        $bill = $this->hoClient->get(AffiliateInvoiceItem::class, 22);
-        $bill->delete();
+        //get bill items
+        /** @var AffiliateInvoice $bill */
+        $bill = $this->hoClient->get(AffiliateInvoice::class, 56);
+        $items = $bill->getAffiliateInvoiceItem()->getRawData();
 
-        isSame(AffiliateInvoiceItem::STATUS_DELETED, $bill->status);
+        //find first one and delete it
+        /** @var AffiliateInvoiceItem $billItem */
+        $billItem = $this->hoClient->get(AffiliateInvoiceItem::class);
+        $billItem->delete($items[0]['id']);
+
+        //get bill items again
+        /** @var AffiliateInvoice $billCheck */
+        $billCheck = $this->hoClient->get(AffiliateInvoice::class, 56);
+        $itemsCheck = $billCheck->getAffiliateInvoiceItem()->getRawData();
+
+        //check item is not among them
+        $itemKey = array_search(strval($items[0]['id']), array_column($itemsCheck, 'id'));
+        isSame(false, $itemKey);
     }
 }
