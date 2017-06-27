@@ -63,10 +63,10 @@ class AffiliateInvoiceItem
     {
         $data = $this->getRawData()->getArrayCopy();
 
-        $this->invoice->getClient()->trigger('billItem.reload.before', [$this, &$data]);
+        $this->invoice->getClient()->trigger('bill_item.reload.before', [$this, &$data]);
 
         $this->bindData($data);
 
-        $this->invoice->getClient()->trigger('billItem.reload.after', [$this, $data]);
+        $this->invoice->getClient()->trigger('bill_item.reload.after', [$this, $data]);
     }
 }

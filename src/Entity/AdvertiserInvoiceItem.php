@@ -71,7 +71,7 @@ class AdvertiserInvoiceItem extends AbstractEntity
      */
     public function create()
     {
-        $this->getClient()->trigger('invoiceItem.create.before', [$this, &$this->changedData]);
+        $this->getClient()->trigger('invoice_item.create.before', [$this, &$this->changedData]);
 
         $data = $this->hoClient->apiRequest([
             'Method'     => $this->methods['create'],
@@ -80,7 +80,7 @@ class AdvertiserInvoiceItem extends AbstractEntity
             'invoice_id' => $this->invoice_id
         ]);
 
-        $this->getClient()->trigger('invoiceItem.create.after', [$this, &$this->changedData]);
+        $this->getClient()->trigger('invoice_item.create.after', [$this, &$this->changedData]);
 
         $this->origData = (array)['id' => $data];
         $this->objectId = $data;
@@ -96,7 +96,7 @@ class AdvertiserInvoiceItem extends AbstractEntity
      */
     public function delete($itemId)
     {
-        $this->getClient()->trigger('invoiceItem.delete.before', [$this, &$this->changedData]);
+        $this->getClient()->trigger('invoice_item.delete.before', [$this, &$this->changedData]);
 
         $data = $this->hoClient->apiRequest([
             'Method' => $this->methods['delete'],
@@ -104,7 +104,7 @@ class AdvertiserInvoiceItem extends AbstractEntity
             'id'     => $itemId
         ]);
 
-        $this->getClient()->trigger('invoiceItem.delete.after', [$this, &$this->changedData]);
+        $this->getClient()->trigger('invoice_item.delete.after', [$this, &$this->changedData]);
 
         return $data;
     }

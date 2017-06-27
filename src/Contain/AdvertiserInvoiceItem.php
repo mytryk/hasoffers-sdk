@@ -63,10 +63,10 @@ class AdvertiserInvoiceItem
     {
         $data = $this->getRawData()->getArrayCopy();
 
-        $this->invoice->getClient()->trigger('invoiceItem.reload.before', [$this, &$data]);
+        $this->invoice->getClient()->trigger('invoice_item.reload.before', [$this, &$data]);
 
         $this->bindData($data);
 
-        $this->invoice->getClient()->trigger('invoiceItem.reload.after', [$this, $data]);
+        $this->invoice->getClient()->trigger('invoice_item.reload.after', [$this, $data]);
     }
 }

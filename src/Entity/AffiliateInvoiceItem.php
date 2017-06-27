@@ -71,7 +71,7 @@ class AffiliateInvoiceItem extends AbstractEntity
      */
     public function create()
     {
-        $this->getClient()->trigger('billItem.create.before', [$this, &$this->changedData]);
+        $this->getClient()->trigger('bill_item.create.before', [$this, &$this->changedData]);
 
         $data = $this->hoClient->apiRequest([
             'Method'     => $this->methods['create'],
@@ -80,7 +80,7 @@ class AffiliateInvoiceItem extends AbstractEntity
             'invoice_id' => $this->invoice_id
         ]);
 
-        $this->getClient()->trigger('billItem.create.after', [$this, &$this->changedData]);
+        $this->getClient()->trigger('bill_item.create.after', [$this, &$this->changedData]);
 
         $this->origData = (array)['id' => $data];
         $this->objectId = $data;
@@ -96,7 +96,7 @@ class AffiliateInvoiceItem extends AbstractEntity
      */
     public function delete($itemId)
     {
-        $this->getClient()->trigger('billItem.delete.before', [$this, &$this->changedData]);
+        $this->getClient()->trigger('bill_item.delete.before', [$this, &$this->changedData]);
 
         $data = $this->hoClient->apiRequest([
             'Method' => $this->methods['delete'],
@@ -104,7 +104,7 @@ class AffiliateInvoiceItem extends AbstractEntity
             'id'     => $itemId
         ]);
 
-        $this->getClient()->trigger('billItem.delete.after', [$this, &$this->changedData]);
+        $this->getClient()->trigger('bill_item.delete.after', [$this, &$this->changedData]);
 
         return $data;
     }
