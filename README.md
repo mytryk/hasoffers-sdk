@@ -92,7 +92,8 @@ try {
  - ho.{entity}.restore.(before|after)                   // Only Advertiser 
  - ho.{entity}.unblock.(before|after)                   // Only Affiliate
  - ho.{entity}.related.{related}.init.(before|after)
- - ho.{entity}.fiid.(before|after)
+ - ho.{related}.reload.(before|after)
+ - ho.{entity}.find.(before|after)
 ```
 
 ## Unit tests and check code style
