@@ -94,6 +94,12 @@ try {
  - ho.{entity}.related.{related}.init.(before|after)
  - ho.{related}.reload.(before|after)
  - ho.{entity}.find.(before|after)
+ - billItem.reload.(before|after)
+ - invoiceItem.reload.(before|after)
+ - billItem.create.(before|after)
+ - billItem.delete.(before|after)
+ - invoiceItem.create.(before|after)
+ - invoiceItem.delete.(before|after)
 ```
 
 ## Unit tests and check code style
