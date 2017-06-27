@@ -44,7 +44,7 @@ class HasoffersPHPUnit extends PHPUnit
         parent::setUp();
 
         $apiUrl = Env::get('HO_API_URL') ?: HasOffersClient::DEFAULT_API_URL;
-        $isLearing = Env::get('HO_FAKE_SERVER_LEARNING', false, Env::VAR_BOOL);
+        $isLearning = Env::get('HO_FAKE_SERVER_LEARNING', false, Env::VAR_BOOL);
         $fakeServerUrl = Env::get('HO_FAKE_SERVER_URL');
         $isFakeServer = $apiUrl !== HasOffersClient::DEFAULT_API_URL;
 
@@ -60,7 +60,8 @@ class HasoffersPHPUnit extends PHPUnit
         $this->hoClient->setEventManager($this->eManager);
 
         $this->eManager
-            ->on('ho.api.request.before',
+            ->on(
+                'ho.api.request.before',
                 function ($client, &$requestParams, &$url) use ($isFakeServer) {
                     if ($isFakeServer) {
                         $url = rtrim($url, '/') . '/get/' . Helper::hash($requestParams);
@@ -70,9 +71,10 @@ class HasoffersPHPUnit extends PHPUnit
                     file_put_contents($dumpFile . '.json', '' . json($requestParams));
                 }
             )
-            ->on('ho.api.request.after',
-                function ($client, $jsonResult, Response $response, $data) use ($isLearing, $fakeServerUrl) {
-                    if ($isLearing) {
+            ->on(
+                'ho.api.request.after',
+                function ($client, $jsonResult, Response $response, $data) use ($isLearning, $fakeServerUrl) {
+                    if ($isLearning) {
                         $learnData = [
                             'key'      => Helper::hash($data),
                             'request'  => '' . json($data),
@@ -86,7 +88,7 @@ class HasoffersPHPUnit extends PHPUnit
                         if (!$response->getJSON()->is('status', 'ok')) {
                             throw new Exception(
                                 'Fake server cannot save fixture: ' . print_r($learnData, true) .
-                                'Reponse: ' . print_r($response, true)
+                                'Response: ' . print_r($response, true)
                             );
                         }
                     }
@@ -113,7 +115,6 @@ class HasoffersPHPUnit extends PHPUnit
     }
 
     /**
-     * @param array $trace
      * @return string
      * @throws Exception
      */
