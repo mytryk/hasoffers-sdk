@@ -15,7 +15,7 @@
 namespace Unilead\HasOffers\Entity;
 
 use Unilead\HasOffers\Traits\Deleted;
-use Unilead\HasOffers\Contain\InvoiceItem;
+use Unilead\HasOffers\Contain\AffiliateInvoiceItem;
 
 /* @noinspection ClassOverridesFieldOfSuperClassInspection */
 
@@ -76,6 +76,6 @@ class AffiliateInvoice extends AbstractEntity
      * @var array
      */
     protected $contain = [
-        'InvoiceItem' => InvoiceItem::class,
+        'InvoiceItem' => AffiliateInvoiceItem::class,
     ];
 }
