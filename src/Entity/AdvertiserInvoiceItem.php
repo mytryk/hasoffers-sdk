@@ -55,19 +55,57 @@ class AdvertiserInvoiceItem extends AbstractEntity
     /**
      * @var string
      */
-    protected $target = 'AdvertiserInvoiceItem';
-
-    /**
-     * @var string
-     */
-    protected $targetAlias = 'AdvertiserInvoiceItem';
+    protected $target = 'AdvertiserBilling';
 
     /**
      * @var array
      */
     protected $methods = [
-        'get'    => 'findInvoiceStats',
         'create' => 'addInvoiceItem',
         'delete' => 'removeInvoiceItem',
     ];
+
+    /**
+     * @return mixed
+     * @throws Exception
+     */
+    public function create()
+    {
+        $this->getClient()->trigger('invoiceItem.create.before', [$this, &$this->changedData]);
+
+        $data = $this->hoClient->apiRequest([
+            'Method'     => $this->methods['create'],
+            'Target'     => $this->target,
+            'data'       => $this->changedData,
+            'invoice_id' => $this->invoice_id
+        ]);
+
+        $this->getClient()->trigger('invoiceItem.create.after', [$this, &$this->changedData]);
+
+        $this->origData = (array)['id' => $data];
+        $this->objectId = $data;
+        $this->changedData = [];
+
+        return $this;
+    }
+
+    /**
+     * @param int $itemId
+     *
+     * @return mixed
+     */
+    public function delete($itemId)
+    {
+        $this->getClient()->trigger('invoiceItem.delete.before', [$this, &$this->changedData]);
+
+        $data = $this->hoClient->apiRequest([
+            'Method' => $this->methods['delete'],
+            'Target' => $this->target,
+            'id'     => $itemId
+        ]);
+
+        $this->getClient()->trigger('invoiceItem.delete.after', [$this, &$this->changedData]);
+
+        return $data;
+    }
 }
