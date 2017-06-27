@@ -45,7 +45,7 @@ class AdvertiserInvoiceItem
     public function __construct(array $data, AdvertiserInvoice $advertiserInvoice)
     {
         $this->invoice = $advertiserInvoice;
-        $this->items = new Data($data);
+        $this->items = $data;
     }
 
     /**
@@ -61,6 +61,12 @@ class AdvertiserInvoiceItem
      */
     public function reload()
     {
-        $this->bindData($this->getRawData()->getArrayCopy());
+        $data = $this->getRawData()->getArrayCopy();
+
+        $this->invoice->getClient()->trigger('invoiceItem.reload.before', [$this, &$data]);
+
+        $this->bindData($data);
+
+        $this->invoice->getClient()->trigger('invoiceItem.reload.after', [$this, $data]);
     }
 }

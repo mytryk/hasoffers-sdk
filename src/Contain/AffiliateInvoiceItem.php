@@ -22,7 +22,7 @@ use Unilead\HasOffers\Entity\AffiliateInvoice;
  * Class InvoiceItem
  * @package Unilead\HasOffers
  */
-class InvoiceItem
+class AffiliateInvoiceItem
 {
     use DataTrait;
 
@@ -45,7 +45,7 @@ class InvoiceItem
     public function __construct(array $data, AffiliateInvoice $affiliateInvoice)
     {
         $this->invoice = $affiliateInvoice;
-        $this->items = new Data($data);
+        $this->items = $data;
     }
 
     /**
@@ -61,6 +61,12 @@ class InvoiceItem
      */
     public function reload()
     {
-        $this->bindData($this->getRawData()->getArrayCopy());
+        $data = $this->getRawData()->getArrayCopy();
+
+        $this->invoice->getClient()->trigger('billItem.reload.before', [$this, &$data]);
+
+        $this->bindData($data);
+
+        $this->invoice->getClient()->trigger('billItem.reload.after', [$this, $data]);
     }
 }
