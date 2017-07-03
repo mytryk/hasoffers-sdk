@@ -185,13 +185,17 @@ trait Data
             throw new Exception("Property \"{$propName}\" read only in " . static::class);
         }
 
-        $this->hoClient->trigger("{$this->target}.set.{$propName}.before",
-            [$this, &$propName, &$value, &$this->origData]);
+        $this->hoClient->trigger(
+            "{$this->target}.set.{$propName}.before",
+            [$this, &$propName, &$value, &$this->origData]
+        );
 
         $this->changedData[$propName] = $value;
 
-        $this->hoClient->trigger("{$this->target}.set.{$propName}.after",
-            [$this, $propName, $value, &$this->origData]);
+        $this->hoClient->trigger(
+            "{$this->target}.set.{$propName}.after",
+            [$this, $propName, $value, &$this->origData]
+        );
     }
 
     /**

@@ -1,4 +1,4 @@
-# Unilead HasOffers     [![build status](http://code.unilead.net/unilead/hasoffers/badges/master/build.svg)](http://code.unilead.net/unilead/hasoffers/pipelines)
+# Unilead HasOffers     [![build status](http://code.unilead.net/unilead/hasoffers/badges/master/build.svg)](http://code.unilead.net/unilead/hasoffers/pipelines)    [![coverage report](http://code.unilead.net/unilead/hasoffers/badges/master/coverage.svg)](http://code.unilead.net/unilead/hasoffers/commits/master)
 
 #### ORM/SDK for HasOffers API
 
@@ -80,7 +80,8 @@ try {
 ## Full Event List 
 ```
  - ho.api.request.(before|after)
- - ho.api.sleep    
+ - ho.api.sleep.(before|after)
+ 
  - ho.{entity}.init
  - ho.{entity}.save.(before|after)
  - ho.{entity}.set.{property}.(before|after)
@@ -91,15 +92,10 @@ try {
  - ho.{entity}.reload.(before|after)
  - ho.{entity}.restore.(before|after)                   // Only Advertiser 
  - ho.{entity}.unblock.(before|after)                   // Only Affiliate
+ - ho.{entity}.find.(before|after)
+
  - ho.{entity}.related.{related}.init.(before|after)
  - ho.{related}.reload.(before|after)
- - ho.{entity}.find.(before|after)
- - bill_item.reload.(before|after)
- - invoice_item.reload.(before|after)
- - bill_item.create.(before|after)
- - bill_item.delete.(before|after)
- - invoice_item.create.(before|after)
- - invoice_item.delete.(before|after)
 ```
 
 ## Unit tests and check code style
