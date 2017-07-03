@@ -1,4 +1,4 @@
-# Unilead HasOffers     [![build status](http://code.unilead.net/unilead/hasoffers/badges/master/build.svg)](http://code.unilead.net/unilead/hasoffers/pipelines)    [![coverage report](http://code.unilead.net/unilead/hasoffers/badges/master/coverage.svg)](http://code.unilead.net/unilead/hasoffers/commits/master)
+# Unilead HasOffers     [![build status](http://code.unilead.net/unilead/hasoffers/badges/master/build.svg)](http://code.unilead.net/unilead/hasoffers/pipelines)    [![coverage report](http://code.unilead.net/unilead/hasoffers/badges/master/coverage.svg)](http://code.unilead.net/unilead/hasoffers/pipelines)
 
 #### ORM/SDK for HasOffers API
 
