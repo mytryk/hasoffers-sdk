@@ -1,10 +1,4 @@
-image: mileschou/phalcon:7.1-fpm
-
-before_script:
-    - apt-get -qq update
-    - apt-get -y -qq install  git unzip
-    - curl -Lo /usr/local/bin/composer https://getcomposer.org/composer.phar
-    - chmod +x /usr/local/bin/composer
+image: unilead/php
 
 stages:
     - test
@@ -12,5 +6,5 @@ stages:
 test:
     stage: test
     script:
-        - make update
+        - make
         - make test-all
