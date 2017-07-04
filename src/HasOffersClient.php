@@ -124,18 +124,20 @@ class HasOffersClient
                 $this->trigger('api.request.sleep.after', [$this, $isSleep]);
             }
 
-            $httpClient = new HttpClient([
+            $httpClientParams = [
                 'timeout'    => self::HTTP_TIMEOUT,
                 'verify'     => true,
                 'exceptions' => true
-            ]);
+            ];
+
+            $httpClient = new HttpClient($httpClientParams);
 
             $url = str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
             $requestParams = array_merge($requestParams, ['NetworkToken' => $this->networkToken]);
 
             $this->trigger('api.request.before', [$this, &$requestParams, &$url]);
 
-            $response = $httpClient->request($url, $requestParams, 'get');
+            $response = $httpClient->request($url, $requestParams, 'get', $httpClientParams);
             $json = $response->getJSON();
 
             $this->trigger('api.request.after', [$this, $json, $response, $requestParams]);
