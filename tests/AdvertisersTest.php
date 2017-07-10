@@ -34,7 +34,7 @@ class AdvertisersTest extends HasoffersPHPUnit
         $advertiser = $list[504];
 
         isSame('Moscow', $advertiser->city);
-        isSame('cizipaj0k0', $advertiser->company);
+        isSame('504', $advertiser->id);
     }
 
     public function testCanGetAdvertiserUser()
