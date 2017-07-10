@@ -14,6 +14,7 @@
 
 namespace Unilead\HasOffers\Entity;
 
+use Unilead\HasOffers\Contain\AdvertiserUser;
 use Unilead\HasOffers\Traits\Deleted;
 
 /* @noinspection ClassOverridesFieldOfSuperClassInspection */
@@ -57,16 +58,18 @@ use Unilead\HasOffers\Traits\Deleted;
  * @property string $website                        DEPRECATED. Ignore the contents of this field.
  * @property string $zipcode                        The zipcode / postal code of the account's physical address
  *
+ * @method AdvertiserUser getAdvertiserUser()
+ *
  * @package Unilead\HasOffers\Entity
  */
 class Advertiser extends AbstractEntity
 {
     use Deleted;
 
-    const STATUS_ACTIVE   = 'active';
-    const STATUS_PENDING  = 'pending';
-    const STATUS_BLOCKED  = 'blocked';
-    const STATUS_DELETED  = 'deleted';
+    const STATUS_ACTIVE = 'active';
+    const STATUS_PENDING = 'pending';
+    const STATUS_BLOCKED = 'blocked';
+    const STATUS_DELETED = 'deleted';
     const STATUS_REJECTED = 'rejected';
 
     /**
@@ -81,6 +84,13 @@ class Advertiser extends AbstractEntity
         'get'    => 'findById',
         'create' => 'create',
         'update' => 'update',
+    ];
+
+    /**
+     * @var array
+     */
+    protected $contain = [
+        'AdvertiserUser' => AdvertiserUser::class
     ];
 
     /**
