@@ -14,8 +14,9 @@
 
 namespace Unilead\HasOffers\Entities;
 
-use Unilead\HasOffers\Contain\PaymentMethod;
 use Unilead\HasOffers\Entity\Affiliate;
+use Unilead\HasOffers\Contain\PaymentMethod;
+use Unilead\HasOffers\Contain\AffiliateUser;
 
 /**
  * Class Affiliates
@@ -39,5 +40,6 @@ class Affiliates extends AbstractEntities
      */
     protected $contain = [
         'PaymentMethod' => PaymentMethod::class,
+        'AffiliateUser' => AffiliateUser::class
     ];
 }
