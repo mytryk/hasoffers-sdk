@@ -17,6 +17,7 @@ namespace JBZoo\PHPUnit;
 use JBZoo\Data\Data;
 use JBZoo\Event\EventManager;
 use JBZoo\Utils\Str;
+use Unilead\HasOffers\Contain\AffiliateUser;
 use Unilead\HasOffers\Entity\Affiliate;
 use Unilead\HasOffers\Contain\PaymentMethod;
 
@@ -108,6 +109,18 @@ class AffiliateTest extends HasoffersPHPUnit
         $affiliate->undefined_property;
     }
 
+    public function testGetAffiliateSignUpAnswers()
+    {
+        $someId = '1004';
+        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $answers = $affiliate->getAnswers($affiliate->id);
+
+        isSame(2, count($answers));
+        isSame("What language do you speak?", $answers[1]['question']);
+        isSame("English", $answers[1]['answer']);
+    }
+
     public function testGetAffiliatePaymentMethodType()
     {
         $someId = '1004';
@@ -121,6 +134,18 @@ class AffiliateTest extends HasoffersPHPUnit
         isClass(Data::class, $paymentRawData);
         isSame('abelov83@belov.ru', $paymentRawData->email);
         isSame('abelov83@belov.ru', $paymentMethod->email);
+    }
+
+    public function testGetAffiliateUser()
+    {
+        $someId = '1004';
+        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $users = $affiliate->getAffiliateUser()->getUsersList();
+
+        isSame("10", $users[10]['id']);
+        isSame('anbelov83@belov.ru', $users[10]['email']);
+        isSame(\Unilead\HasOffers\Entity\AffiliateUser::STATUS_DELETED, $users[10]['status']);
     }
 
     public function testCanCreateAffiliate()

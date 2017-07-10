@@ -14,9 +14,10 @@
 
 namespace JBZoo\PHPUnit;
 
-use Unilead\HasOffers\Contain\PaymentMethod;
-use Unilead\HasOffers\Entities\Affiliates;
 use Unilead\HasOffers\Entity\Affiliate;
+use Unilead\HasOffers\Entities\Affiliates;
+use Unilead\HasOffers\Contain\PaymentMethod;
+use Unilead\HasOffers\Entity\AffiliateUser;
 
 /**
  * Class AffiliatesTest
@@ -36,5 +37,21 @@ class AffiliatesTest extends HasoffersPHPUnit
         isSame('Moscow', $affiliate->city);
         $paymentMethod = $affiliate->getPaymentMethod();
         isSame(PaymentMethod::TYPE_PAYPAL, $paymentMethod->getType());
+    }
+
+    public function testCanGetAffiliateUser()
+    {
+        /** @var Affiliates $affiliates */
+        $affiliates = $this->hoClient->get(Affiliates::class);
+        $list = $affiliates->find();
+
+        /** @var Affiliate $affiliate */
+        $affiliate = $list[1004];
+
+        $users = $affiliate->getAffiliateUser()->getUsersList();
+
+        isSame("10", $users[10]['id']);
+        isSame('anbelov83@belov.ru', $users[10]['email']);
+        isSame(AffiliateUser::STATUS_DELETED, $users[10]['status']);
     }
 }

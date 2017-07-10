@@ -16,6 +16,7 @@ namespace JBZoo\PHPUnit;
 
 use JBZoo\Utils\Str;
 use Unilead\HasOffers\Entity\Advertiser;
+use Unilead\HasOffers\Entity\AdvertiserUser;
 
 /**
  * Class AdvertiserTest
@@ -81,6 +82,18 @@ class AdvertiserTest extends HasoffersPHPUnit
         is($someId, $advertiser->id);
 
         $advertiser->undefined_property;
+    }
+
+    public function testGetAdvertiserUser()
+    {
+        $someId = '504';
+        /** @var Advertiser $affiliate */
+        $affiliate = $this->hoClient->get(Advertiser::class, $someId);
+        $users = $affiliate->getAdvertiserUser()->getUsersList();
+
+        isSame("10", $users[10]['id']);
+        isSame('ivan@test.com', $users[10]['email']);
+        isSame(AdvertiserUser::STATUS_ACTIVE, $users[10]['status']);
     }
 
     public function testCanCreateAdvertiser()
