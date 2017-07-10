@@ -15,6 +15,7 @@
 namespace Unilead\HasOffers\Entity;
 
 use Unilead\HasOffers\Contain\PaymentMethod;
+use Unilead\HasOffers\Contain\AffiliateUser;
 use Unilead\HasOffers\Traits\Blocked;
 use Unilead\HasOffers\Traits\Deleted;
 
@@ -93,6 +94,7 @@ use Unilead\HasOffers\Traits\Deleted;
  * @property string $zipcode                        The zipcode / postal code of the account's physical address
  *
  * @method PaymentMethod getPaymentMethod()
+ * @method AffiliateUser getAffiliateUser()
  *
  * @package Unilead\HasOffers\Entity
  */
@@ -101,10 +103,10 @@ class Affiliate extends AbstractEntity
     use Deleted;
     use Blocked;
 
-    const STATUS_ACTIVE   = 'active';
-    const STATUS_PENDING  = 'pending';
-    const STATUS_BLOCKED  = 'blocked';
-    const STATUS_DELETED  = 'deleted';
+    const STATUS_ACTIVE = 'active';
+    const STATUS_PENDING = 'pending';
+    const STATUS_BLOCKED = 'blocked';
+    const STATUS_DELETED = 'deleted';
     const STATUS_REJECTED = 'rejected';
 
     /**
@@ -116,9 +118,10 @@ class Affiliate extends AbstractEntity
      * @var array
      */
     protected $methods = [
-        'get'    => 'findById',
-        'create' => 'create',
-        'update' => 'update',
+        'get'        => 'findById',
+        'create'     => 'create',
+        'update'     => 'update',
+        'getAnswers' => 'getSignupAnswers',
     ];
 
     /**
@@ -126,6 +129,7 @@ class Affiliate extends AbstractEntity
      */
     protected $contain = [
         'PaymentMethod' => PaymentMethod::class,
+        'AffiliateUser' => AffiliateUser::class
     ];
 
     /**
@@ -141,6 +145,36 @@ class Affiliate extends AbstractEntity
         $result = $this->save();
 
         $this->hoClient->trigger("{$this->target}.unblock.after", [$this]);
+
+        return $result;
+    }
+
+    /**
+     * Find sing up answers for given affiliate.
+     *
+     * @param int $affiliateId
+     *
+     * @return mixed
+     */
+    public function getAnswers($affiliateId)
+    {
+        $data = $this->hoClient->apiRequest([
+            'Method' => $this->methods['getAnswers'],
+            'Target' => $this->target,
+            'id'     => $affiliateId
+        ]);
+
+        $result = [];
+        foreach ((array)$data as $answers) {
+            foreach ($answers as $answer) {
+                $result[] = [
+                    'id'       => $answer['question_id'],
+                    'question' => $answer['question'],
+                    'answer'   => $answer['answer'],
+                    'status'   => $answer['status']
+                ];
+            }
+        }
 
         return $result;
     }
