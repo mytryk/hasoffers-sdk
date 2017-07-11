@@ -152,16 +152,14 @@ class Affiliate extends AbstractEntity
     /**
      * Find sing up answers for given affiliate.
      *
-     * @param int $affiliateId
-     *
      * @return mixed
      */
-    public function getAnswers($affiliateId)
+    public function getAnswers()
     {
         $data = $this->hoClient->apiRequest([
             'Method' => $this->methods['getAnswers'],
             'Target' => $this->target,
-            'id'     => $affiliateId
+            'id'     => $this->id
         ]);
 
         $result = [];
