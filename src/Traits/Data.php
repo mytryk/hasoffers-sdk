@@ -26,12 +26,12 @@ trait Data
     /**
      * @var array
      */
-    public $origData = [];
+    protected $origData = [];
 
     /**
      * @var array
      */
-    public $changedData = [];
+    protected $changedData = [];
 
     /**
      * @return $this
@@ -160,7 +160,6 @@ trait Data
     {
         $this->reloadIfNeed();
 
-        $propName = Str::splitCamelCase($propName);
         if (!array_key_exists($propName, $this->origData) && !array_key_exists($propName, $this->changedData)) {
             throw new Exception("Undefined property \"{$propName}\" in " . static::class);
         }
