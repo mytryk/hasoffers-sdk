@@ -114,7 +114,7 @@ class AffiliateTest extends HasoffersPHPUnit
         $someId = '1004';
         /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class, $someId);
-        $answers = $affiliate->getAnswers($affiliate->id);
+        $answers = $affiliate->getAnswers();
 
         isSame(2, count($answers));
         isSame("What language do you speak?", $answers[1]['question']);
