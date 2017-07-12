@@ -129,8 +129,8 @@ abstract class AbstractEntity
     {
         foreach ($this->contain as $objectName => $className) {
             $objectName = $objectName === 'InvoiceItem' ? 'AffiliateInvoiceItem' : $objectName;
-            $objectData = $data[$objectName] ?? null;
-            if (!$objectData) {
+            $objectData = array_key_exists($objectName, $data) ? $data[$objectName] : false;
+            if (false === $objectData) {
                 continue;
             }
 
@@ -257,5 +257,18 @@ abstract class AbstractEntity
         }
 
         return $data;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExist()
+    {
+        try {
+            $this->id;
+        } catch (Exception $e) {
+            return false;
+        }
+        return true;
     }
 }

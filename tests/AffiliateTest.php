@@ -85,6 +85,17 @@ class AffiliateTest extends HasoffersPHPUnit
         is($someId, $affiliate->id);
     }
 
+    public function testIsExist()
+    {
+        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class, '10000000');
+        isFalse($affiliate->isExist());
+
+        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class, '1004');
+        isTrue($affiliate->isExist());
+    }
+
     /**
      * @expectedExceptionMessage    No data to create new object "Unilead\HasOffers\Entity\Affiliate" in HasOffers
      * @expectedException           \Unilead\HasOffers\Exception
