@@ -34,7 +34,9 @@ class AdvertisersTest extends HasoffersPHPUnit
         $advertiser = $list[504];
 
         isSame('Moscow', $advertiser->city);
-        isSame('504', $advertiser->id);
+        isSame('RU', $advertiser->country);
+        isSame('432072', $advertiser->zipcode);
+        isSame('Lvovsky 12', $advertiser->address1);
     }
 
     public function testCanGetAdvertiserUser()
@@ -46,7 +48,7 @@ class AdvertisersTest extends HasoffersPHPUnit
         /** @var Advertiser $advertiser */
         $advertiser = $list[504];
 
-        $users = $advertiser->getAdvertiserUser()->getUsersList();
+        $users = $advertiser->getAdvertiserUser()->getList();
 
         isSame("10", $users[10]['id']);
         isSame('ivan@test.com', $users[10]['email']);

@@ -59,17 +59,28 @@ class AffiliateUser
     /**
      * @return mixed
      */
-    public function getUsersList()
+    public function getList()
     {
         $data = array_reduce($this->users, function ($reduced, $current) {
-            $current = $this->cutKeys($current);
+            $removeKeys = [
+                'wants_alerts',
+                'SHARED_Users2_id',
+                'salt',
+                'AFFILIATE_NETWORK_Brands_id',
+                '_NETWORK_employees_id',
+                'access',
+            ];
+
+            foreach ($removeKeys as $removeKey) {
+                unset($current[$removeKey]);
+            }
 
             $reduced[$current['id']] = $current;
 
             return $reduced;
         });
 
-        return $data;
+        return new Data($data);
     }
 
     /**
@@ -84,28 +95,5 @@ class AffiliateUser
         $this->bindData($data);
 
         $this->affiliate->getClient()->trigger('affiliate_users.reload.after', [$this, $data]);
-    }
-
-    /**
-     * @param array $array
-     *
-     * @return mixed
-     */
-    private function cutKeys($array)
-    {
-        $removeKeys = [
-            'wants_alerts',
-            'SHARED_Users2_id',
-            'salt',
-            'AFFILIATE_NETWORK_Brands_id',
-            '_NETWORK_employees_id',
-            'access',
-        ];
-
-        foreach ($removeKeys as $removeKey) {
-            unset($array[$removeKey]);
-        }
-
-        return $array;
     }
 }

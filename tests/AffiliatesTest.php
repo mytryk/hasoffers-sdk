@@ -35,6 +35,10 @@ class AffiliatesTest extends HasoffersPHPUnit
         $affiliate = $list[1004];
 
         isSame('Moscow', $affiliate->city);
+        isSame('RU', $affiliate->country);
+        isSame('432072', $affiliate->zipcode);
+        isSame('Lvovsky 12', $affiliate->address1);
+
         $paymentMethod = $affiliate->getPaymentMethod();
         isSame(PaymentMethod::TYPE_PAYPAL, $paymentMethod->getType());
     }
@@ -48,7 +52,7 @@ class AffiliatesTest extends HasoffersPHPUnit
         /** @var Affiliate $affiliate */
         $affiliate = $list[1004];
 
-        $users = $affiliate->getAffiliateUser()->getUsersList();
+        $users = $affiliate->getAffiliateUser()->getList();
 
         isSame("10", $users[10]['id']);
         isSame('anbelov83@belov.ru', $users[10]['email']);

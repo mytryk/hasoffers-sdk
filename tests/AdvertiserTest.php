@@ -89,7 +89,7 @@ class AdvertiserTest extends HasoffersPHPUnit
         $someId = '504';
         /** @var Advertiser $affiliate */
         $affiliate = $this->hoClient->get(Advertiser::class, $someId);
-        $users = $affiliate->getAdvertiserUser()->getUsersList();
+        $users = $affiliate->getAdvertiserUser()->getList();
 
         isSame("10", $users[10]['id']);
         isSame('ivan@test.com', $users[10]['email']);

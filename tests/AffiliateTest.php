@@ -141,7 +141,7 @@ class AffiliateTest extends HasoffersPHPUnit
         $someId = '1004';
         /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class, $someId);
-        $users = $affiliate->getAffiliateUser()->getUsersList();
+        $users = $affiliate->getAffiliateUser()->getList();
 
         isSame("10", $users[10]['id']);
         isSame('anbelov83@belov.ru', $users[10]['email']);
