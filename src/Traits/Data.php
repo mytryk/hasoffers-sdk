@@ -96,6 +96,7 @@ trait Data
      */
     public function data()
     {
+        $this->reloadIfNeed();
         return new JBZooData(array_merge($this->origData, $this->changedData));
     }
 
