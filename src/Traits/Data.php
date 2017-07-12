@@ -118,7 +118,7 @@ trait Data
     public function __call($method, array $arguments = [])
     {
         if (strpos($method, 'get') !== 0 && strpos($method, 'set') !== 0) {
-            throw new Exception('Undefined method ' . static::class . "::{$method}()");
+            throw new Exception('Undefined method ' . static::class . "::{$method}() for objectId={$this->objectId}");
         }
 
         $propName = Str::splitCamelCase(str_replace(['set', 'get'], '', $method));
@@ -133,7 +133,7 @@ trait Data
 
             if (!array_key_exists($propName, $this->origData)) {
                 throw new Exception("Undefined property \"{$propName}\" or related object \"{$relatedObjectName}\" in "
-                    . static::class);
+                    . static::class . " for objectId={$this->objectId}");
             }
 
             return $this->__get($propName);
@@ -143,7 +143,8 @@ trait Data
             if (array_key_exists('0', $arguments)) {
                 $this->__set($propName, $arguments[0]);
             } else {
-                throw new Exception("First argument is required for \"{$propName}\" setter  in " . static::class);
+                throw new Exception("First argument is required for \"{$propName}\" setter  in " . static::class
+                    . " for objectId={$this->objectId}");
             }
         }
 
@@ -161,7 +162,8 @@ trait Data
         $this->reloadIfNeed();
 
         if (!array_key_exists($propName, $this->origData) && !array_key_exists($propName, $this->changedData)) {
-            throw new Exception("Undefined property \"{$propName}\" in " . static::class);
+            throw new Exception("Undefined property \"{$propName}\" in " . static::class
+                . " for objectId={$this->objectId}");
         }
 
         if (array_key_exists($propName, $this->changedData)) {
@@ -181,7 +183,8 @@ trait Data
         $propName = Str::splitCamelCase($propName);
 
         if (strtolower($propName) === 'id') {
-            throw new Exception("Property \"{$propName}\" read only in " . static::class);
+            throw new Exception("Property \"{$propName}\" read only in " . static::class
+                . " for objectId={$this->objectId}");
         }
 
         $this->hoClient->trigger(
@@ -224,7 +227,8 @@ trait Data
             $this->origData[$propName] = null;
             unset($this->changedData[$propName]);
         } else {
-            throw new Exception("Undefined property \"{$propName}\" in " . static::class);
+            throw new Exception("Undefined property \"{$propName}\" in " . static::class
+                . " for objectId={$this->objectId}");
         }
 
         $this->hoClient->trigger("{$this->target}.unset.{$propName}.after", [$this, $propName, &$this->origData]);
