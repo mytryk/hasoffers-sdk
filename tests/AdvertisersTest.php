@@ -35,8 +35,8 @@ class AdvertisersTest extends HasoffersPHPUnit
 
         isSame('Moscow', $advertiser->city);
         isSame('RU', $advertiser->country);
-        isSame('432072', $advertiser->zipcode);
-        isSame('Lvovsky 12', $advertiser->address1);
+        isSame('121121', $advertiser->zipcode);
+        isSame('address1', $advertiser->address1);
     }
 
     public function testCanGetAdvertiserUser()
