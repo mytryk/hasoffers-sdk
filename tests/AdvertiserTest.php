@@ -91,9 +91,9 @@ class AdvertiserTest extends HasoffersPHPUnit
         $affiliate = $this->hoClient->get(Advertiser::class, $someId);
         $users = $affiliate->getAdvertiserUser()->getList();
 
-        isSame("10", $users[10]['id']);
-        isSame('ivan@test.com', $users[10]['email']);
-        isSame(AdvertiserUser::STATUS_ACTIVE, $users[10]['status']);
+        isSame("10", $users[0]['id']);
+        isSame('ivan@test.com', $users[0]['email']);
+        isSame(AdvertiserUser::STATUS_ACTIVE, $users[0]['status']);
     }
 
     public function testCanCreateAdvertiser()

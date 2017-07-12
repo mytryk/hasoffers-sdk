@@ -75,7 +75,7 @@ class AffiliateUser
                 unset($current[$removeKey]);
             }
 
-            $reduced[$current['id']] = $current;
+            $reduced[] = $current;
 
             return $reduced;
         });

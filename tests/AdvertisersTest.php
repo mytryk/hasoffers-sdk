@@ -50,8 +50,8 @@ class AdvertisersTest extends HasoffersPHPUnit
 
         $users = $advertiser->getAdvertiserUser()->getList();
 
-        isSame("10", $users[10]['id']);
-        isSame('ivan@test.com', $users[10]['email']);
-        isSame(AdvertiserUser::STATUS_ACTIVE, $users[10]['status']);
+        isSame("10", $users[0]['id']);
+        isSame('ivan@test.com', $users[0]['email']);
+        isSame(AdvertiserUser::STATUS_ACTIVE, $users[0]['status']);
     }
 }
