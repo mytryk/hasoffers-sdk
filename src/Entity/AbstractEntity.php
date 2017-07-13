@@ -141,7 +141,7 @@ abstract class AbstractEntity
                 );
             }
 
-            $this->related[$objectName] = new $className($objectData, $this);
+            $this->related[$objectName] = new $className((array)$objectData, $this);
 
             if (property_exists($this, 'hoClient') && $this->hoClient) {
                 $this->hoClient->trigger(
