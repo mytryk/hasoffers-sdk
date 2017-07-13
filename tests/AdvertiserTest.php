@@ -84,6 +84,18 @@ class AdvertiserTest extends HasoffersPHPUnit
         $advertiser->undefined_property;
     }
 
+    public function testGetAdvertiserSignUpAnswers()
+    {
+        $someId = '504';
+        /** @var Advertiser $advertiser */
+        $advertiser = $this->hoClient->get(Advertiser::class, $someId);
+        $answers = $advertiser->getAnswers();
+
+        isSame(2, count($answers));
+        isSame("What language do you speak?", $answers[1]['question']);
+        isSame("English", $answers[1]['answer']);
+    }
+
     public function testGetAdvertiserUser()
     {
         $someId = '504';

@@ -81,9 +81,10 @@ class Advertiser extends AbstractEntity
      * @var array
      */
     protected $methods = [
-        'get'    => 'findById',
-        'create' => 'create',
-        'update' => 'update',
+        'get'        => 'findById',
+        'create'     => 'create',
+        'update'     => 'update',
+        'getAnswers' => 'getSignupAnswers'
     ];
 
     /**
@@ -107,6 +108,34 @@ class Advertiser extends AbstractEntity
         $result = $this->save();
 
         $this->hoClient->trigger("{$this->target}.restore.after", [$this]);
+
+        return $result;
+    }
+
+    /**
+     * Find sing up answers for given affiliate.
+     *
+     * @return mixed
+     */
+    public function getAnswers()
+    {
+        $data = $this->hoClient->apiRequest([
+            'Method' => $this->methods['getAnswers'],
+            'Target' => $this->target,
+            'id'     => $this->id
+        ]);
+
+        $result = [];
+        foreach ((array)$data as $answers) {
+            foreach ($answers as $answer) {
+                $result[] = [
+                    'id'       => $answer['question_id'],
+                    'question' => $answer['question'],
+                    'answer'   => $answer['answer'],
+                    'status'   => $answer['status']
+                ];
+            }
+        }
 
         return $result;
     }
