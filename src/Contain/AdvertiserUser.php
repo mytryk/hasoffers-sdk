@@ -61,6 +61,7 @@ class AdvertiserUser
      */
     public function getList()
     {
+        ksort($this->users);
         $data = array_reduce($this->users, function ($reduced, $current) {
             $removeKeys = [
                 'wants_alerts',
