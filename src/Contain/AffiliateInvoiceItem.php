@@ -42,7 +42,7 @@ class AffiliateInvoiceItem
      * @param array            $data
      * @param AffiliateInvoice $affiliateInvoice
      */
-    public function __construct(array $data, AffiliateInvoice $affiliateInvoice)
+    public function __construct(array $data = null, AffiliateInvoice $affiliateInvoice)
     {
         $this->invoice = $affiliateInvoice;
         $this->items = $data;

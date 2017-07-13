@@ -15,9 +15,7 @@
 namespace JBZoo\PHPUnit;
 
 use JBZoo\Data\Data;
-use JBZoo\Event\EventManager;
 use JBZoo\Utils\Str;
-use Unilead\HasOffers\Contain\AffiliateUser;
 use Unilead\HasOffers\Entity\Affiliate;
 use Unilead\HasOffers\Contain\PaymentMethod;
 
