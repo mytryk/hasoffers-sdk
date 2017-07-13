@@ -20,6 +20,8 @@ use Unilead\HasOffers\Traits\Data;
 /**
  * Class AbstractEntity
  *
+ * @property string id
+ *
  * @package Unilead\HasOffers\Entity
  */
 abstract class AbstractEntity
