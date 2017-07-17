@@ -18,7 +18,8 @@
 
 namespace PHPSTORM_META {
 
-    use Unilead\HasOffers\HasOffersClient;
+    use Unilead\HasOffers\Entities\Advertisers;
+    use Unilead\HasOffers\Entities\Affiliates;
     use Unilead\HasOffers\Entity\Advertiser;
     use Unilead\HasOffers\Entity\AdvertiserInvoice;
     use Unilead\HasOffers\Entity\AdvertiserInvoiceItem;
@@ -29,47 +30,23 @@ namespace PHPSTORM_META {
     use Unilead\HasOffers\Entity\AffiliateUser;
     use Unilead\HasOffers\Entity\Employee;
     use Unilead\HasOffers\Entity\Offer;
+    use Unilead\HasOffers\HasOffersClient;
 
     override(HasOffersClient::get(0),
         map([
-            Advertiser::class                      => Advertiser::class,
-            'Advertiser'                           => Advertiser::class,
-            '\Unilead\HasOffers\Entity\Advertiser' => Advertiser::class,
-
-            AdvertiserInvoice::class                      => AdvertiserInvoice::class,
-            'AdvertiserInvoice'                           => AdvertiserInvoice::class,
-            '\Unilead\HasOffers\Entity\AdvertiserInvoice' => AdvertiserInvoice::class,
-
-            AdvertiserInvoiceItem::class                      => AdvertiserInvoiceItem::class,
-            'AdvertiserInvoiceItem'                           => AdvertiserInvoiceItem::class,
-            '\Unilead\HasOffers\Entity\AdvertiserInvoiceItem' => AdvertiserInvoiceItem::class,
-
-            AdvertiserUser::class                      => AdvertiserUser::class,
-            'AdvertiserUser'                           => AdvertiserUser::class,
-            '\Unilead\HasOffers\Entity\AdvertiserUser' => AdvertiserUser::class,
-
-            Affiliate::class                      => Affiliate::class,
-            'Affiliate'                           => Affiliate::class,
-            '\Unilead\HasOffers\Entity\Affiliate' => Affiliate::class,
-
-            AffiliateInvoice::class                      => AffiliateInvoice::class,
-            'AffiliateInvoice'                           => AffiliateInvoice::class,
-            '\Unilead\HasOffers\Entity\AffiliateInvoice' => AffiliateInvoice::class,
-
-            AffiliateInvoiceItem::class                      => AffiliateInvoiceItem::class,
-            'AffiliateInvoiceItem'                           => AffiliateInvoiceItem::class,
-            '\Unilead\HasOffers\Entity\AffiliateInvoiceItem' => AffiliateInvoiceItem::class,
-
-            AffiliateUser::class                      => AffiliateUser::class,
-            'AffiliateUser'                           => AffiliateUser::class,
-            '\Unilead\HasOffers\Entity\AffiliateUser' => AffiliateUser::class,
-
-            Employee::class                      => Employee::class,
-            'Employee'                           => Employee::class,
-            '\Unilead\HasOffers\Entity\Employee' => Employee::class,
-
-            Offer::class                      => Offer::class,
-            'Offer'                           => Offer::class,
-            '\Unilead\HasOffers\Entity\Offer' => Offer::class,
+            // object
+            Advertiser::class            => Advertiser::class,
+            AdvertiserInvoice::class     => AdvertiserInvoice::class,
+            AdvertiserInvoiceItem::class => AdvertiserInvoiceItem::class,
+            AdvertiserUser::class        => AdvertiserUser::class,
+            Affiliate::class             => Affiliate::class,
+            AffiliateInvoice::class      => AffiliateInvoice::class,
+            AffiliateInvoiceItem::class  => AffiliateInvoiceItem::class,
+            AffiliateUser::class         => AffiliateUser::class,
+            Employee::class              => Employee::class,
+            Offer::class                 => Offer::class,
+            // list
+            Advertisers::class           => Advertisers::class,
+            Affiliates::class            => Affiliates::class,
         ]));
 }
