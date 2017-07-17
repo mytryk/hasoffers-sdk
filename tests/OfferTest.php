@@ -141,7 +141,6 @@ class OfferTest extends HasoffersPHPUnit
     {
         $randomValue = Str::random();
 
-        /** @var Offer $offer */
         $offer = $this->hoClient->get(Offer::class, 2);
         $offer->name = $randomValue;
         $offer->description = $randomValue;
