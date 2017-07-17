@@ -164,7 +164,7 @@ class Affiliate extends AbstractEntity
 
         $result = [];
         foreach ((array)$data as $answers) {
-            foreach ($answers as $answer) {
+            foreach ((array)$answers as $answer) {
                 $result[] = [
                     'id'       => $answer['question_id'],
                     'question' => $answer['question'],
