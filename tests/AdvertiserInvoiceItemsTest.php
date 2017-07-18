@@ -37,7 +37,7 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
     public function testCanCreateInvoiceItem()
     {
         $invoiceId = 36;
-        $rand = mt_rand(1, 500);
+        $rand = random_int(1, 500);
         $memo = 'Test Bill Item';
         $type = 'stats';
 
@@ -57,9 +57,9 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
 
         $items = $invoiceCheck->getAdvertiserInvoiceItem()->getRawData();
 
-        $itemKey = array_search(strval($invoiceItem->id[0]), array_column($items, 'id'));
+        $itemKey = array_search((string)$invoiceItem->id[0], array_column($items, 'id'), true);
         isNotSame(false, $itemKey);
-        isSame(strval($rand), $items[$itemKey]['actions']);
+        isSame((string)$rand, $items[$itemKey]['actions']);
         isSame($memo, $items[$itemKey]['memo']);
         isSame($type, $items[$itemKey]['type']);
     }
@@ -83,7 +83,7 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $itemsCheck = $billCheck->getAdvertiserInvoiceItem()->getRawData();
 
         //check item is not among them
-        $itemKey = array_search(strval($items[0]['id']), array_column($itemsCheck, 'id'));
+        $itemKey = array_search((string)$items[0]['id'], array_column($itemsCheck, 'id'), true);
         isSame(false, $itemKey);
     }
 }

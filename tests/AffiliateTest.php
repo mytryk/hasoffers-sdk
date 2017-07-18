@@ -18,6 +18,7 @@ use JBZoo\Data\Data;
 use JBZoo\Utils\Str;
 use Unilead\HasOffers\Entity\Affiliate;
 use Unilead\HasOffers\Contain\PaymentMethod;
+use Unilead\HasOffers\Entity\AffiliateUser;
 
 /**
  * Class AffiliateTest
@@ -126,8 +127,8 @@ class AffiliateTest extends HasoffersPHPUnit
         $answers = $affiliate->getAnswers();
 
         isSame(2, count($answers));
-        isSame("What language do you speak?", $answers[1]['question']);
-        isSame("English", $answers[1]['answer']);
+        isSame('What language do you speak?', $answers[1]['question']);
+        isSame('English', $answers[1]['answer']);
     }
 
     public function testGetAffiliatePaymentMethodType()
@@ -152,9 +153,9 @@ class AffiliateTest extends HasoffersPHPUnit
         $affiliate = $this->hoClient->get(Affiliate::class, $someId);
         $users = $affiliate->getAffiliateUser()->getList();
 
-        isSame("10", $users[0]['id']);
+        isSame('10', $users[0]['id']);
         isSame('anbelov83@belov.ru', $users[0]['email']);
-        isSame(\Unilead\HasOffers\Entity\AffiliateUser::STATUS_DELETED, $users[0]['status']);
+        isSame(AffiliateUser::STATUS_DELETED, $users[0]['status']);
     }
 
     public function testCanCreateAffiliate()

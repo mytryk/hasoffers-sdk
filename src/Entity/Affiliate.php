@@ -103,10 +103,10 @@ class Affiliate extends AbstractEntity
     use Deleted;
     use Blocked;
 
-    const STATUS_ACTIVE = 'active';
-    const STATUS_PENDING = 'pending';
-    const STATUS_BLOCKED = 'blocked';
-    const STATUS_DELETED = 'deleted';
+    const STATUS_ACTIVE   = 'active';
+    const STATUS_PENDING  = 'pending';
+    const STATUS_BLOCKED  = 'blocked';
+    const STATUS_DELETED  = 'deleted';
     const STATUS_REJECTED = 'rejected';
 
     /**

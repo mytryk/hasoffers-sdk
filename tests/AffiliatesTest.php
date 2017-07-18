@@ -54,7 +54,7 @@ class AffiliatesTest extends HasoffersPHPUnit
 
         $users = $affiliate->getAffiliateUser()->getList();
 
-        isSame("10", $users[0]['id']);
+        isSame('10', $users[0]['id']);
         isSame('anbelov83@belov.ru', $users[0]['email']);
         isSame(AffiliateUser::STATUS_DELETED, $users[0]['status']);
     }

@@ -14,10 +14,8 @@
 
 namespace JBZoo\PHPUnit;
 
-use JBZoo\Data\Data;
 use JBZoo\Utils\Str;
 use Unilead\HasOffers\Entity\Offer;
-use Unilead\HasOffers\Contain\PaymentMethod;
 
 /**
  * Class OfferTest

@@ -68,7 +68,7 @@ class Employee extends AbstractEntity
 {
     use Deleted;
 
-    const STATUS_ACTIVE = 'active';
+    const STATUS_ACTIVE  = 'active';
     const STATUS_DELETED = 'deleted';
 
     /**

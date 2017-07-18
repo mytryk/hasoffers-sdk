@@ -92,8 +92,8 @@ class AdvertiserTest extends HasoffersPHPUnit
         $answers = $advertiser->getAnswers();
 
         isSame(2, count($answers));
-        isSame("What language do you speak?", $answers[1]['question']);
-        isSame("English", $answers[1]['answer']);
+        isSame('What language do you speak?', $answers[1]['question']);
+        isSame('English', $answers[1]['answer']);
     }
 
     public function testGetAdvertiserUser()
@@ -103,7 +103,7 @@ class AdvertiserTest extends HasoffersPHPUnit
         $affiliate = $this->hoClient->get(Advertiser::class, $someId);
         $users = $affiliate->getAdvertiserUser()->getList();
 
-        isSame("10", $users[0]['id']);
+        isSame('10', $users[0]['id']);
         isSame('ivan@test.com', $users[0]['email']);
         isSame(AdvertiserUser::STATUS_ACTIVE, $users[0]['status']);
     }

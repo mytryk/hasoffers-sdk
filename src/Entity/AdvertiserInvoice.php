@@ -39,14 +39,16 @@ use Unilead\HasOffers\Contain\AdvertiserInvoiceItem;
  * @property string $start_date    Start of date range; use "YYYY-MM-DD" format
  * @property string $status        The status of the invoice
  *
+ * #@method  AdvertiserInvoiceItem getAdvertiserInvoiceItem()
+ *
  * @package Unilead\HasOffers\Entity
  */
 class AdvertiserInvoice extends AbstractEntity
 {
     use Deleted;
 
-    const STATUS_ACTIVE     = 'active';
-    const STATUS_DELETED    = 'deleted';
+    const STATUS_ACTIVE  = 'active';
+    const STATUS_DELETED = 'deleted';
 
     /**
      * @var string

@@ -40,8 +40,8 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage    No data to create new object "Unilead\HasOffers\Entity\AffiliateInvoice" in HasOffers
-     * @expectedException           \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage No data to create new object "Unilead\HasOffers\Entity\AffiliateInvoice" in HasOffers
+     * @expectedException        \Unilead\HasOffers\Exception
      */
     public function testCannotSaveUndefinedId()
     {
@@ -74,13 +74,13 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
 
     public function testCanCreateAffiliateInvoice()
     {
-        $rand = mt_rand(1262055681, 1262055681);
+        $rand = random_int(1262055681, 1262055681);
 
         /** @var AffiliateInvoice $bill */
         $bill = $this->hoClient->get(AffiliateInvoice::class);
         $bill->affiliate_id = 1004;
-        $bill->start_date = date("Y-m-d H:i:s", $rand);
-        $bill->end_date = date("Y-m-d H:i:s", $rand);
+        $bill->start_date = date('Y-m-d H:i:s', $rand);
+        $bill->end_date = date('Y-m-d H:i:s', $rand);
         $bill->save();
 
         /** @var AffiliateInvoice $invoiceCheck */

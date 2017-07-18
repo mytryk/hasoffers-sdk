@@ -48,6 +48,8 @@ namespace Unilead\HasOffers\Entity;
  * @property string $vat_rate      The VAT rate being used to calculate tax, as a percentage (e.g. 15.00). Only
  *                                 applicable if "type" is "vat".
  *
+ * @method \Unilead\HasOffers\Contain\AdvertiserInvoiceItem getAdvertiserInvoiceItem()
+ *
  * @package Unilead\HasOffers\Entity
  */
 class AdvertiserInvoiceItem extends AbstractEntity

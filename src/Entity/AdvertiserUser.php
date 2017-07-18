@@ -69,7 +69,11 @@ class AdvertiserUser extends AbstractEntity
     /**
      * @var array
      */
-    protected $excludedKeys = ['is_creator', 'access', 'modified'];
+    protected $excludedKeys = [
+        'is_creator',
+        'access',
+        'modified'
+    ];
 
     /**
      * @var array

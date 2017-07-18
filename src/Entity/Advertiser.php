@@ -66,10 +66,10 @@ class Advertiser extends AbstractEntity
 {
     use Deleted;
 
-    const STATUS_ACTIVE = 'active';
-    const STATUS_PENDING = 'pending';
-    const STATUS_BLOCKED = 'blocked';
-    const STATUS_DELETED = 'deleted';
+    const STATUS_ACTIVE   = 'active';
+    const STATUS_PENDING  = 'pending';
+    const STATUS_BLOCKED  = 'blocked';
+    const STATUS_DELETED  = 'deleted';
     const STATUS_REJECTED = 'rejected';
 
     /**
