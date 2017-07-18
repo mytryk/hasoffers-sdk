@@ -266,6 +266,10 @@ abstract class AbstractEntity
      */
     public function isExist()
     {
+        if (!(int)$this->objectId) {
+            return false;
+        }
+
         try {
             $this->id;
         } catch (Exception $e) {
