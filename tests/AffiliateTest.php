@@ -28,7 +28,6 @@ class AffiliateTest extends HasoffersPHPUnit
 {
     public function testEventManagerAttach()
     {
-        /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class, 1004);
 
         $checkerCounter = 0;
@@ -47,7 +46,6 @@ class AffiliateTest extends HasoffersPHPUnit
         $this->hoClient->setRequestsLimit(2);
 
         $startTime = time();
-        /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class, 1004);
         $affiliate->reload();
         $affiliate->reload();
@@ -78,7 +76,6 @@ class AffiliateTest extends HasoffersPHPUnit
     public function testCanGetAffiliateById()
     {
         $someId = '1004';
-        /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class, $someId);
 
         is($someId, $affiliate->id);
@@ -86,11 +83,15 @@ class AffiliateTest extends HasoffersPHPUnit
 
     public function testIsExist()
     {
-        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class);
+        isFalse($affiliate->isExist());
+
+        $affiliate = $this->hoClient->get(Affiliate::class, 0);
+        isFalse($affiliate->isExist());
+
         $affiliate = $this->hoClient->get(Affiliate::class, '10000000');
         isFalse($affiliate->isExist());
 
-        /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class, '1004');
         isTrue($affiliate->isExist());
     }
@@ -112,7 +113,6 @@ class AffiliateTest extends HasoffersPHPUnit
     public function testCannotGetUndefinedProperty()
     {
         $someId = '1004';
-        /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class, $someId);
         is($someId, $affiliate->id);
 
@@ -122,7 +122,6 @@ class AffiliateTest extends HasoffersPHPUnit
     public function testGetAffiliateSignUpAnswers()
     {
         $someId = '1004';
-        /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class, $someId);
         $answers = $affiliate->getAnswers();
 
@@ -134,7 +133,6 @@ class AffiliateTest extends HasoffersPHPUnit
     public function testGetAffiliatePaymentMethodType()
     {
         $someId = '1004';
-        /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class, $someId);
         $paymentMethod = $affiliate->getPaymentMethod();
 
@@ -149,7 +147,6 @@ class AffiliateTest extends HasoffersPHPUnit
     public function testGetAffiliateUser()
     {
         $someId = '1004';
-        /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class, $someId);
         $users = $affiliate->getAffiliateUser()->getList();
 
@@ -160,7 +157,6 @@ class AffiliateTest extends HasoffersPHPUnit
 
     public function testCanCreateAffiliate()
     {
-        /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class);
         $affiliate->company = 'Test Company';
         $affiliate->phone = '+7 845 845 84 54';
@@ -178,14 +174,12 @@ class AffiliateTest extends HasoffersPHPUnit
     {
         $this->skipIfFakeServer();
 
-        /** @var Affiliate $affiliateBeforeSave */
         $affiliateBeforeSave = $this->hoClient->get(Affiliate::class, 1004);
 
         $beforeCompany = $affiliateBeforeSave->company;
         $affiliateBeforeSave->company = Str::random();
         $affiliateBeforeSave->save();
 
-        /** @var Affiliate $affiliateAfterSave */
         $affiliateAfterSave = $this->hoClient->get(Affiliate::class, 1004);
         isNotSame($beforeCompany, $affiliateAfterSave->company);
     }
@@ -194,11 +188,9 @@ class AffiliateTest extends HasoffersPHPUnit
     {
         $this->skipIfFakeServer();
 
-        /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class, 1004);
         $affiliate->delete();
 
-        /** @var Affiliate $affiliateAfterSave */
         $affiliateAfterSave = $this->hoClient->get(Affiliate::class, 1004);
 
         isSame(Affiliate::STATUS_DELETED, $affiliateAfterSave->status);
@@ -208,24 +200,20 @@ class AffiliateTest extends HasoffersPHPUnit
     {
         $this->skipIfFakeServer();
 
-        /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class, 1004);
         $affiliate->block();
 
-        /** @var Affiliate $affiliateAfterSave */
         $affiliateAfterSave = $this->hoClient->get(Affiliate::class, 1004);
         isSame(Affiliate::STATUS_BLOCKED, $affiliateAfterSave->status);
     }
 
     public function testCanUnblockAffiliate()
     {
-        /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class, 1004);
         $affiliate->unblock();
 
         isSame(Affiliate::STATUS_ACTIVE, $affiliate->status);
 
-        /** @var Affiliate $affiliateAfterSave */
         $affiliateAfterSave = $this->hoClient->get(Affiliate::class, 1004);
         isSame(Affiliate::STATUS_ACTIVE, $affiliateAfterSave->status);
     }
@@ -234,7 +222,6 @@ class AffiliateTest extends HasoffersPHPUnit
     {
         $randomValue = Str::random();
 
-        /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class, 1004);
         $affiliate->company = $randomValue;
         $affiliate->phone = $randomValue;
@@ -251,7 +238,6 @@ class AffiliateTest extends HasoffersPHPUnit
 
     public function testNoDataToUpdateIsNotError()
     {
-        /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class, 1004);
         $affiliate->save();
 
