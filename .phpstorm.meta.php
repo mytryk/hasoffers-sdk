@@ -48,5 +48,6 @@ namespace PHPSTORM_META {
             // list
             Advertisers::class           => Advertisers::class,
             Affiliates::class            => Affiliates::class,
+            Offers::class                => Offers::class,
         ]));
 }
