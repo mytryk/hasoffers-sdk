@@ -159,7 +159,7 @@ class HasOffersClient
                 throw new Exception('HasOffers Error. Dump of response: ' . print_r($response, true));
             }
         } catch (\Exception $httpException) {
-            throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);
+            throw new Exception($httpException->getMessage(), $httpException->getCode());
         }
 
         return json($json->find('response.data'));
