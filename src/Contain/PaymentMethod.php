@@ -20,6 +20,83 @@ use Unilead\HasOffers\Entity\Affiliate;
 
 /**
  * Class PaymentMethod
+ *
+ * @property string affiliate_id
+ *
+ * @property string account_holder                          DirectDeposit
+ * @property string account_number                          DirectDeposit|Wire
+ * @property string bank_name                               DirectDeposit|Wire
+ * @property string other_details                           DirectDeposit|Wire
+ * @property string routing_number                          DirectDeposit|Wire
+ *
+ * @property string beneficiary_name                        Wire
+ *
+ * @property string email                                   Paypal
+ * @property string modified                                Paypal|Wire
+ *
+ * @property string status                                  Payoneer
+ *
+ * @property string details                                 Other
+ *
+ * @property string advanced_accounting_id                  PayQuicker
+ * @property string advanced_email                          PayQuicker
+ * @property string advanced_security_id                    PayQuicker
+ * @property string advanced_security_id_hint               PayQuicker
+ * @property string m2eft_account_name                      PayQuicker
+ * @property string m2eft_account_number                    PayQuicker
+ * @property string m2eft_account_tax_number                PayQuicker
+ * @property string m2eft_account_type                      PayQuicker
+ * @property string m2eft_account_type_code                 PayQuicker
+ * @property string m2eft_bank_address                      PayQuicker
+ * @property string m2eft_bank_name                         PayQuicker
+ * @property string m2eft_bank_number                       PayQuicker
+ * @property string m2eft_bic                               PayQuicker
+ * @property string m2eft_city                              PayQuicker
+ * @property string m2eft_description                       PayQuicker
+ * @property string m2eft_destination_country_code          PayQuicker
+ * @property string m2eft_iban                              PayQuicker
+ * @property string m2eft_postal_code                       PayQuicker
+ * @property string m2eft_routing_number                    PayQuicker
+ * @property string m2m_accounting_id                       PayQuicker
+ * @property string m2m_security_id                         PayQuicker
+ * @property string m2m_security_id_hint                    PayQuicker
+ * @property string m2papercheck_address1                   PayQuicker
+ * @property string m2papercheck_address2                   PayQuicker
+ * @property string m2papercheck_address3                   PayQuicker
+ * @property string m2papercheck_address4                   PayQuicker
+ * @property string m2papercheck_check_memo                 PayQuicker
+ * @property string m2papercheck_city                       PayQuicker
+ * @property string m2papercheck_destination_country_code   PayQuicker
+ * @property string m2papercheck_postal_code                PayQuicker
+ * @property string m2papercheck_recipient_name             PayQuicker
+ * @property string m2papercheck_region                     PayQuicker
+ * @property string m2papercheck_return_address1            PayQuicker
+ * @property string m2papercheck_return_address2            PayQuicker
+ * @property string m2papercheck_return_address3            PayQuicker
+ * @property string m2papercheck_return_city                PayQuicker
+ * @property string m2papercheck_return_country_code        PayQuicker
+ * @property string m2papercheck_return_postal_code         PayQuicker
+ * @property string m2papercheck_return_region              PayQuicker
+ * @property string method                                  PayQuicker
+ * @property string usach_account_number                    PayQuicker
+ * @property string usach_account_type                      PayQuicker
+ * @property string usach_first_name                        PayQuicker
+ * @property string usach_last_name                         PayQuicker
+ * @property string usach_routing_number                    PayQuicker
+ *
+ * @property string payability_affiliate_status             Payability
+ * @property string payability_deferred_payment_method      Payability
+ * @property string payability_network_status               Payability
+ *
+ * @property string address1                                Check
+ * @property string address2                                Check
+ * @property string city                                    Check
+ * @property string country                                 Check
+ * @property string payable_to                              Check
+ * @property string region                                  Check
+ * @property string zipcode                                 Check
+ * @property string is_individual                           Check
+ *
  * @package Unilead\HasOffers
  */
 class PaymentMethod
@@ -33,6 +110,7 @@ class PaymentMethod
     const TYPE_PAYPAL        = 'Paypal';
     const TYPE_PAYQUICKER    = 'PayQuicker';
     const TYPE_WIRE          = 'Wire';
+    const TYPE_PAYABILITY    = 'Payability';
 
     /**
      * @var Affiliate
@@ -46,6 +124,7 @@ class PaymentMethod
 
     /**
      * PaymentMethod constructor.
+     *
      * @param array     $data
      * @param Affiliate $affiliate
      */
@@ -84,7 +163,15 @@ class PaymentMethod
             return self::TYPE_WIRE;
         }
 
-        return self::TYPE_OTHER;
+        if ($this->paymentData->find(self::TYPE_PAYABILITY . '.payability_affiliate_status')) {
+            return self::TYPE_PAYABILITY;
+        }
+
+        if ($this->paymentData->find(self::TYPE_OTHER . '.details')) {
+            return self::TYPE_OTHER;
+        }
+
+        throw new Exception('Undefied payment method for Affiliate ID = ' . $this->affiliate->id);
     }
 
     /**

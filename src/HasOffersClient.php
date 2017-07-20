@@ -21,6 +21,7 @@ use Unilead\HasOffers\Entity\AbstractEntity;
 
 /**
  * Class Request
+ *
  * @package Unilead\HasOffers
  */
 class HasOffersClient
@@ -65,6 +66,7 @@ class HasOffersClient
 
     /**
      * HasOffersClient constructor.
+     *
      * @param string $networkId
      * @param string $token
      * @param string $apiUrl
@@ -90,6 +92,10 @@ class HasOffersClient
             $willCreate = $modelClassName;
         } elseif (class_exists(__NAMESPACE__ . '\\Entity\\' . $modelClassName)) {
             $willCreate = __NAMESPACE__ . '\\Entity\\' . $modelClassName;
+
+        } elseif (class_exists(__NAMESPACE__ . '\\Entities\\' . $modelClassName)) {
+            $willCreate = __NAMESPACE__ . '\\Entities\\' . $modelClassName;
+
         } else {
             throw new Exception("Model with class name \"{$modelClassName}\" does not exist.");
         }
@@ -127,7 +133,7 @@ class HasOffersClient
             $httpClientParams = [
                 'timeout'    => self::HTTP_TIMEOUT,
                 'verify'     => true,
-                'exceptions' => true
+                'exceptions' => true,
             ];
 
             $httpClient = new HttpClient($httpClientParams);
@@ -167,6 +173,7 @@ class HasOffersClient
 
     /**
      * Setter for external EventManager
+     *
      * @param EventManager $eManager
      * @return $this
      */
