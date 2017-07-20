@@ -15,6 +15,7 @@
 namespace JBZoo\PHPUnit;
 
 use JBZoo\Data\Data;
+use JBZoo\Utils\Email;
 use JBZoo\Utils\Str;
 use Unilead\HasOffers\Entity\Affiliate;
 use Unilead\HasOffers\Contain\PaymentMethod;
@@ -22,6 +23,7 @@ use Unilead\HasOffers\Entity\AffiliateUser;
 
 /**
  * Class AffiliateTest
+ *
  * @package JBZoo\PHPUnit
  */
 class AffiliateTest extends HasoffersPHPUnit
@@ -31,7 +33,7 @@ class AffiliateTest extends HasoffersPHPUnit
         $affiliate = $this->hoClient->get(Affiliate::class, 1004);
 
         $checkerCounter = 0;
-        $this->eManager->on('ho.*.reload.*', function () use (&$checkerCounter) {
+        $this->eManager->on('ho.Affiliate.reload.*', function () use (&$checkerCounter) {
             $checkerCounter++;
         });
 
@@ -140,8 +142,7 @@ class AffiliateTest extends HasoffersPHPUnit
 
         $paymentRawData = $paymentMethod->getRawData();
         isClass(Data::class, $paymentRawData);
-        isSame('abelov83@belov.ru', $paymentRawData->email);
-        isSame('abelov83@belov.ru', $paymentMethod->email);
+        isSame($paymentRawData->email, $paymentMethod->email);
     }
 
     public function testGetAffiliateUser()
@@ -242,5 +243,28 @@ class AffiliateTest extends HasoffersPHPUnit
         $affiliate->save();
 
         is(1004, $affiliate->id);
+    }
+
+    public function testCanSavePaymentMethod()
+    {
+        $someId = '1004';
+        $randomEmail = Email::random();
+
+        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $paymentMethod = $affiliate->getPaymentMethod();
+
+        isSame(PaymentMethod::TYPE_PAYPAL, $paymentMethod->getType());
+
+        $paymentMethod->email = $randomEmail;
+        isSame($randomEmail, $paymentMethod->email);
+        isTrue($paymentMethod->save());
+        isSame($randomEmail, $paymentMethod->email);
+
+        // Check updated field
+        $expAffiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $expPaymentMethod = $expAffiliate->getPaymentMethod();
+        isSame(PaymentMethod::TYPE_PAYPAL, $expPaymentMethod->getType());
+
+        isSame($randomEmail, $expPaymentMethod->email);
     }
 }

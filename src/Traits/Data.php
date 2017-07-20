@@ -14,15 +14,20 @@
 
 namespace Unilead\HasOffers\Traits;
 
+use Unilead\HasOffers\HasOffersClient;
 use JBZoo\Utils\Str;
 use JBZoo\Data\Data as JBZooData;
 
 /**
  * Class Entity
+ *
  * @package Unilead\HasOffers
  */
 trait Data
 {
+    /** @var  HasOffersClient */
+    protected $hoClient;
+
     /**
      * @var array
      */

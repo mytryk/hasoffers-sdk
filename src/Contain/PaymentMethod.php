@@ -15,6 +15,8 @@
 namespace Unilead\HasOffers\Contain;
 
 use JBZoo\Data\Data;
+use JBZoo\Utils\Filter;
+use JBZoo\Utils\Vars;
 use Unilead\HasOffers\Traits\Data as DataTrait;
 use Unilead\HasOffers\Entity\Affiliate;
 
@@ -112,6 +114,14 @@ class PaymentMethod
     const TYPE_WIRE          = 'Wire';
     const TYPE_PAYABILITY    = 'Payability';
 
+    /** @var string */
+    protected $target = 'PaymentMethod';
+
+    /**
+     * @var int
+     */
+    protected $objectId = -1;
+
     /**
      * @var Affiliate
      */
@@ -132,10 +142,13 @@ class PaymentMethod
     {
         $this->affiliate = $affiliate;
         $this->paymentData = new Data($data);
+        $this->hoClient = $this->affiliate->getClient();
+        $this->reload();
     }
 
     /**
      * @return string
+     * @throws Exception
      */
     public function getType()
     {
@@ -189,10 +202,44 @@ class PaymentMethod
     {
         $data = $this->getRawData()->getArrayCopy();
 
-        $this->affiliate->getClient()->trigger('paymentmethod.reload.before', [$this, &$data]);
+        $this->hoClient->trigger("{$this->target}.reload.before", [$this, &$data]);
 
         $this->bindData($data);
+        $this->origData = $data;
 
-        $this->affiliate->getClient()->trigger('paymentmethod.reload.after', [$this, $data]);
+        $this->hoClient->trigger("{$this->target}.reload.after", [$this, $data]);
+    }
+
+    /**
+     * Save changed payment method info
+     */
+    public function save()
+    {
+        $changedData = $this->getChangedFields();
+        $this->hoClient->trigger("{$this->target}.save.before", [$this, &$changedData]);
+
+        if (empty($changedData)) {
+            return false;
+        }
+
+        $result = $this->hoClient->apiRequest([
+            'Target'       => $this->affiliate->getTarget(),
+            'Method'       => 'updatePaymentMethod' . $this->getType(),
+            'affiliate_id' => $this->affiliate->id,
+            'data'         => $changedData,
+        ]);
+
+        if ($result->get('0', null, 'bool')) {
+            $newData = array_merge($this->getRawData()->getArrayCopy(), $changedData);
+            $this->bindData($newData);
+            $this->origData = $newData;
+            $this->changedData = [];
+
+            $this->hoClient->trigger("{$this->target}.save.after", [$this, $newData]);
+
+            return true;
+        }
+
+        return false;
     }
 }
