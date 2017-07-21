@@ -15,8 +15,6 @@
 namespace Unilead\HasOffers\Contain;
 
 use JBZoo\Data\Data;
-use JBZoo\Utils\Filter;
-use JBZoo\Utils\Vars;
 use Unilead\HasOffers\Traits\Data as DataTrait;
 use Unilead\HasOffers\Entity\Affiliate;
 
@@ -113,6 +111,7 @@ class PaymentMethod
     const TYPE_PAYQUICKER    = 'PayQuicker';
     const TYPE_WIRE          = 'Wire';
     const TYPE_PAYABILITY    = 'Payability';
+    const TYPE_UNDEFINED     = 'Undefined';
 
     /** @var string */
     protected $target = 'PaymentMethod';
@@ -133,6 +132,11 @@ class PaymentMethod
     protected $paymentData;
 
     /**
+     * @var string
+     */
+    protected $forcePaymentMethod;
+
+    /**
      * PaymentMethod constructor.
      *
      * @param array     $data
@@ -141,9 +145,10 @@ class PaymentMethod
     public function __construct(array $data, Affiliate $affiliate)
     {
         $this->affiliate = $affiliate;
+
         $this->paymentData = new Data($data);
         $this->hoClient = $this->affiliate->getClient();
-        $this->reload();
+//        $this->reload();
     }
 
     /**
@@ -152,39 +157,7 @@ class PaymentMethod
      */
     public function getType()
     {
-        if ($this->paymentData->find(self::TYPE_CHECK . '.payable_to')) {
-            return self::TYPE_CHECK;
-        }
-
-        if ($this->paymentData->find(self::TYPE_DIRECTDEPOSIT . '.account_holder')) {
-            return self::TYPE_DIRECTDEPOSIT;
-        }
-
-        if ($this->paymentData->find(self::TYPE_PAYONEER . '.status')) {
-            return self::TYPE_PAYONEER;
-        }
-
-        if ($this->paymentData->find(self::TYPE_PAYPAL . '.email')) {
-            return self::TYPE_PAYPAL;
-        }
-
-        if ($this->paymentData->find(self::TYPE_PAYQUICKER . '.m2m_email')) {
-            return self::TYPE_PAYQUICKER;
-        }
-
-        if ($this->paymentData->find(self::TYPE_WIRE . '.beneficiary_name')) {
-            return self::TYPE_WIRE;
-        }
-
-        if ($this->paymentData->find(self::TYPE_PAYABILITY . '.payability_affiliate_status')) {
-            return self::TYPE_PAYABILITY;
-        }
-
-        if ($this->paymentData->find(self::TYPE_OTHER . '.details')) {
-            return self::TYPE_OTHER;
-        }
-
-        throw new Exception('Undefied payment method for Affiliate ID = ' . $this->affiliate->id);
+        return ucfirst(strtolower($this->affiliate->payment_method));
     }
 
     /**
@@ -208,6 +181,30 @@ class PaymentMethod
         $this->origData = $data;
 
         $this->hoClient->trigger("{$this->target}.reload.after", [$this, $data]);
+    }
+
+    /**
+     * @param string $newPaymentMethod
+     * @throws Exception
+     */
+    public function setType($newPaymentMethod)
+    {
+        $validList = [
+            self::TYPE_CHECK,
+            self::TYPE_DIRECTDEPOSIT,
+            self::TYPE_OTHER,
+            self::TYPE_PAYONEER,
+            self::TYPE_PAYPAL,
+            self::TYPE_PAYQUICKER,
+            self::TYPE_WIRE,
+            self::TYPE_PAYABILITY,
+        ];
+
+        if (!in_array($newPaymentMethod, $validList, true)) {
+            throw new Exception("Undefined new payment method type: {$newPaymentMethod}");
+        }
+
+        $this->forcePaymentMethod = $newPaymentMethod;
     }
 
     /**

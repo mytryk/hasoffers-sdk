@@ -123,38 +123,22 @@ trait Data
      */
     public function __call($method, array $arguments = [])
     {
-        if (strpos($method, 'get') !== 0 && strpos($method, 'set') !== 0) {
-            throw new Exception('Undefined method ' . static::class . "::{$method}() for objectId={$this->objectId}");
-        }
-
-        $propName = Str::splitCamelCase(str_replace(['set', 'get'], '', $method));
         $relatedObjectName = str_replace(['set', 'get'], '', $method);
 
         if (strpos($method, 'get') === 0) {
             $this->reloadIfNeed();
 
-            if (array_key_exists($relatedObjectName, $this->related)) {
-                return $this->related[$relatedObjectName];
-            }
+            if (array_key_exists($relatedObjectName, $this->contain)) {
+                if (!array_key_exists($relatedObjectName, (array)$this->containObjects)) {
+                    $this->containObjects[$relatedObjectName] = new $this->contain[$relatedObjectName]([], $this);
+                }
 
-            if (!array_key_exists($propName, $this->origData)) {
-                throw new Exception("Undefined property \"{$propName}\" or related object \"{$relatedObjectName}\" in "
-                    . static::class . " for objectId={$this->objectId}");
-            }
-
-            return $this->__get($propName);
-        }
-
-        if (strpos($method, 'set') === 0) {
-            if (array_key_exists('0', $arguments)) {
-                $this->__set($propName, $arguments[0]);
-            } else {
-                throw new Exception("First argument is required for \"{$propName}\" setter  in " . static::class
-                    . " for objectId={$this->objectId}");
+                return $this->containObjects[$relatedObjectName];
             }
         }
 
-        return $this;
+        throw new Exception("Undefined method \"{$method}\" or related object \"{$relatedObjectName}\" in "
+            . static::class . " for objectId={$this->objectId}");
     }
 
     /**

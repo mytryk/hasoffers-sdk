@@ -245,7 +245,7 @@ class AffiliateTest extends HasoffersPHPUnit
         is(1004, $affiliate->id);
     }
 
-    public function testCanSavePaymentMethod()
+    public function testCanUpdatePaymentMethod()
     {
         $someId = '1004';
         $randomEmail = Email::random();
@@ -265,6 +265,34 @@ class AffiliateTest extends HasoffersPHPUnit
         $expPaymentMethod = $expAffiliate->getPaymentMethod();
         isSame(PaymentMethod::TYPE_PAYPAL, $expPaymentMethod->getType());
 
+        isSame($randomEmail, $expPaymentMethod->email);
+    }
+
+    public function testCanCreatePaymentMethod()
+    {
+        $randomEmail = Email::random();
+
+        $affiliate = $this->hoClient->get(Affiliate::class);
+        $affiliate->company = 'Test Company';
+        $affiliate->phone = '+7 845 845 84 54';
+        $affiliate->save();
+
+        $paymentMethod = $affiliate->getPaymentMethod();
+        $paymentMethod->setType(PaymentMethod::TYPE_PAYPAL);
+
+        isSame(PaymentMethod::TYPE_PAYPAL, $paymentMethod->getType());
+
+        $paymentMethod->email = $randomEmail;
+        isSame($randomEmail, $paymentMethod->email);
+        isTrue($paymentMethod->save());
+        isSame($randomEmail, $paymentMethod->email);
+
+        // Check updated field
+        /** @var Affiliate $expAffiliate */
+        $expAffiliate = $this->hoClient->get(Affiliate::class, $affiliate->id);
+        $expPaymentMethod = $expAffiliate->getPaymentMethod();
+        isSame(PaymentMethod::TYPE_PAYPAL, $expPaymentMethod->getType());
+        isSame($expAffiliate->id, $affiliate->id);
         isSame($randomEmail, $expPaymentMethod->email);
     }
 }

@@ -17,6 +17,7 @@ namespace Unilead\HasOffers;
 use JBZoo\Event\EventManager;
 use JBZoo\HttpClient\HttpClient;
 use function JBZoo\Data\json;
+use Unilead\HasOffers\Entities\AbstractEntities;
 use Unilead\HasOffers\Entity\AbstractEntity;
 
 /**
@@ -90,6 +91,7 @@ class HasOffersClient
     {
         if (class_exists($modelClassName)) {
             $willCreate = $modelClassName;
+
         } elseif (class_exists(__NAMESPACE__ . '\\Entity\\' . $modelClassName)) {
             $willCreate = __NAMESPACE__ . '\\Entity\\' . $modelClassName;
 
@@ -97,10 +99,10 @@ class HasOffersClient
             $willCreate = __NAMESPACE__ . '\\Entities\\' . $modelClassName;
 
         } else {
-            throw new Exception("Model with class name \"{$modelClassName}\" does not exist.");
+            throw new Exception("HO Model with class name \"{$modelClassName}\" does not exist.");
         }
 
-        /** @var AbstractEntity $object */
+        /** @var AbstractEntity|AbstractEntities $object */
         $object = new $willCreate($entityId, $data, $containData);
         $object->setClient($this);
         $this->trigger("{$object->getTarget()}.init", [$object, $data]);

@@ -21,7 +21,7 @@ test-all:
 
 update:
 	@echo "\033[0;33m>>> >>> >>> >>> >>> >>> >>> >>> \033[0;30;46m Update project \033[0m"
-	@composer update --optimize-autoloader --no-interaction --no-progress
+	@composer update --no-interaction --no-progress
 	@echo ""
 
 validate:

@@ -41,7 +41,7 @@ abstract class AbstractEntity
     /**
      * @var array
      */
-    protected $related;
+    protected $containObjects;
 
     /**
      * @var array
@@ -130,7 +130,8 @@ abstract class AbstractEntity
     protected function createRelated($data)
     {
         foreach ($this->contain as $objectName => $className) {
-            $objectName = $objectName === 'InvoiceItem' ? 'AffiliateInvoiceItem' : $objectName;
+            //$objectName = $objectName === 'InvoiceItem' ? 'AffiliateInvoiceItem' : $objectName; // TODO: Think (Den)
+
             $objectData = array_key_exists($objectName, $data) ? $data[$objectName] : false;
             if (false === $objectData) {
                 continue;
@@ -143,12 +144,12 @@ abstract class AbstractEntity
                 );
             }
 
-            $this->related[$objectName] = new $className((array)$objectData, $this);
+            $this->containObjects[$objectName] = new $className((array)$objectData, $this);
 
             if (property_exists($this, 'hoClient') && $this->hoClient) {
                 $this->hoClient->trigger(
                     "{$this->target}.related.{$objectName}.init.after",
-                    [$this, $this->related[$objectName]]
+                    [$this, $this->containObjects[$objectName]]
                 );
             }
         }

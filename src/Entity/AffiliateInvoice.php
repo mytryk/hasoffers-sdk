@@ -44,7 +44,7 @@ use Unilead\HasOffers\Contain\AffiliateInvoiceItem;
  * @property string $start_date    Start of date range; use "YYYY-MM-DD" format
  * @property string $status        The status of the invoice
  *
- * @method AffiliateInvoiceItem getAffiliateInvoiceItem()
+ * @method AffiliateInvoiceItem getAffiliateInvoiceItemInvoiceItem()
  *
  * @package Unilead\HasOffers\Entity
  */
@@ -78,6 +78,7 @@ class AffiliateInvoice extends AbstractEntity
      * @var array
      */
     protected $contain = [
-        'InvoiceItem' => AffiliateInvoiceItem::class,
+        'InvoiceItem'          => AffiliateInvoiceItem::class, // Hasoffers bug!
+        'AffiliateInvoiceItem' => AffiliateInvoiceItem::class,
     ];
 }

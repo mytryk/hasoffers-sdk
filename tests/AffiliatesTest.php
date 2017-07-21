@@ -27,7 +27,6 @@ class AffiliatesTest extends HasoffersPHPUnit
 {
     public function testFindList()
     {
-        /** @var Affiliates $affiliates */
         $affiliates = $this->hoClient->get(Affiliates::class);
         $list = $affiliates->find();
 
@@ -45,7 +44,6 @@ class AffiliatesTest extends HasoffersPHPUnit
 
     public function testCanGetAffiliateUser()
     {
-        /** @var Affiliates $affiliates */
         $affiliates = $this->hoClient->get(Affiliates::class);
         $list = $affiliates->find();
 
