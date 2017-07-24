@@ -15,7 +15,7 @@
 namespace Unilead\HasOffers\Entity;
 
 use Unilead\HasOffers\HasOffersClient;
-use Unilead\HasOffers\Traits\Data;
+use Unilead\HasOffers\Traits\DataEntity;
 
 /**
  * Class AbstractEntity
@@ -26,7 +26,7 @@ use Unilead\HasOffers\Traits\Data;
  */
 abstract class AbstractEntity
 {
-    use Data;
+    use DataEntity;
 
     /**
      * @var HasOffersClient

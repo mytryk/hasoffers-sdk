@@ -16,7 +16,7 @@ namespace Unilead\HasOffers\Contain;
 
 use JBZoo\Data\Data;
 use Unilead\HasOffers\Entity\Advertiser;
-use Unilead\HasOffers\Traits\Data as DataTrait;
+use Unilead\HasOffers\Traits\DataEntity;
 
 /**
  * Class AdvertiserUser
@@ -24,7 +24,7 @@ use Unilead\HasOffers\Traits\Data as DataTrait;
  */
 class AdvertiserUser
 {
-    use DataTrait;
+    use DataEntity;
 
     /**
      * @var Advertiser

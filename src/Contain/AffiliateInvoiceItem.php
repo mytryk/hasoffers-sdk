@@ -15,7 +15,7 @@
 namespace Unilead\HasOffers\Contain;
 
 use JBZoo\Data\Data;
-use Unilead\HasOffers\Traits\Data as DataTrait;
+use Unilead\HasOffers\Traits\DataEntity;
 use Unilead\HasOffers\Entity\AffiliateInvoice;
 
 /**
@@ -24,7 +24,7 @@ use Unilead\HasOffers\Entity\AffiliateInvoice;
  */
 class AffiliateInvoiceItem
 {
-    use DataTrait;
+    use DataEntity;
 
     /**
      * @var AffiliateInvoice

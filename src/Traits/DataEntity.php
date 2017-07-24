@@ -23,7 +23,7 @@ use JBZoo\Data\Data as JBZooData;
  *
  * @package Unilead\HasOffers\Traits
  */
-trait Data
+trait DataEntity
 {
     /** @var  HasOffersClient */
     protected $hoClient;

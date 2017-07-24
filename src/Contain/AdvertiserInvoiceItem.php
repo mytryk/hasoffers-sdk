@@ -15,16 +15,17 @@
 namespace Unilead\HasOffers\Contain;
 
 use JBZoo\Data\Data;
-use Unilead\HasOffers\Traits\Data as DataTrait;
+use Unilead\HasOffers\Traits\DataEntity;
 use Unilead\HasOffers\Entity\AdvertiserInvoice;
 
 /**
  * Class AdvertiserInvoiceItem
+ *
  * @package Unilead\HasOffers
  */
 class AdvertiserInvoiceItem
 {
-    use DataTrait;
+    use DataEntity;
 
     /**
      * @var AdvertiserInvoice
