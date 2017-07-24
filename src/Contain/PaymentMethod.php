@@ -148,7 +148,6 @@ class PaymentMethod
 
         $this->paymentData = new Data($data);
         $this->hoClient = $this->affiliate->getClient();
-//        $this->reload();
     }
 
     /**
@@ -170,6 +169,7 @@ class PaymentMethod
 
     /**
      * @inheritdoc
+     * @return bool
      */
     public function reload()
     {
@@ -204,7 +204,9 @@ class PaymentMethod
             throw new Exception("Undefined new payment method type: {$newPaymentMethod}");
         }
 
-        $this->forcePaymentMethod = $newPaymentMethod;
+        $this->affiliate->payment_method = strtolower($newPaymentMethod);
+        $this->affiliate->save();
+        $this->reload();
     }
 
     /**

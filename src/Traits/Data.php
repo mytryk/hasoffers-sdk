@@ -133,6 +133,10 @@ trait Data
                     $this->containObjects[$relatedObjectName] = new $this->contain[$relatedObjectName]([], $this);
                 }
 
+                if (method_exists($this->containObjects[$relatedObjectName], 'reload')) {
+                    //$this->containObjects[$relatedObjectName]->reload();
+                }
+
                 return $this->containObjects[$relatedObjectName];
             }
         }

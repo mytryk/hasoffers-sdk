@@ -142,6 +142,7 @@ class AffiliateTest extends HasoffersPHPUnit
 
         $paymentRawData = $paymentMethod->getRawData();
         isClass(Data::class, $paymentRawData);
+        $paymentMethod->reload(); // TODO: Remove manual reload for that
         isSame($paymentRawData->email, $paymentMethod->email);
     }
 
@@ -265,6 +266,7 @@ class AffiliateTest extends HasoffersPHPUnit
         $expPaymentMethod = $expAffiliate->getPaymentMethod();
         isSame(PaymentMethod::TYPE_PAYPAL, $expPaymentMethod->getType());
 
+        $expPaymentMethod->reload(); // TODO: Remove manual reload for that
         isSame($randomEmail, $expPaymentMethod->email);
     }
 
@@ -276,6 +278,7 @@ class AffiliateTest extends HasoffersPHPUnit
         $affiliate->company = 'Test Company';
         $affiliate->phone = '+7 845 845 84 54';
         $affiliate->save();
+        isTrue($affiliate->id > 0);
 
         $paymentMethod = $affiliate->getPaymentMethod();
         $paymentMethod->setType(PaymentMethod::TYPE_PAYPAL);
@@ -291,8 +294,9 @@ class AffiliateTest extends HasoffersPHPUnit
         /** @var Affiliate $expAffiliate */
         $expAffiliate = $this->hoClient->get(Affiliate::class, $affiliate->id);
         $expPaymentMethod = $expAffiliate->getPaymentMethod();
+        $expPaymentMethod->reload(); // TODO: Remove manual reload for that
+        isSame($randomEmail, $expPaymentMethod->email);
         isSame(PaymentMethod::TYPE_PAYPAL, $expPaymentMethod->getType());
         isSame($expAffiliate->id, $affiliate->id);
-        isSame($randomEmail, $expPaymentMethod->email);
     }
 }
