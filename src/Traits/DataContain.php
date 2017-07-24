@@ -19,11 +19,11 @@ use JBZoo\Utils\Str;
 use JBZoo\Data\Data as JBZooData;
 
 /**
- * Class Data
+ * Class DataContain
  *
  * @package Unilead\HasOffers\Traits
  */
-trait Data
+trait DataContain
 {
     /** @var  HasOffersClient */
     protected $hoClient;
@@ -41,19 +41,18 @@ trait Data
     /**
      * @return $this
      */
-    abstract public function reload();
+    public function reload()
+    {
+        // noop
+    }
 
     /**
      * Check internal state and reload it if need
      */
     public function reloadIfNeed()
     {
-        $isPropExists = property_exists($this, 'objectId');
         $isEmpty = count($this->origData) === 0;
-
-        if ($isEmpty && $isPropExists && $this->objectId > 0) { // for entities
-            $this->reload();
-        } elseif ($isEmpty && !$isPropExists) { // for contain
+        if ($isEmpty) {
             $this->reload();
         }
     }
@@ -65,9 +64,7 @@ trait Data
      */
     public function bindData(array $data)
     {
-        if (property_exists($this, 'hoClient') && $this->hoClient) {
-            $this->hoClient->trigger("{$this->target}.bind.before", [$this, &$data, &$this->changedData]);
-        }
+        $this->hoClient->trigger("{$this->target}.bind.before", [$this, &$data, &$this->changedData]);
 
         foreach (array_keys($data) as $key) {
             if (0 === strpos($key, '_')) {
@@ -77,9 +74,7 @@ trait Data
 
         $this->changedData = (array)$data;
 
-        if (property_exists($this, 'hoClient') && $this->hoClient) {
-            $this->hoClient->trigger("{$this->target}.bind.after", [$this, &$this->changedData]);
-        }
+        $this->hoClient->trigger("{$this->target}.bind.after", [$this, &$this->changedData]);
 
         return $this;
     }
@@ -115,33 +110,6 @@ trait Data
     }
 
     /**
-     * @param string $method
-     * @param array  $arguments
-     *
-     * @return $this|string
-     * @throws Exception
-     */
-    public function __call($method, array $arguments = [])
-    {
-        $relatedObjectName = str_replace(['set', 'get'], '', $method);
-
-        if (strpos($method, 'get') === 0) {
-            $this->reloadIfNeed();
-
-            if (array_key_exists($relatedObjectName, $this->contain)) {
-                if (!array_key_exists($relatedObjectName, (array)$this->containObjects)) {
-                    $this->containObjects[$relatedObjectName] = new $this->contain[$relatedObjectName]([], $this);
-                }
-
-                return $this->containObjects[$relatedObjectName];
-            }
-        }
-
-        throw new Exception("Undefined method \"{$method}\" or related object \"{$relatedObjectName}\" in "
-            . static::class . " for objectId={$this->objectId}");
-    }
-
-    /**
      * @param string $propName
      *
      * @return mixed
@@ -151,16 +119,11 @@ trait Data
     {
         $this->reloadIfNeed();
 
-        if (!array_key_exists($propName, $this->origData) && !array_key_exists($propName, $this->changedData)) {
-            throw new Exception("Undefined property \"{$propName}\" in " . static::class
-                . " for objectId={$this->objectId}");
-        }
-
         if (array_key_exists($propName, $this->changedData)) {
             return $this->changedData[$propName];
         }
 
-        return $this->origData[$propName];
+        return $this->origData[$propName] ?? null;
     }
 
     /**
@@ -170,13 +133,6 @@ trait Data
      */
     public function __set($propName, $value)
     {
-        $propName = Str::splitCamelCase($propName);
-
-        if (strtolower($propName) === 'id') {
-            throw new Exception("Property \"{$propName}\" read only in " . static::class
-                . " for objectId={$this->objectId}");
-        }
-
         $this->hoClient->trigger(
             "{$this->target}.set.{$propName}.before",
             [$this, &$propName, &$value, &$this->origData]
@@ -198,8 +154,6 @@ trait Data
     public function __isset($propName)
     {
         $this->reloadIfNeed();
-        $propName = Str::splitCamelCase($propName);
-
         return isset($this->origData[$propName]);
     }
 
@@ -212,13 +166,9 @@ trait Data
     {
         $this->hoClient->trigger("{$this->target}.unset.{$propName}.before", [$this, &$propName, &$this->origData]);
 
-        $propName = Str::splitCamelCase($propName);
         if (array_key_exists($propName, $this->origData)) {
             $this->origData[$propName] = null;
             unset($this->changedData[$propName]);
-        } else {
-            throw new Exception("Undefined property \"{$propName}\" in " . static::class
-                . " for objectId={$this->objectId}");
         }
 
         $this->hoClient->trigger("{$this->target}.unset.{$propName}.after", [$this, $propName, &$this->origData]);

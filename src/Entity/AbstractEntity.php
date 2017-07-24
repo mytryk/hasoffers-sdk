@@ -71,14 +71,21 @@ abstract class AbstractEntity
     /**
      * Entity constructor.
      *
-     * @param int   $objectId
-     * @param array $data
-     * @param array $containData
+     * @param int                  $objectId
+     * @param array                $data
+     * @param array                $containData
+     * @param HasOffersClient|null $hoClient
      */
-    public function __construct($objectId = null, array $data = [], array $containData = [])
-    {
+    public function __construct(
+        $objectId = null,
+        array $data = [],
+        array $containData = [],
+        HasOffersClient $hoClient = null
+    ) {
         $this->objectId = (int)$objectId;
-        $this->bindData($data);
+        $hoClient && $this->setClient($hoClient);
+
+        $this->origData = $data;
         $this->createRelated($containData);
     }
 
@@ -89,11 +96,16 @@ abstract class AbstractEntity
     public function reload()
     {
         if ($this->objectId <= 0) {
-            throw new Exception("Can't load info from HasOffers. Entity Id not set for \"{$this->target}\"");
+            throw new Exception("Can't load info from HasOffers. Entity Id not set for \"{$this->target}\" for "
+                . static::class);
         }
 
         if (!$this->target) {
-            throw new Exception("Undefined target alias for entity \"{$this->objectId}\"");
+            throw new Exception("Undefined target alias for entity \"{$this->objectId}\" " . static::class);
+        }
+
+        if (!$this->hoClient) {
+            throw new Exception("HasOffers Client is not set for entity \"{$this->objectId}\" " . static::class);
         }
 
         $this->hoClient->trigger("{$this->target}.reload.before", [$this]);
@@ -130,9 +142,8 @@ abstract class AbstractEntity
     protected function createRelated($data)
     {
         foreach ($this->contain as $objectName => $className) {
-            //$objectName = $objectName === 'InvoiceItem' ? 'AffiliateInvoiceItem' : $objectName; // TODO: Think (Den)
-
             $objectData = array_key_exists($objectName, $data) ? $data[$objectName] : false;
+
             if (false === $objectData) {
                 continue;
             }

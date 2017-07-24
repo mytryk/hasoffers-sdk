@@ -15,7 +15,7 @@
 namespace Unilead\HasOffers\Contain;
 
 use JBZoo\Data\Data;
-use Unilead\HasOffers\Traits\Data as DataTrait;
+use Unilead\HasOffers\Traits\DataContain;
 use Unilead\HasOffers\Entity\Affiliate;
 
 /**
@@ -101,7 +101,7 @@ use Unilead\HasOffers\Entity\Affiliate;
  */
 class PaymentMethod
 {
-    use DataTrait;
+    use DataContain;
 
     const TYPE_CHECK         = 'Check';
     const TYPE_DIRECTDEPOSIT = 'DirectDeposit';
@@ -115,11 +115,6 @@ class PaymentMethod
 
     /** @var string */
     protected $target = 'PaymentMethod';
-
-    /**
-     * @var int
-     */
-    protected $objectId = -1;
 
     /**
      * @var Affiliate
@@ -145,9 +140,9 @@ class PaymentMethod
     public function __construct(array $data, Affiliate $affiliate)
     {
         $this->affiliate = $affiliate;
-
-        $this->paymentData = new Data($data);
         $this->hoClient = $this->affiliate->getClient();
+
+        $this->bindData((new Data($data))->find($this->getType(), [], 'arr'));
     }
 
     /**
@@ -157,30 +152,6 @@ class PaymentMethod
     public function getType()
     {
         return ucfirst(strtolower($this->affiliate->payment_method));
-    }
-
-    /**
-     * @return Data
-     */
-    public function getRawData()
-    {
-        return $this->paymentData->get($this->getType(), [], 'data');
-    }
-
-    /**
-     * @inheritdoc
-     * @return bool
-     */
-    public function reload()
-    {
-        $data = $this->getRawData()->getArrayCopy();
-
-        $this->hoClient->trigger("{$this->target}.reload.before", [$this, &$data]);
-
-        $this->bindData($data);
-        $this->origData = $data;
-
-        $this->hoClient->trigger("{$this->target}.reload.after", [$this, $data]);
     }
 
     /**
@@ -229,7 +200,7 @@ class PaymentMethod
         ]);
 
         if ($result->get('0', null, 'bool')) {
-            $newData = array_merge($this->getRawData()->getArrayCopy(), $changedData);
+            $newData = array_merge($this->data()->getArrayCopy(), $changedData);
             $this->bindData($newData);
             $this->origData = $newData;
             $this->changedData = [];

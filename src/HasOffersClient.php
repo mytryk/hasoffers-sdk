@@ -100,7 +100,7 @@ class HasOffersClient
         }
 
         /** @var AbstractEntity|AbstractEntities $object */
-        $object = new $willCreate($entityId, $data, $containData);
+        $object = new $willCreate($entityId, $data, $containData, $this);
         $object->setClient($this);
         $this->trigger("{$object->getTarget()}.init", [$object, $data]);
 
