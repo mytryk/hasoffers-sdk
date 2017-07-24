@@ -91,13 +91,10 @@ class HasOffersClient
     {
         if (class_exists($modelClassName)) {
             $willCreate = $modelClassName;
-
         } elseif (class_exists(__NAMESPACE__ . '\\Entity\\' . $modelClassName)) {
             $willCreate = __NAMESPACE__ . '\\Entity\\' . $modelClassName;
-
         } elseif (class_exists(__NAMESPACE__ . '\\Entities\\' . $modelClassName)) {
             $willCreate = __NAMESPACE__ . '\\Entities\\' . $modelClassName;
-
         } else {
             throw new Exception("HO Model with class name \"{$modelClassName}\" does not exist.");
         }
