@@ -77,7 +77,7 @@ class AffiliateInvoiceItem extends AbstractEntity
             'Method'     => $this->methods['create'],
             'Target'     => $this->target,
             'data'       => $this->changedData,
-            'invoice_id' => $this->invoice_id
+            'invoice_id' => $this->invoice_id,
         ]);
 
         $this->getClient()->trigger('bill_item.create.after', [$this, &$this->changedData]);
@@ -101,7 +101,7 @@ class AffiliateInvoiceItem extends AbstractEntity
         $data = $this->hoClient->apiRequest([
             'Method' => $this->methods['delete'],
             'Target' => $this->target,
-            'id'     => $itemId
+            'id'     => $itemId,
         ]);
 
         $this->getClient()->trigger('bill_item.delete.after', [$this, &$this->changedData]);

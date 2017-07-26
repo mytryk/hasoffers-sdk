@@ -44,7 +44,7 @@ use Unilead\HasOffers\Contain\AffiliateInvoiceItem;
  * @property string $start_date    Start of date range; use "YYYY-MM-DD" format
  * @property string $status        The status of the invoice
  *
- * @method AffiliateInvoiceItem getAffiliateInvoiceItemInvoiceItem()
+ * @method AffiliateInvoiceItem getAffiliateInvoiceItem()
  *
  * @package Unilead\HasOffers\Entity
  */

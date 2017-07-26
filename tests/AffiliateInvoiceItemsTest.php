@@ -31,7 +31,7 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         $affiliateInvoice = $this->hoClient->get(AffiliateInvoice::class, $someId);
         $affiliateInvoice->reload();
 
-        $items = $affiliateInvoice->getAffiliateInvoiceItem()->data();
+        $items = $affiliateInvoice->getAffiliateInvoiceItem()->data()->getArrayCopy();
 
         is($someId, $items[0]['invoice_id']);
     }
@@ -54,10 +54,10 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         $affInvoiceItem->payout_type = 'cpa_flat';
         $affInvoiceItem->create();
 
-        /** @var AffiliateInvoiceItem $affInvoiceItemCheck */
+        /** @var AffiliateInvoice $affInvoiceItemCheck */
         $affInvoiceItemCheck = $this->hoClient->get(AffiliateInvoice::class, $billId);
 
-        $items = $affInvoiceItemCheck->getAffiliateInvoiceItem()->data();
+        $items = $affInvoiceItemCheck->getAffiliateInvoiceItem()->data()->getArrayCopy();
 
         $itemKey = array_search((string)$affInvoiceItem->id[0], array_column($items, 'id'), true);
         isNotSame(false, $itemKey);
@@ -71,7 +71,7 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         // get
         /** @var AffiliateInvoice $bill */
         $bill = $this->hoClient->get(AffiliateInvoice::class, 56);
-        $items = $bill->getAffiliateInvoiceItem()->data();
+        $items = $bill->getAffiliateInvoiceItem()->data()->getArrayCopy();
 
         // find first one and delete it
         /** @var AffiliateInvoiceItem $billItem */
@@ -81,7 +81,7 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         // get bill items again
         /** @var AffiliateInvoice $billCheck */
         $billCheck = $this->hoClient->get(AffiliateInvoice::class, 56);
-        $itemsCheck = $billCheck->getAffiliateInvoiceItem()->data();
+        $itemsCheck = $billCheck->getAffiliateInvoiceItem()->data()->getArrayCopy();
 
         // check item is not among them
         $itemKey = array_search((string)$items[0]['id'], array_column($itemsCheck, 'id'), true);
