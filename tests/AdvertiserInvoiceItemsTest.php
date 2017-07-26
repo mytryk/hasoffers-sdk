@@ -29,7 +29,7 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         /** @var AdvertiserInvoice $invoice */
         $invoice = $this->hoClient->get(AdvertiserInvoice::class, $someId);
 
-        $items = $invoice->getAdvertiserInvoiceItem()->getRawData();
+        $items = $invoice->getAdvertiserInvoiceItem()->data();
 
         is($someId, $items[0]['invoice_id']);
     }
@@ -55,7 +55,7 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         /** @var AdvertiserInvoiceItem $invoiceCheck */
         $invoiceCheck = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
 
-        $items = $invoiceCheck->getAdvertiserInvoiceItem()->getRawData();
+        $items = $invoiceCheck->getAdvertiserInvoiceItem()->data();
 
         $itemKey = array_search((string)$invoiceItem->id[0], array_column($items, 'id'), true);
         isNotSame(false, $itemKey);
@@ -70,7 +70,7 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         //get invoice items
         /** @var AdvertiserInvoice $bill */
         $bill = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
-        $items = $bill->getAdvertiserInvoiceItem()->getRawData();
+        $items = $bill->getAdvertiserInvoiceItem()->data();
 
         //find first one and delete it
         /** @var AdvertiserInvoiceItem $billItem */
@@ -80,7 +80,7 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         //get invoice items again
         /** @var AdvertiserInvoice $billCheck */
         $billCheck = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
-        $itemsCheck = $billCheck->getAdvertiserInvoiceItem()->getRawData();
+        $itemsCheck = $billCheck->getAdvertiserInvoiceItem()->data();
 
         //check item is not among them
         $itemKey = array_search((string)$items[0]['id'], array_column($itemsCheck, 'id'), true);

@@ -31,7 +31,7 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         $affiliateInvoice = $this->hoClient->get(AffiliateInvoice::class, $someId);
         $affiliateInvoice->reload();
 
-        $items = $affiliateInvoice->getAffiliateInvoiceItem()->getRawData();
+        $items = $affiliateInvoice->getAffiliateInvoiceItem()->data();
 
         is($someId, $items[0]['invoice_id']);
     }
@@ -57,7 +57,7 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         /** @var AffiliateInvoiceItem $affInvoiceItemCheck */
         $affInvoiceItemCheck = $this->hoClient->get(AffiliateInvoice::class, $billId);
 
-        $items = $affInvoiceItemCheck->getAffiliateInvoiceItem()->getRawData();
+        $items = $affInvoiceItemCheck->getAffiliateInvoiceItem()->data();
 
         $itemKey = array_search((string)$affInvoiceItem->id[0], array_column($items, 'id'), true);
         isNotSame(false, $itemKey);
@@ -71,7 +71,7 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         // get
         /** @var AffiliateInvoice $bill */
         $bill = $this->hoClient->get(AffiliateInvoice::class, 56);
-        $items = $bill->getAffiliateInvoiceItem()->getRawData();
+        $items = $bill->getAffiliateInvoiceItem()->data();
 
         // find first one and delete it
         /** @var AffiliateInvoiceItem $billItem */
@@ -81,7 +81,7 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         // get bill items again
         /** @var AffiliateInvoice $billCheck */
         $billCheck = $this->hoClient->get(AffiliateInvoice::class, 56);
-        $itemsCheck = $billCheck->getAffiliateInvoiceItem()->getRawData();
+        $itemsCheck = $billCheck->getAffiliateInvoiceItem()->data();
 
         // check item is not among them
         $itemKey = array_search((string)$items[0]['id'], array_column($itemsCheck, 'id'), true);
