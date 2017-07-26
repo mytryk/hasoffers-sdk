@@ -19,6 +19,7 @@ use Unilead\HasOffers\Entity\Offer;
 
 /**
  * Class OffersTest
+ *
  * @package JBZoo\PHPUnit
  */
 class OffersTest extends HasoffersPHPUnit
@@ -32,5 +33,14 @@ class OffersTest extends HasoffersPHPUnit
         $offer = $list[6];
 
         isSame('Super Galaxy Rush of Clans (iOS)', $offer->name);
+
+        // TODO: It's empty goal, find something new (Den)
+        isSame(0, $offer->getMonthlyRevenueCap());
+        isSame(0, $offer->getBudget());
+        isSame(0, $offer->getMonthlyCapAmount());
+        isSame(0, $offer->getMonthlyConversionsCap());
+        isNull($offer->getRuleTargeting());
+        isFalse($offer->getGoal()->data()->getArrayCopy());
+        isEmpty($offer->getCountries());
     }
 }

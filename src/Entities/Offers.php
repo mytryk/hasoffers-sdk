@@ -14,6 +14,7 @@
 
 namespace Unilead\HasOffers\Entities;
 
+use Unilead\HasOffers\Contain\Goal;
 use Unilead\HasOffers\Entity\Offer;
 
 /**
@@ -32,4 +33,11 @@ class Offers extends AbstractEntities
      * @var string
      */
     protected $className = Offer::class;
+
+    /**
+     * @var array
+     */
+    protected $contain = [
+        'Goal' => Goal::class,
+    ];
 }

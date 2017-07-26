@@ -14,9 +14,9 @@
 
 namespace Unilead\HasOffers\Entity;
 
-use Unilead\HasOffers\Contain\PaymentMethod;
-use Unilead\HasOffers\Contain\AffiliateUser;
-use Unilead\HasOffers\Traits\Blocked;
+use JBZoo\Utils\Filter;
+use Unilead\HasOffers\Contain\Country;
+use Unilead\HasOffers\Contain\Goal;
 use Unilead\HasOffers\Traits\Deleted;
 
 /* @noinspection ClassOverridesFieldOfSuperClassInspection */
@@ -223,6 +223,9 @@ use Unilead\HasOffers\Traits\Deleted;
  *                                                      Tracking Settings. Applicable only if allow_website_links
  *                                                      is true.
  *
+ * @method Goal getGoal()
+ * @method Country getCountry()
+ *
  * @package Unilead\HasOffers\Entity
  */
 class Offer extends AbstractEntity
@@ -235,6 +238,64 @@ class Offer extends AbstractEntity
     const STATUS_EXPIRED = 'expired';
     const STATUS_DELETED = 'deleted';
 
+    const DEFAULT_GOAL_NAME = 'Install and Open';
+
+    static private $trackingUrls = [
+        'Adbazaar'       => 'adbazaar.net/',
+        'AppsFlyer'      => 'app.appsflyer.com/',
+        'Adsimilis'      => 'adsimilis.com/',
+        'Apsalar'        => 'apsalar.com/',
+        'App4u'          => 'app4u.today/',
+        'AppMetrica'     => [
+            'appmetrica.yandex.com/',
+            'appmetrika.yandex.ru',
+        ],
+        'Apple'          => 'apple.com/',
+        'Ad-X'           => 'ad-x.co.uk/',
+        'Actionpay'      => 'actionpay.ru/',
+        'AppMetr'        => [
+            'appmetr.com/',
+            'pixapi.net',
+        ],
+        'ad2games'       => 'ad2games.com/',
+        'AppLift'        => 'applift.com/',
+        'Adjust'         => [
+            'adjust.io/',
+            'adjust.com/',
+        ],
+        'Crobo'          => [
+            'affiliates.de/',
+            'crobo.com',
+        ],
+        'Clickky'        => 'clickky.biz/',
+        'Facebook'       => 'facebook.com/',
+        'GMobi'          => 'generalmobi.com/',
+        'Google'         => [
+            'google.com/',
+            'google.ru',
+        ],
+        'Glispa'         => 'glispa.com/',
+        'Plexop'         => 'serving.plexop.net/',
+        'Mail.ru'        => 'mail.ru/',
+        'MarsAds'        => 'marsads.com/',
+        'MADNETex'       => 'madnet.ru/',
+        'Mobbnet'        => 'mobbnet.com/',
+        'Mobilda'        => 'mobilda.com/',
+        'Mobicolor'      => 'mobicolor.com/',
+        'Raftica'        => 'raftika.com/',
+        'RebornGame'     => 'reborngame.ru/',
+        'IconPeak'       => 'iconpeak.com/',
+        'Kochava'        => 'kochava.com/',
+        'Taptica'        => 'tracking.taptica.com/',
+        'InstallTracker' => 'installtracker.com/',
+        'Unilead'        => [
+            'unileadnetwork.com',
+            'unilead.ru/',
+        ],
+        'Wooga'          => 'woogatrack.com/',
+        'Wakeapp'        => 'paymaks.com/',
+    ];
+
     /**
      * @var string
      */
@@ -244,14 +305,151 @@ class Offer extends AbstractEntity
      * @var array
      */
     protected $methods = [
-        'get'        => 'findById',
-        'create'     => 'create',
-        'update'     => 'update',
-        'getAnswers' => 'getSignupAnswers',
+        'get'    => 'findById',
+        'create' => 'create',
+        'update' => 'update',
     ];
 
     /**
      * @var array
      */
-    protected $contain = [];
+    protected $contain = [
+        'Goal'    => Goal::class,
+        'Country' => Country::class,
+    ];
+
+    /**
+     * @return float
+     */
+    public function getMonthlyRevenueCap()
+    {
+        return Filter::float($this->monthly_revenue_cap) > 0
+            ? Filter::float($this->monthly_revenue_cap)
+            : $this->getBudget();
+    }
+
+    /**
+     * Find Offer Budget (MonthlyRevenueCap).
+     *
+     * @return float
+     */
+    public function getBudget()
+    {
+        return (Filter::float($this->monthly_conversion_cap) > 0 && Filter::float($this->max_payout) > 0)
+            ? Filter::float($this->monthly_conversion_cap) * Filter::float($this->max_payout)
+            : 0;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMonthlyCapAmount()
+    {
+        return (Filter::float($this->monthly_conversion_cap) > 0)
+            ? Filter::float($this->monthly_conversion_cap)
+            : $this->getMonthlyConversionsCap();
+    }
+
+    /**
+     * @return float
+     */
+    public function getMonthlyConversionsCap()
+    {
+        return (Filter::float($this->monthly_revenue_cap) > 0 && Filter::float($this->max_payout) > 0)
+            ? (Filter::float($this->monthly_revenue_cap) / Filter::float($this->max_payout))
+            : 0;
+    }
+
+    /**
+     * Function get all TargetRules for specified Offer.
+     *
+     * @return array|null
+     */
+    public function getRuleTargeting()
+    {
+        $targetData = $this->hoClient->apiRequest([
+            'Target'   => 'OfferTargeting',
+            'Method'   => 'getRuleTargetingForOffer',
+            'offer_id' => $this->id,
+        ])->getArrayCopy();
+
+        if (!empty($targetData['data'])) {
+            foreach ((array)$targetData['data'] as $targeting) {
+                $map = [
+                    'iPad'         => 'iOS',
+                    'iPhone'       => 'iOS',
+                    'iOS'          => 'iOS',
+                    'Android'      => 'Android',
+                    'WindowsPhone' => 'Windows',
+                    '_default'     => '',
+                ];
+
+                //TODO: Doesn't work on some offers. Need to check why (Nick)
+                $platform = $map[$targeting['rule']['name']] ?? $map['_default'];
+
+                $return = [
+                    'OfferId'     => $this->id,
+                    'Name'        => $targeting['rule']['name'],
+                    'Description' => $targeting['rule']['description'],
+                    'Category'    => $targeting['rule']['category'],
+                    'Platform'    => $platform,
+                ];
+            }
+
+            if (!empty($return)) {
+                return $return;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getTrackingSystem()
+    {
+        return isset($this->offer_url) ? $this->parseTrackingSystem() : null;
+    }
+
+    /**
+     * Parse Offer url to get offer Tracking System.
+     *
+     * @return string
+     */
+    private function parseTrackingSystem()
+    {
+        foreach (self::$trackingUrls as $catalogName => $urlList) {
+            if (is_array($urlList)) {
+                foreach ((array)$urlList as $catalogUrl) {
+                    if (strpos($this->offer_url, $catalogUrl) !== false) {
+                        return $catalogName;
+                    }
+                }
+            } else {
+                if (strpos($this->offer_url, $urlList) !== false) {
+                    return $catalogName;
+                }
+            }
+        }
+
+        return 'Other';
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultGoal()
+    {
+        return $this->default_goal_name ?: self::DEFAULT_GOAL_NAME;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCountries()
+    {
+        $country = $this->getCountry();
+        return implode(';', array_keys($country->data()->getArrayCopy()));
+    }
 }

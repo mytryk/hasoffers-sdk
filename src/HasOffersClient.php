@@ -17,6 +17,7 @@ namespace Unilead\HasOffers;
 use JBZoo\Event\EventManager;
 use JBZoo\HttpClient\HttpClient;
 use function JBZoo\Data\json;
+use JBZoo\Data\Data;
 use Unilead\HasOffers\Entities\AbstractEntities;
 use Unilead\HasOffers\Entity\AbstractEntity;
 
@@ -109,7 +110,7 @@ class HasOffersClient
 
     /**
      * @param array $requestParams
-     * @return mixed
+     * @return Data
      * @throws Exception
      */
     public function apiRequest(array $requestParams)

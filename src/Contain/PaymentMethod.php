@@ -122,16 +122,6 @@ class PaymentMethod
     protected $affiliate;
 
     /**
-     * @var Data
-     */
-    protected $paymentData;
-
-    /**
-     * @var string
-     */
-    protected $forcePaymentMethod;
-
-    /**
      * PaymentMethod constructor.
      *
      * @param array     $data

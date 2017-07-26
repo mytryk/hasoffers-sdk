@@ -20,6 +20,7 @@ use Unilead\HasOffers\Traits\DataEntity;
 
 /**
  * Class AdvertiserUser
+ *
  * @package Unilead\HasOffers
  */
 class AdvertiserUser
@@ -72,6 +73,7 @@ class AdvertiserUser
                 'access',
             ];
 
+            // todo: use array_filter
             foreach ($removeKeys as $removeKey) {
                 unset($current[$removeKey]);
             }
