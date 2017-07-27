@@ -18,6 +18,7 @@ use Unilead\HasOffers\Entity\AdvertiserInvoice;
 
 /**
  * Class AdvertiserInvoiceTest
+ *
  * @package JBZoo\PHPUnit
  */
 class AdvertiserInvoiceTest extends HasoffersPHPUnit

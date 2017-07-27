@@ -25,6 +25,7 @@ use Unilead\HasOffers\Helper;
 
 /**
  * Class HasoffersPHPUnit
+ *
  * @package JBZoo\PHPUnit
  */
 class HasoffersPHPUnit extends PHPUnit
@@ -79,7 +80,7 @@ class HasoffersPHPUnit extends PHPUnit
                             'key'      => Helper::hash($data),
                             'request'  => '' . json($data),
                             'response' => '' . $response->getJSON(),
-                            'comment'  => 'HO Tests: ' . $this->getTestName()
+                            'comment'  => 'HO Tests: ' . $this->getTestName(),
                         ];
 
                         $httpClient = new HttpClient();

@@ -129,7 +129,7 @@ class Affiliate extends AbstractEntity
      */
     protected $contain = [
         'PaymentMethod' => PaymentMethod::class,
-        'AffiliateUser' => AffiliateUser::class
+        'AffiliateUser' => AffiliateUser::class,
     ];
 
     /**
@@ -159,7 +159,7 @@ class Affiliate extends AbstractEntity
         $data = $this->hoClient->apiRequest([
             'Method' => $this->methods['getAnswers'],
             'Target' => $this->target,
-            'id'     => $this->id
+            'id'     => $this->id,
         ]);
 
         $result = [];
@@ -169,7 +169,7 @@ class Affiliate extends AbstractEntity
                     'id'       => $answer['question_id'],
                     'question' => $answer['question'],
                     'answer'   => $answer['answer'],
-                    'status'   => $answer['status']
+                    'status'   => $answer['status'],
                 ];
             }
         }

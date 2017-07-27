@@ -40,6 +40,6 @@ class Affiliates extends AbstractEntities
      */
     protected $contain = [
         'PaymentMethod' => PaymentMethod::class,
-        'AffiliateUser' => AffiliateUser::class
+        'AffiliateUser' => AffiliateUser::class,
     ];
 }

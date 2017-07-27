@@ -32,7 +32,7 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
 
         $items = $invoice->getAdvertiserInvoiceItem()->data();
 
-        skip('Fix fixture data data on HO');
+        skip('Fix fixture AdvertiserInvoiceItem for AdvertiserInvoice id=' . $someId);
         is($someId, $items->find('0.invoice_id'));
     }
 

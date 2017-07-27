@@ -20,6 +20,7 @@ use Unilead\HasOffers\Entity\AdvertiserUser;
 
 /**
  * Class AdvertisersTest
+ *
  * @package JBZoo\PHPUnit
  */
 class AdvertisersTest extends HasoffersPHPUnit

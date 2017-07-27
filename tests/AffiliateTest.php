@@ -158,7 +158,8 @@ class AffiliateTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage Undefined method "getFakeContainObject" or related object "FakeContainObject" in Unilead\HasOffers\Entity\Affiliate for objectId=1004
+     * @expectedExceptionMessage Undefined method "getFakeContainObject" or related object "FakeContainObject" in
+     *                           Unilead\HasOffers\Entity\Affiliate for objectId=1004
      * @expectedException \Unilead\HasOffers\Exception
      */
     public function testCannotGetUndefinedContain()

@@ -110,23 +110,6 @@ trait DataContain
 
     /**
      * @param string $propName
-     *
-     * @return mixed
-     * @throws Exception
-     */
-    public function __get($propName)
-    {
-        $this->reloadIfNeed();
-
-        if (array_key_exists($propName, $this->changedData)) {
-            return $this->changedData[$propName];
-        }
-
-        return $this->origData[$propName] ?? null;
-    }
-
-    /**
-     * @param string $propName
      * @param mixed  $value
      * @throws Exception
      */
@@ -143,6 +126,23 @@ trait DataContain
             "{$this->target}.set.{$propName}.after",
             [$this, $propName, $value, &$this->origData]
         );
+    }
+
+    /**
+     * @param string $propName
+     *
+     * @return mixed
+     * @throws Exception
+     */
+    public function __get($propName)
+    {
+        $this->reloadIfNeed();
+
+        if (array_key_exists($propName, $this->changedData)) {
+            return $this->changedData[$propName];
+        }
+
+        return $this->origData[$propName] ?? null;
     }
 
     /**

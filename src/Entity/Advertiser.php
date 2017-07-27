@@ -84,14 +84,14 @@ class Advertiser extends AbstractEntity
         'get'        => 'findById',
         'create'     => 'create',
         'update'     => 'update',
-        'getAnswers' => 'getSignupAnswers'
+        'getAnswers' => 'getSignupAnswers',
     ];
 
     /**
      * @var array
      */
     protected $contain = [
-        'AdvertiserUser' => AdvertiserUser::class
+        'AdvertiserUser' => AdvertiserUser::class,
     ];
 
     /**
@@ -122,7 +122,7 @@ class Advertiser extends AbstractEntity
         $data = $this->hoClient->apiRequest([
             'Method' => $this->methods['getAnswers'],
             'Target' => $this->target,
-            'id'     => $this->id
+            'id'     => $this->id,
         ]);
 
         $result = [];
@@ -132,7 +132,7 @@ class Advertiser extends AbstractEntity
                     'id'       => $answer['question_id'],
                     'question' => $answer['question'],
                     'answer'   => $answer['answer'],
-                    'status'   => $answer['status']
+                    'status'   => $answer['status'],
                 ];
             }
         }

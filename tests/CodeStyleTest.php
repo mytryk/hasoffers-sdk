@@ -16,6 +16,7 @@ namespace JBZoo\PHPUnit;
 
 /**
  * Class CodeStyleTest
+ *
  * @package JBZoo\PHPUnit
  */
 class CodeStyleTest extends UnileadCodeStyleTest

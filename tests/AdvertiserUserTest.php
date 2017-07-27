@@ -19,6 +19,7 @@ use Unilead\HasOffers\Entity\AdvertiserUser;
 
 /**
  * Class AdvertiserUserTest
+ *
  * @package JBZoo\PHPUnit
  */
 class AdvertiserUserTest extends HasoffersPHPUnit

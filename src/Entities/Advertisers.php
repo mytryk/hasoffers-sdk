@@ -38,6 +38,6 @@ class Advertisers extends AbstractEntities
      * @var array
      */
     protected $contain = [
-        'AdvertiserUser' => AdvertiserUser::class
+        'AdvertiserUser' => AdvertiserUser::class,
     ];
 }

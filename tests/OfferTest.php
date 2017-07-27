@@ -19,6 +19,7 @@ use Unilead\HasOffers\Entity\Offer;
 
 /**
  * Class OfferTest
+ *
  * @package JBZoo\PHPUnit
  */
 class OfferTest extends HasoffersPHPUnit

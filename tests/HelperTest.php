@@ -19,6 +19,7 @@ use Unilead\HasOffers\Helper;
 
 /**
  * Class HelperTest
+ *
  * @package JBZoo\PHPUnit
  */
 class HelperTest extends HasoffersPHPUnit
@@ -57,7 +58,7 @@ class HelperTest extends HasoffersPHPUnit
         $expectedArray = [
             'data'      => [
                 'company' => 'Test Company',
-                'phone'   => '+7 845 845 84 54'
+                'phone'   => '+7 845 845 84 54',
             ],
             'false'     => '0',
             'number'    => '0',
@@ -72,7 +73,7 @@ class HelperTest extends HasoffersPHPUnit
                     'some' => 'parameter',
                 ],
             ],
-            'true'      => '1'
+            'true'      => '1',
         ];
 
         $normolized = Helper::normolizeArray(self::$originalArray);

@@ -18,6 +18,7 @@ use Unilead\HasOffers\Entity\AffiliateInvoice;
 
 /**
  * Class AffiliateInvoiceTest
+ *
  * @package JBZoo\PHPUnit
  */
 class AffiliateInvoiceTest extends HasoffersPHPUnit

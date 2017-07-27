@@ -19,6 +19,7 @@ use Unilead\HasOffers\Entities\AffiliateUsers;
 
 /**
  * Class AffiliateUsersTest
+ *
  * @package JBZoo\PHPUnit
  */
 class AffiliateUsersTest extends HasoffersPHPUnit
@@ -28,7 +29,7 @@ class AffiliateUsersTest extends HasoffersPHPUnit
         /** @var AffiliateUsers $users */
         $users = $this->hoClient->get(AffiliateUsers::class);
         $list = $users->find([
-            'limit' => 100
+            'limit' => 100,
         ]);
 
         /** @var AffiliateUser $user */

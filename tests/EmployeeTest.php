@@ -20,6 +20,7 @@ use Unilead\HasOffers\Entity\Employee;
 
 /**
  * Class EmployeeTest
+ *
  * @package JBZoo\PHPUnit
  */
 class EmployeeTest extends HasoffersPHPUnit

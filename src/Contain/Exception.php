@@ -16,6 +16,7 @@ namespace Unilead\HasOffers\Contain;
 
 /**
  * Class Exception
+ *
  * @package Unilead\HasOffers\Contain
  */
 class Exception extends \Unilead\HasOffers\Exception

@@ -74,7 +74,7 @@ class AffiliateUser extends AbstractEntity
     protected $excludedKeys = [
         'is_creator',
         'access',
-        'modified'
+        'modified',
     ];
 
     /**

@@ -16,6 +16,7 @@ namespace Unilead\HasOffers\Entities;
 
 /**
  * Class Exception
+ *
  * @package Unilead\HasOffers\Entities
  */
 class Exception extends \Unilead\HasOffers\Exception

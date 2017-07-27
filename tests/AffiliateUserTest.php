@@ -19,6 +19,7 @@ use Unilead\HasOffers\Entity\AffiliateUser;
 
 /**
  * Class AffiliateUserTest
+ *
  * @package JBZoo\PHPUnit
  */
 class AffiliateUserTest extends HasoffersPHPUnit
