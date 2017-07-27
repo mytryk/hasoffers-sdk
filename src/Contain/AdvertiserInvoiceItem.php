@@ -14,8 +14,6 @@
 
 namespace Unilead\HasOffers\Contain;
 
-use JBZoo\Data\Data;
-use Unilead\HasOffers\Traits\DataContain;
 use Unilead\HasOffers\Entity\AdvertiserInvoice;
 
 /**
@@ -52,35 +50,15 @@ use Unilead\HasOffers\Entity\AdvertiserInvoice;
  *
  * @package Unilead\HasOffers
  */
-class AdvertiserInvoiceItem
+class AdvertiserInvoiceItem extends AbstractContain
 {
-    use DataContain;
-
     /**
      * @var AdvertiserInvoice
      */
-    protected $invoice;
-
-    /**
-     * @var Data
-     */
-    protected $items;
+    protected $parentEntity;
 
     /**
      * @var string
      */
     protected $target = 'AdvertiserInvoiceItem';
-
-    /**
-     * PaymentMethod constructor.
-     *
-     * @param array             $data
-     * @param AdvertiserInvoice $advertiserInvoice
-     */
-    public function __construct(array $data, AdvertiserInvoice $advertiserInvoice)
-    {
-        $this->invoice = $advertiserInvoice;
-        $this->hoClient = $advertiserInvoice->getClient();
-        $this->bindData($data);
-    }
 }

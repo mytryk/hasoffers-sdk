@@ -14,10 +14,11 @@
 
 namespace Unilead\HasOffers\Contain;
 
+use JBZoo\Data\Data;
 use Unilead\HasOffers\Entity\Affiliate;
 
 /**
- * Class AffiliateUser
+ * Class AbstractClientUser
  *
  * @property string access                   Array    An array of permissions that the Affiliate User has. This array
  *           contains a value "Affiliate" that grants base Affiliate permissions. Other possible permissions are:
@@ -50,7 +51,7 @@ use Unilead\HasOffers\Entity\Affiliate;
  *
  * @package Unilead\HasOffers
  */
-class AffiliateUser extends AbstractClientUser
+abstract class AbstractClientUser extends AbstractContain
 {
     /**
      * @var Affiliate
@@ -61,4 +62,32 @@ class AffiliateUser extends AbstractClientUser
      * @var Affiliate
      */
     protected $target = 'AffiliateUser';
+
+    /**
+     * @return Data
+     */
+    public function getList()
+    {
+        $users = $this->data()->getArrayCopy();
+        ksort($users);
+
+        $result = array_reduce($users, function ($reduced, $current) {
+            $removeKeys = [
+                'wants_alerts',
+                'SHARED_Users2_id',
+                'salt',
+                'AFFILIATE_NETWORK_Brands_id',
+                '_NETWORK_employees_id',
+                'access',
+            ];
+
+            $reduced[] = array_filter($current, function ($item) use ($removeKeys) {
+                return !in_array($item, $removeKeys, true);
+            });
+
+            return $reduced;
+        });
+
+        return new Data($result);
+    }
 }

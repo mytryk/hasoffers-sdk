@@ -15,7 +15,7 @@
 namespace Unilead\HasOffers\Contain;
 
 use JBZoo\Data\Data;
-use Unilead\HasOffers\Traits\DataContain;
+use Unilead\HasOffers\Entity\AbstractEntity;
 use Unilead\HasOffers\Entity\Affiliate;
 
 /**
@@ -99,10 +99,8 @@ use Unilead\HasOffers\Entity\Affiliate;
  *
  * @package Unilead\HasOffers
  */
-class PaymentMethod
+class PaymentMethod extends AbstractContain
 {
-    use DataContain;
-
     const TYPE_CHECK         = 'Check';
     const TYPE_DIRECTDEPOSIT = 'DirectDeposit';
     const TYPE_OTHER         = 'Other';
@@ -119,20 +117,17 @@ class PaymentMethod
     /**
      * @var Affiliate
      */
-    protected $affiliate;
+    protected $parentEntity;
 
     /**
-     * PaymentMethod constructor.
-     *
-     * @param array     $data
-     * @param Affiliate $affiliate
+     * @inheritdoc
      */
-    public function __construct(array $data, Affiliate $affiliate)
+    public function __construct(array $data, AbstractEntity $parentEntity)
     {
-        $this->affiliate = $affiliate;
-        $this->hoClient = $this->affiliate->getClient();
+        parent::__construct($data, $parentEntity);
 
-        $this->bindData((new Data($data))->find($this->getType(), [], 'arr'));
+        $data = (new Data($data))->find($this->getType(), [], 'arr');
+        $this->bindData($data);
     }
 
     /**
@@ -141,7 +136,7 @@ class PaymentMethod
      */
     public function getType()
     {
-        return ucfirst(strtolower($this->affiliate->payment_method));
+        return ucfirst(strtolower($this->parentEntity->payment_method));
     }
 
     /**
@@ -165,8 +160,8 @@ class PaymentMethod
             throw new Exception("Undefined new payment method type: {$newPaymentMethod}");
         }
 
-        $this->affiliate->payment_method = strtolower($newPaymentMethod);
-        $this->affiliate->save();
+        $this->parentEntity->payment_method = strtolower($newPaymentMethod);
+        $this->parentEntity->save();
         $this->reload();
     }
 
@@ -183,9 +178,9 @@ class PaymentMethod
         }
 
         $result = $this->hoClient->apiRequest([
-            'Target'       => $this->affiliate->getTarget(),
+            'Target'       => $this->parentEntity->getTarget(),
             'Method'       => 'updatePaymentMethod' . $this->getType(),
-            'affiliate_id' => $this->affiliate->id,
+            'affiliate_id' => $this->parentEntity->id,
             'data'         => $changedData,
         ]);
 

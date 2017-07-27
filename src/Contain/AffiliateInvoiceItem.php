@@ -14,7 +14,6 @@
 
 namespace Unilead\HasOffers\Contain;
 
-use Unilead\HasOffers\Traits\DataEntity;
 use Unilead\HasOffers\Entity\AffiliateInvoice;
 
 /**
@@ -51,32 +50,15 @@ use Unilead\HasOffers\Entity\AffiliateInvoice;
  *
  * @package Unilead\HasOffers\Contain
  */
-class AffiliateInvoiceItem
+class AffiliateInvoiceItem extends AbstractContain
 {
-    use DataEntity;
-
     /**
      * @var AffiliateInvoice
      */
-    protected $affiliateInvoice;
+    protected $parentEntity;
 
     /**
-     * AffiliateInvoiceItem constructor.
-     *
-     * @param array|null       $data
-     * @param AffiliateInvoice $affiliateInvoice
+     * @var string
      */
-    public function __construct(array $data = null, AffiliateInvoice $affiliateInvoice)
-    {
-        $this->affiliateInvoice = $affiliateInvoice;
-        $this->bindData($data);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function reload()
-    {
-        // noop
-    }
+    protected $target = 'AffiliateInvoice';
 }

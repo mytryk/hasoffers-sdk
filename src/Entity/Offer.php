@@ -241,59 +241,41 @@ class Offer extends AbstractEntity
     const DEFAULT_GOAL_NAME = 'Install and Open';
 
     static private $trackingUrls = [
-        'Adbazaar'       => 'adbazaar.net/',
-        'AppsFlyer'      => 'app.appsflyer.com/',
-        'Adsimilis'      => 'adsimilis.com/',
-        'Apsalar'        => 'apsalar.com/',
-        'App4u'          => 'app4u.today/',
-        'AppMetrica'     => [
-            'appmetrica.yandex.com/',
-            'appmetrika.yandex.ru',
-        ],
-        'Apple'          => 'apple.com/',
-        'Ad-X'           => 'ad-x.co.uk/',
-        'Actionpay'      => 'actionpay.ru/',
-        'AppMetr'        => [
-            'appmetr.com/',
-            'pixapi.net',
-        ],
-        'ad2games'       => 'ad2games.com/',
-        'AppLift'        => 'applift.com/',
-        'Adjust'         => [
-            'adjust.io/',
-            'adjust.com/',
-        ],
-        'Crobo'          => [
-            'affiliates.de/',
-            'crobo.com',
-        ],
-        'Clickky'        => 'clickky.biz/',
-        'Facebook'       => 'facebook.com/',
-        'GMobi'          => 'generalmobi.com/',
-        'Google'         => [
-            'google.com/',
-            'google.ru',
-        ],
-        'Glispa'         => 'glispa.com/',
-        'Plexop'         => 'serving.plexop.net/',
-        'Mail.ru'        => 'mail.ru/',
-        'MarsAds'        => 'marsads.com/',
-        'MADNETex'       => 'madnet.ru/',
-        'Mobbnet'        => 'mobbnet.com/',
-        'Mobilda'        => 'mobilda.com/',
-        'Mobicolor'      => 'mobicolor.com/',
-        'Raftica'        => 'raftika.com/',
-        'RebornGame'     => 'reborngame.ru/',
-        'IconPeak'       => 'iconpeak.com/',
-        'Kochava'        => 'kochava.com/',
-        'Taptica'        => 'tracking.taptica.com/',
-        'InstallTracker' => 'installtracker.com/',
-        'Unilead'        => [
-            'unileadnetwork.com',
-            'unilead.ru/',
-        ],
-        'Wooga'          => 'woogatrack.com/',
-        'Wakeapp'        => 'paymaks.com/',
+        'Adbazaar'       => ['adbazaar.net/'],
+        'AppsFlyer'      => ['app.appsflyer.com/'],
+        'Adsimilis'      => ['adsimilis.com/'],
+        'Apsalar'        => ['apsalar.com/'],
+        'App4u'          => ['app4u.today/'],
+        'AppMetrica'     => ['appmetrica.yandex.com/', 'appmetrika.yandex.ru'],
+        'Apple'          => ['apple.com/'],
+        'Ad-X'           => ['ad-x.co.uk/'],
+        'Actionpay'      => ['actionpay.ru/'],
+        'AppMetr'        => ['appmetr.com/', 'pixapi.net'],
+        'ad2games'       => ['ad2games.com/'],
+        'AppLift'        => ['applift.com/'],
+        'Adjust'         => ['adjust.io/', 'adjust.com/'],
+        'Crobo'          => ['affiliates.de/', 'crobo.com'],
+        'Clickky'        => ['clickky.biz/'],
+        'Facebook'       => ['facebook.com/'],
+        'GMobi'          => ['generalmobi.com/'],
+        'Google'         => ['google.com/', 'google.ru'],
+        'Glispa'         => ['glispa.com/'],
+        'Plexop'         => ['serving.plexop.net/'],
+        'Mail.ru'        => ['mail.ru/'],
+        'MarsAds'        => ['marsads.com/'],
+        'MADNETex'       => ['madnet.ru/'],
+        'Mobbnet'        => ['mobbnet.com/'],
+        'Mobilda'        => ['mobilda.com/'],
+        'Mobicolor'      => ['mobicolor.com/'],
+        'Raftica'        => ['raftika.com/'],
+        'RebornGame'     => ['reborngame.ru/'],
+        'IconPeak'       => ['iconpeak.com/'],
+        'Kochava'        => ['kochava.com/'],
+        'Taptica'        => ['tracking.taptica.com/'],
+        'InstallTracker' => ['installtracker.com/'],
+        'Unilead'        => ['unileadnetwork.com', 'unilead.ru/'],
+        'Wooga'          => ['woogatrack.com/'],
+        'Wakeapp'        => ['paymaks.com/'],
     ];
 
     /**
@@ -419,15 +401,10 @@ class Offer extends AbstractEntity
      */
     private function parseTrackingSystem()
     {
+        /** @var array $urlList */
         foreach (self::$trackingUrls as $catalogName => $urlList) {
-            if (is_array($urlList)) {
-                foreach ((array)$urlList as $catalogUrl) {
-                    if (strpos($this->offer_url, $catalogUrl) !== false) {
-                        return $catalogName;
-                    }
-                }
-            } else {
-                if (strpos($this->offer_url, $urlList) !== false) {
+            foreach ($urlList as $catalogUrl) {
+                if (strpos($this->offer_url, $catalogUrl) !== false) {
                     return $catalogName;
                 }
             }
@@ -447,9 +424,13 @@ class Offer extends AbstractEntity
     /**
      * @return string
      */
-    public function getCountries()
+    public function getCountriesCodes()
     {
-        $country = $this->getCountry();
-        return implode(';', array_keys($country->data()->getArrayCopy()));
+        $countries = $this->getCountry()->data()->getArrayCopy();
+
+        return implode(';', array_reduce($countries, function ($acc, $item) {
+            $acc[] = $item['code'];
+            return $acc;
+        }, []));
     }
 }

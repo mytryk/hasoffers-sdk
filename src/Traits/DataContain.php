@@ -57,21 +57,21 @@ trait DataContain
     }
 
     /**
-     * @param array $data
+     * @param array $newData
      *
      * @return $this
      */
-    public function bindData(array $data)
+    public function bindData(array $newData)
     {
-        $this->hoClient->trigger("{$this->target}.bind.before", [$this, &$data, &$this->changedData]);
+        $this->hoClient->trigger("{$this->target}.bind.before", [$this, &$newData, &$this->changedData]);
 
-        foreach (array_keys($data) as $key) {
-            if (0 === strpos($key, '_')) {
-                unset($data[$key]);
+        foreach (array_keys($newData) as $key) {
+            if ('id' === $key && 0 === strpos($key, '_')) {
+                unset($newData[$key]);
             }
         }
 
-        $this->changedData = (array)$data;
+        $this->changedData = $newData;
 
         $this->hoClient->trigger("{$this->target}.bind.after", [$this, &$this->changedData]);
 
@@ -153,7 +153,12 @@ trait DataContain
     public function __isset($propName)
     {
         $this->reloadIfNeed();
-        return isset($this->origData[$propName]);
+
+        if (array_key_exists($propName, $this->changedData)) {
+            return true;
+        }
+
+        return array_key_exists($propName, $this->origData);
     }
 
     /**
@@ -163,11 +168,12 @@ trait DataContain
      */
     public function __unset($propName)
     {
+        $this->reloadIfNeed();
+
         $this->hoClient->trigger("{$this->target}.unset.{$propName}.before", [$this, &$propName, &$this->origData]);
 
         if (array_key_exists($propName, $this->origData)) {
-            $this->origData[$propName] = null;
-            unset($this->changedData[$propName]);
+            $this->changedData[$propName] = null;
         }
 
         $this->hoClient->trigger("{$this->target}.unset.{$propName}.after", [$this, $propName, &$this->origData]);

@@ -41,6 +41,6 @@ class OffersTest extends HasoffersPHPUnit
         isSame(0, $offer->getMonthlyConversionsCap());
         isNull($offer->getRuleTargeting());
         isFalse($offer->getGoal()->data()->getArrayCopy());
-        isEmpty($offer->getCountries());
+        isEmpty($offer->getCountriesCodes());
     }
 }

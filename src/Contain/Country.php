@@ -15,7 +15,6 @@
 namespace Unilead\HasOffers\Contain;
 
 use Unilead\HasOffers\Entity\Offer;
-use Unilead\HasOffers\Traits\DataContain;
 
 /**
  * Class Country
@@ -31,29 +30,13 @@ use Unilead\HasOffers\Traits\DataContain;
  *
  * @package Unilead\HasOffers
  */
-class Country
+class Country extends AbstractContain
 {
-    use DataContain;
-
-    /** @var string */
-    protected $target = 'Country';
-
     /**
      * @var Offer
      */
-    protected $offer;
+    protected $parentEntity;
 
-    /**
-     * Goal constructor.
-     *
-     * @param array $data
-     * @param Offer $offer
-     */
-    public function __construct(array $data, Offer $offer)
-    {
-        $this->offer = $offer;
-        $this->hoClient = $this->offer->getClient();
-
-        $this->bindData($data);
-    }
+    /** @var string */
+    protected $target = 'Country';
 }

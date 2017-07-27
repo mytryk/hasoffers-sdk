@@ -21,10 +21,26 @@ use Unilead\HasOffers\Entity\AffiliateUser;
 
 /**
  * Class AffiliatesTest
+ *
  * @package JBZoo\PHPUnit
  */
 class AffiliatesTest extends HasoffersPHPUnit
 {
+    public function testCreateList()
+    {
+        $affiliates1 = $this->hoClient->get(Affiliates::class);
+        $affiliates2 = $this->hoClient->get('Affiliates');
+        $affiliates3 = $this->hoClient->get('Unilead\HasOffers\Entities\Affiliates');
+        $affiliates4 = $this->hoClient->get('\Unilead\HasOffers\Entities\Affiliates');
+        $affiliates5 = new Affiliates();
+
+        isClass(Affiliate::class, $affiliates1);
+        isClass(Affiliate::class, $affiliates2);
+        isClass(Affiliate::class, $affiliates3);
+        isClass(Affiliate::class, $affiliates4);
+        isClass(Affiliate::class, $affiliates5);
+    }
+
     public function testFindList()
     {
         $affiliates = $this->hoClient->get(Affiliates::class);
@@ -52,8 +68,8 @@ class AffiliatesTest extends HasoffersPHPUnit
 
         $users = $affiliate->getAffiliateUser()->getList();
 
-        isSame('10', $users[0]['id']);
-        isSame('anbelov83@belov.ru', $users[0]['email']);
-        isSame(AffiliateUser::STATUS_DELETED, $users[0]['status']);
+        isSame('10', $users->find('0.id'));
+        isSame('anbelov83@belov.ru', $users->find('0.email'));
+        isSame(AffiliateUser::STATUS_DELETED, $users->find('0.status'));
     }
 }

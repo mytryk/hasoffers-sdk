@@ -15,7 +15,6 @@
 namespace Unilead\HasOffers\Traits;
 
 use Unilead\HasOffers\HasOffersClient;
-use JBZoo\Utils\Str;
 use JBZoo\Data\Data as JBZooData;
 
 /**
@@ -53,29 +52,27 @@ trait DataEntity
 
         if ($isEmpty && $isPropExists && $this->objectId > 0) { // for entities
             $this->reload();
-        } elseif ($isEmpty && !$isPropExists) { // for contain
-            $this->reload();
         }
     }
 
     /**
-     * @param array $data
+     * @param array $newData
      *
      * @return $this
      */
-    public function bindData(array $data)
+    public function bindData(array $newData)
     {
         if (property_exists($this, 'hoClient') && $this->hoClient) {
-            $this->hoClient->trigger("{$this->target}.bind.before", [$this, &$data, &$this->changedData]);
+            $this->hoClient->trigger("{$this->target}.bind.before", [$this, &$newData, &$this->changedData]);
         }
 
-        foreach (array_keys($data) as $key) {
-            if (0 === strpos($key, '_')) {
-                unset($data[$key]);
+        foreach (array_keys($newData) as $key) {
+            if ('id' === $key || 0 === strpos($key, '_')) {
+                unset($newData[$key]);
             }
         }
 
-        $this->changedData = (array)$data;
+        $this->changedData = $newData;
 
         if (property_exists($this, 'hoClient') && $this->hoClient) {
             $this->hoClient->trigger("{$this->target}.bind.after", [$this, &$this->changedData]);
@@ -170,8 +167,6 @@ trait DataEntity
      */
     public function __set($propName, $value)
     {
-        $propName = Str::splitCamelCase($propName);
-
         if (strtolower($propName) === 'id') {
             throw new Exception("Property \"{$propName}\" read only in " . static::class
                 . " for objectId={$this->objectId}");
@@ -198,9 +193,12 @@ trait DataEntity
     public function __isset($propName)
     {
         $this->reloadIfNeed();
-        $propName = Str::splitCamelCase($propName);
 
-        return isset($this->origData[$propName]);
+        if (array_key_exists($propName, $this->changedData)) {
+            return true;
+        }
+
+        return array_key_exists($propName, $this->origData);
     }
 
     /**
@@ -210,12 +208,12 @@ trait DataEntity
      */
     public function __unset($propName)
     {
+        $this->reloadIfNeed();
+
         $this->hoClient->trigger("{$this->target}.unset.{$propName}.before", [$this, &$propName, &$this->origData]);
 
-        $propName = Str::splitCamelCase($propName);
         if (array_key_exists($propName, $this->origData)) {
-            $this->origData[$propName] = null;
-            unset($this->changedData[$propName]);
+            $this->changedData[$propName] = null;
         } else {
             throw new Exception("Undefined property \"{$propName}\" in " . static::class
                 . " for objectId={$this->objectId}");

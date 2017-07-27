@@ -25,13 +25,13 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
 {
     public function testCanGetItemsByInvoiceId()
     {
-        $someId = 36;
+        $someId = '36';
         /** @var AdvertiserInvoice $invoice */
         $invoice = $this->hoClient->get(AdvertiserInvoice::class, $someId);
 
         $items = $invoice->getAdvertiserInvoiceItem()->data();
 
-        is($someId, $items[0]['invoice_id']);
+        is($someId, $items->find('0.invoice_id'));
     }
 
     public function testCanCreateInvoiceItem()

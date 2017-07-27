@@ -14,9 +14,7 @@
 
 namespace Unilead\HasOffers\Contain;
 
-use JBZoo\Data\Data;
 use Unilead\HasOffers\Entity\Advertiser;
-use Unilead\HasOffers\Traits\DataEntity;
 
 /**
  * Class AdvertiserUser
@@ -50,80 +48,15 @@ use Unilead\HasOffers\Traits\DataEntity;
  *
  * @package Unilead\HasOffers
  */
-class AdvertiserUser
+class AdvertiserUser extends AbstractClientUser
 {
-    use DataEntity;
-
     /**
      * @var Advertiser
      */
-    protected $advertiser;
+    protected $parentEntity;
 
     /**
-     * @var Data
+     * @var string
      */
-    protected $users;
-
-    /**
-     * AdvertiserUser constructor.
-     *
-     * @param array      $data
-     * @param Advertiser $advertiser
-     */
-    public function __construct(array $data, Advertiser $advertiser)
-    {
-        $this->advertiser = $advertiser;
-        $this->users = $data;
-    }
-
-    /**
-     * @return Data
-     */
-    public function data()
-    {
-        return $this->users;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getList()
-    {
-        ksort($this->users);
-        $data = array_reduce($this->users, function ($reduced, $current) {
-            $removeKeys = [
-                'wants_alerts',
-                'SHARED_Users2_id',
-                'salt',
-                'AFFILIATE_NETWORK_Brands_id',
-                '_NETWORK_employees_id',
-                'access',
-            ];
-
-            // todo: use array_filter
-            foreach ($removeKeys as $removeKey) {
-                unset($current[$removeKey]);
-            }
-
-            $reduced[] = $current;
-
-            return $reduced;
-        });
-
-        return new Data($data);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function reload()
-    {
-        $data = $this->data()->getArrayCopy();
-
-        $this->advertiser->getClient()->trigger('advertiser_users.reload.before', [$this, &$data]);
-
-        $this->bindData($data);
-
-        $this->advertiser->getClient()->trigger('advertiser_users.reload.after', [$this, $data]);
-    }
+    protected $target = 'AdvertiserUser';
 }

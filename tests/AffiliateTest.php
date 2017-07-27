@@ -98,6 +98,27 @@ class AffiliateTest extends HasoffersPHPUnit
         isTrue($affiliate->isExist());
     }
 
+    public function testUnset()
+    {
+        $affiliate = $this->hoClient->get(Affiliate::class, '1004');
+        isTrue($affiliate->city);
+        unset($affiliate->city);
+        isFalse($affiliate->city);
+
+        isSame(['city' => null], $affiliate->getChangedFields());
+    }
+
+    public function testBindData()
+    {
+        $affiliate = $this->hoClient->get(Affiliate::class, '1004');
+        $oldCity = $affiliate->city;
+
+        $affiliate->mergeData(['city' => 'New city']);
+
+        isNotSame($affiliate->city, $oldCity);
+        isSame(['city' => 'New city'], $affiliate->getChangedFields());
+    }
+
     /**
      * @expectedExceptionMessage    No data to create new object "Unilead\HasOffers\Entity\Affiliate" in HasOffers
      * @expectedException           \Unilead\HasOffers\Exception
@@ -121,6 +142,33 @@ class AffiliateTest extends HasoffersPHPUnit
         $affiliate->undefined_property;
     }
 
+    public function testData()
+    {
+        $someId = '1004';
+        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        isNotEmpty($affiliate->data());
+    }
+
+    public function testIsset()
+    {
+        $someId = '1004';
+        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        isTrue(isset($affiliate->status));
+        isFalse(isset($affiliate->undefined));
+    }
+
+    /**
+     * @expectedExceptionMessage Undefined method "getFakeContainObject" or related object "FakeContainObject" in Unilead\HasOffers\Entity\Affiliate for objectId=1004
+     * @expectedException \Unilead\HasOffers\Exception
+     */
+    public function testCannotGetUndefinedContain()
+    {
+        $someId = '1004';
+        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+
+        $affiliate->getFakeContainObject();
+    }
+
     public function testGetAffiliateSignUpAnswers()
     {
         $someId = '1004';
@@ -132,28 +180,15 @@ class AffiliateTest extends HasoffersPHPUnit
         isSame('English', $answers[1]['answer']);
     }
 
-    public function testGetAffiliatePaymentMethodType()
-    {
-        $someId = '1004';
-        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
-        $paymentMethod = $affiliate->getPaymentMethod();
-
-        isSame(PaymentMethod::TYPE_PAYPAL, $paymentMethod->getType());
-
-        $paymentRawData = $paymentMethod->data();
-        isClass(Data::class, $paymentRawData);
-        isSame($paymentRawData->email, $paymentMethod->email);
-    }
-
     public function testGetAffiliateUser()
     {
         $someId = '1004';
         $affiliate = $this->hoClient->get(Affiliate::class, $someId);
         $users = $affiliate->getAffiliateUser()->getList();
 
-        isSame('10', $users[0]['id']);
-        isSame('anbelov83@belov.ru', $users[0]['email']);
-        isSame(AffiliateUser::STATUS_DELETED, $users[0]['status']);
+        isSame('10', $users->find('0.id'));
+        isSame('anbelov83@belov.ru', $users->find('0.email'));
+        isSame(AffiliateUser::STATUS_DELETED, $users->find('0.status'));
     }
 
     public function testCanCreateAffiliate()
@@ -243,57 +278,5 @@ class AffiliateTest extends HasoffersPHPUnit
         $affiliate->save();
 
         is(1004, $affiliate->id);
-    }
-
-    public function testCanUpdatePaymentMethod()
-    {
-        $someId = '1004';
-        $randomEmail = Email::random();
-
-        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
-        $paymentMethod = $affiliate->getPaymentMethod();
-
-        $paymentMethod->setType(PaymentMethod::TYPE_PAYPAL);
-        isSame(PaymentMethod::TYPE_PAYPAL, $paymentMethod->getType());
-
-        $paymentMethod->email = $randomEmail;
-        isSame($randomEmail, $paymentMethod->email);
-        isTrue($paymentMethod->save());
-        isSame($randomEmail, $paymentMethod->email);
-
-        // Check updated field
-        $expAffiliate = $this->hoClient->get(Affiliate::class, $someId);
-        $expPaymentMethod = $expAffiliate->getPaymentMethod();
-        isSame(PaymentMethod::TYPE_PAYPAL, $expPaymentMethod->getType());
-        isSame($randomEmail, $expPaymentMethod->email);
-    }
-
-    public function testCanCreatePaymentMethod()
-    {
-        $randomEmail = Email::random();
-
-        $affiliate = $this->hoClient->get(Affiliate::class);
-        $affiliate->company = 'Test Company';
-        $affiliate->phone = '+7 845 845 84 54';
-        $affiliate->save();
-        isTrue($affiliate->id > 0);
-
-        $paymentMethod = $affiliate->getPaymentMethod();
-        $paymentMethod->setType(PaymentMethod::TYPE_PAYPAL);
-
-        isSame(PaymentMethod::TYPE_PAYPAL, $paymentMethod->getType());
-
-        $paymentMethod->email = $randomEmail;
-        isSame($randomEmail, $paymentMethod->email);
-        isTrue($paymentMethod->save());
-        isSame($randomEmail, $paymentMethod->email);
-
-        // Check updated field
-        /** @var Affiliate $expAffiliate */
-        $expAffiliate = $this->hoClient->get(Affiliate::class, $affiliate->id);
-        $expPaymentMethod = $expAffiliate->getPaymentMethod();
-        isSame($randomEmail, $expPaymentMethod->email);
-        isSame(PaymentMethod::TYPE_PAYPAL, $expPaymentMethod->getType());
-        isSame($expAffiliate->id, $affiliate->id);
     }
 }
