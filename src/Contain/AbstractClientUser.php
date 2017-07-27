@@ -69,7 +69,9 @@ abstract class AbstractClientUser extends AbstractContain
     public function getList()
     {
         $users = $this->data()->getArrayCopy();
-        ksort($users);
+        usort($users, function ($aItem, $bItem) {
+            return (int)$aItem['id'] > (int)$bItem['id'];
+        });
 
         $result = array_reduce($users, function ($reduced, $current) {
             $removeKeys = [

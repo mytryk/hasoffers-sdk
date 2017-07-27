@@ -34,11 +34,11 @@ class AffiliatesTest extends HasoffersPHPUnit
         $affiliates4 = $this->hoClient->get('\Unilead\HasOffers\Entities\Affiliates');
         $affiliates5 = new Affiliates();
 
-        isClass(Affiliate::class, $affiliates1);
-        isClass(Affiliate::class, $affiliates2);
-        isClass(Affiliate::class, $affiliates3);
-        isClass(Affiliate::class, $affiliates4);
-        isClass(Affiliate::class, $affiliates5);
+        isClass(Affiliates::class, $affiliates1);
+        isClass(Affiliates::class, $affiliates2);
+        isClass(Affiliates::class, $affiliates3);
+        isClass(Affiliates::class, $affiliates4);
+        isClass(Affiliates::class, $affiliates5);
     }
 
     public function testFindList()
