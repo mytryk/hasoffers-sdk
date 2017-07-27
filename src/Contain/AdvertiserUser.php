@@ -79,7 +79,7 @@ class AdvertiserUser
     /**
      * @return Data
      */
-    public function getRawData()
+    public function data()
     {
         return $this->users;
     }
@@ -118,7 +118,7 @@ class AdvertiserUser
      */
     public function reload()
     {
-        $data = $this->getRawData()->getArrayCopy();
+        $data = $this->data()->getArrayCopy();
 
         $this->advertiser->getClient()->trigger('advertiser_users.reload.before', [$this, &$data]);
 

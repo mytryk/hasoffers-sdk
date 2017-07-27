@@ -31,9 +31,9 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         $affiliateInvoice = $this->hoClient->get(AffiliateInvoice::class, $someId);
         $affiliateInvoice->reload();
 
-        $items = $affiliateInvoice->getAffiliateInvoiceItem()->data()->getArrayCopy();
+        $items = $affiliateInvoice->getAffiliateInvoiceItem()->data();
 
-        is($someId, $items[0]['invoice_id']);
+        is($someId, $items->find('0.invoice_id'));
     }
 
     public function testCanCreateInvoiceItem()

@@ -79,14 +79,6 @@ class AffiliateUser
     }
 
     /**
-     * @return Data
-     */
-    public function getRawData()
-    {
-        return $this->users;
-    }
-
-    /**
      * @return mixed
      */
     public function getList()
@@ -119,7 +111,7 @@ class AffiliateUser
      */
     public function reload()
     {
-        $data = $this->getRawData()->getArrayCopy();
+        $data = $this->data()->getArrayCopy();
 
         $this->affiliate->getClient()->trigger('affiliate_users.reload.before', [$this, &$data]);
 

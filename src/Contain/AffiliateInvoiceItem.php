@@ -14,7 +14,6 @@
 
 namespace Unilead\HasOffers\Contain;
 
-use JBZoo\Data\Data;
 use Unilead\HasOffers\Traits\DataEntity;
 use Unilead\HasOffers\Entity\AffiliateInvoice;
 
@@ -59,31 +58,18 @@ class AffiliateInvoiceItem
     /**
      * @var AffiliateInvoice
      */
-    protected $invoice;
+    protected $affiliateInvoice;
 
     /**
-     * @var Data
-     */
-    protected $items;
-
-    /**
-     * PaymentMethod constructor.
+     * AffiliateInvoiceItem constructor.
      *
-     * @param array            $data
+     * @param array|null       $data
      * @param AffiliateInvoice $affiliateInvoice
      */
     public function __construct(array $data = null, AffiliateInvoice $affiliateInvoice)
     {
-        $this->invoice = $affiliateInvoice;
-        $this->items = $data;
-    }
-
-    /**
-     * @return Data
-     */
-    public function getRawData()
-    {
-        return $this->items;
+        $this->affiliateInvoice = $affiliateInvoice;
+        $this->bindData($data);
     }
 
     /**
@@ -91,12 +77,6 @@ class AffiliateInvoiceItem
      */
     public function reload()
     {
-        $data = $this->getRawData()->getArrayCopy();
-
-        $this->invoice->getClient()->trigger('bill_item.reload.before', [$this, &$data]);
-
-        $this->bindData($data);
-
-        $this->invoice->getClient()->trigger('bill_item.reload.after', [$this, $data]);
+        // noop
     }
 }
