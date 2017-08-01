@@ -43,11 +43,26 @@ class OfferTest extends HasoffersPHPUnit
 
     public function testCanGetOfferById()
     {
-        $someId = '2';
+        $someId = '4';
         /** @var Offer $offer */
         $offer = $this->hoClient->get(Offer::class, $someId);
 
         is($someId, $offer->id);
+        is('Beasts of Dungeons (Android)', $offer->name);
+        is('active', $offer->status);
+
+        isSame('Android', $offer->getRuleTargeting()[0]['Name']);
+        isSame('Android operating system', $offer->getRuleTargeting()[0]['Description']);
+        isSame('Android', $offer->getRuleTargeting()[0]['Platform']);
+
+        isTrue($offer->getGoal()->data()->getArrayCopy());
+        $goals = $offer->getGoal()->data()->getArrayCopy();
+        isSame('2', $goals[0]['id']);
+        isSame('Tutorial', $goals[0]['name']);
+        isSame('0.70000', $goals[0]['default_payout']);
+        isSame('1.00000', $goals[0]['max_payout']);
+
+        isSame('US;RU', $offer->getCountriesCodes());
     }
 
     public function testIsExist()
