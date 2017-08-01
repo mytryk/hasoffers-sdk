@@ -14,6 +14,7 @@
 
 namespace Unilead\HasOffers\Entities;
 
+use Unilead\HasOffers\Contain\Country;
 use Unilead\HasOffers\Contain\Goal;
 use Unilead\HasOffers\Entity\Offer;
 
@@ -39,5 +40,6 @@ class Offers extends AbstractEntities
      */
     protected $contain = [
         'Goal' => Goal::class,
+        'Country' => Country::class
     ];
 }
