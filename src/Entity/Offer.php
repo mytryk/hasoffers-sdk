@@ -355,8 +355,8 @@ class Offer extends AbstractEntity
             'offer_id' => $this->id,
         ])->getArrayCopy();
 
-        if (!empty($targetData['data'])) {
-            foreach ((array)$targetData['data'] as $targeting) {
+        if (!empty($targetData)) {
+            foreach ((array)$targetData as $targeting) {
                 $map = [
                     'iPad'         => 'iOS',
                     'iPhone'       => 'iOS',
@@ -369,7 +369,7 @@ class Offer extends AbstractEntity
                 //TODO: Doesn't work on some offers. Need to check why (Nick)
                 $platform = $map[$targeting['rule']['name']] ?? $map['_default'];
 
-                $return = [
+                $return[] = [
                     'OfferId'     => $this->id,
                     'Name'        => $targeting['rule']['name'],
                     'Description' => $targeting['rule']['description'],
