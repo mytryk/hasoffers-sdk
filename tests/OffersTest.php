@@ -39,15 +39,15 @@ class OffersTest extends HasoffersPHPUnit
         isSame((float)1000, $offer->getMonthlyCapAmount());
         isSame((float)625, $offer->getMonthlyConversionsCap());
 
-        isSame((float) 100, (float) $offer->conversion_cap);
-        isSame((float) 1000, (float) $offer->monthly_conversion_cap);
-        isSame((float) 10000, (float) $offer->lifetime_conversion_cap);
+        isSame((float)100, (float)$offer->conversion_cap);
+        isSame((float)1000, (float)$offer->monthly_conversion_cap);
+        isSame((float)10000, (float)$offer->lifetime_conversion_cap);
         isSame((float)100, (float)$offer->payout_cap);
-        isSame((float) 1000, (float) $offer->monthly_payout_cap);
-        isSame((float) 5000, (float) $offer->lifetime_payout_cap);
-        isSame((float) 100, (float) $offer->revenue_cap);
-        isSame((float) 1000, (float) $offer->monthly_revenue_cap);
-        isSame((float) 10000, (float) $offer->lifetime_revenue_cap);
+        isSame((float)1000, (float)$offer->monthly_payout_cap);
+        isSame((float)5000, (float)$offer->lifetime_payout_cap);
+        isSame((float)100, (float)$offer->revenue_cap);
+        isSame((float)1000, (float)$offer->monthly_revenue_cap);
+        isSame((float)10000, (float)$offer->lifetime_revenue_cap);
 
         isSame('Android', $offer->getRuleTargeting()[0]['Name']);
         isSame('Android operating system', $offer->getRuleTargeting()[0]['Description']);

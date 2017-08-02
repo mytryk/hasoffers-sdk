@@ -24,7 +24,7 @@ use Unilead\HasOffers\HasOffersClient;
  */
 abstract class AbstractEntities
 {
-    const DEFAULT_LIMIT = null;
+    const DEFAULT_LIMIT = 50000;
 
     /**
      * @var HasOffersClient
