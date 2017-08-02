@@ -82,6 +82,7 @@ try {
  - ho.api.request.(before|after)
  - ho.api.sleep.(before|after)
  
+ - ho.exception
  - ho.{entity}.init
  - ho.{entity}.save.(before|after)
  - ho.{entity}.set.{property}.(before|after)
