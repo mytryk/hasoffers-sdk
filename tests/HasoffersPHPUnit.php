@@ -59,6 +59,7 @@ class HasoffersPHPUnit extends PHPUnit
 
         $this->eManager = new EventManager();
         $this->hoClient->setEventManager($this->eManager);
+        EventManager::setDefault($this->eManager);
 
         $this->eManager
             ->on(

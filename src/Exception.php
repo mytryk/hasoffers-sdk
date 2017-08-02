@@ -14,11 +14,25 @@
 
 namespace Unilead\HasOffers;
 
+use JBZoo\Event\EventManager;
+use Throwable;
+
 /**
  * Class Exception
+ *
  * @package Unilead\HasOffers
  */
 class Exception extends \Exception
 {
+    /**
+     * @inheritdoc
+     */
+    public function __construct($message = '', $code = 0, Throwable $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
 
+        if (class_exists(EventManager::class) && EventManager::getDefault()) {
+            EventManager::getDefault()->trigger('ho.exception', [$this]);
+        }
+    }
 }

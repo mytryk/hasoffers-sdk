@@ -15,6 +15,7 @@
 namespace JBZoo\PHPUnit;
 
 use JBZoo\Data\Data;
+use JBZoo\Event\EventManager;
 use JBZoo\Utils\Email;
 use JBZoo\Utils\Str;
 use Unilead\HasOffers\Entity\Affiliate;
@@ -40,6 +41,23 @@ class AffiliateTest extends HasoffersPHPUnit
         $affiliate->reload();
 
         isSame(2, $checkerCounter);
+    }
+
+    public function testEventManagerExceptions()
+    {
+        $checkedMessage = '';
+        $this->eManager->on('ho.exception', function (\Exception $exception) use (&$checkedMessage) {
+            $checkedMessage = $exception->getMessage();
+        });
+
+        try {
+            $affiliate = $this->hoClient->get(Affiliate::class);
+            $affiliate->save();
+        } catch (\Exception $exception) {
+            // noop
+        }
+
+        isSame('No data to create new object "Unilead\HasOffers\Entity\Affiliate" in HasOffers', $checkedMessage);
     }
 
     public function testLimitOption()
