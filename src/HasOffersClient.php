@@ -195,8 +195,7 @@ class HasOffersClient
     public function trigger($eventName, array $arguments = [], $continueCallback = null)
     {
         if ($this->eManager) {
-            $eventName = strtolower("ho.{$eventName}");
-            return $this->eManager->trigger($eventName, $arguments, $continueCallback);
+            return $this->eManager->trigger("ho.{$eventName}", $arguments, $continueCallback);
         }
 
         return 0;
@@ -216,5 +215,13 @@ class HasOffersClient
     public function setTimeout($seconds)
     {
         $this->timeout = (int)$seconds;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRequestCounter()
+    {
+        return $this->requestCounter;
     }
 }

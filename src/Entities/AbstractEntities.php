@@ -26,6 +26,8 @@ abstract class AbstractEntities
 {
     const DEFAULT_LIMIT = 50000;
 
+    protected $pageSize = 500;
+
     /**
      * @var HasOffersClient
      */
@@ -55,22 +57,45 @@ abstract class AbstractEntities
         $this->hoClient->trigger("{$this->target}.find.before", [$this, &$conditions]);
 
         $conditions = new Data($conditions);
+
+        $currentPage = 0;
+
+        $limit = $conditions->get('limit', self::DEFAULT_LIMIT, 'int');
+
+        $result = [];
         $apiRequest = [
             'Method'  => 'findAll',
             'Target'  => $this->target,
             'fields'  => $conditions->get('fields', [], 'arr'),
             'filters' => $conditions->get('filters', [], 'arr'),
-            'sort'    => $conditions->get('sort', [], 'arr'),
-            'limit'   => $conditions->get('limit', self::DEFAULT_LIMIT, 'int'),
-            'page'    => $conditions->get('page', 0, 'int'),
+            'sort'    => $conditions->get('sort', ['id' => 'desc'], 'arr'),
+            'limit'   => $this->pageSize,
+            'page'    => $currentPage,
             'contain' => $conditions->get('contain', array_keys($this->contain), 'arr'),
         ];
 
-        /** @var array $response */
-        $response = $this->hoClient->apiRequest($apiRequest)->get('data', [], 'arr');
+        /** @var Data $response */
+        $response = $this->hoClient->apiRequest($apiRequest);
+        $listResult = $response->get('data', [], 'arr');
+        $allPages = $response->get('pageCount', 0, 'int');
 
-        $result = [];
-        foreach ($response as $itemId => $itemData) {
+        if (count($listResult) < $limit) {
+            for ($requestedPage = 2; $requestedPage <= $allPages; $requestedPage++) {
+                $apiRequest['page'] = $requestedPage;
+
+                $response = $this->hoClient->apiRequest($apiRequest);
+                $listCurrentStep = $response->get('data', [], 'arr');
+
+                $listResult += $listCurrentStep;
+                if (count($listResult) >= $limit) {
+                    break;
+                }
+            }
+        }
+
+        $listResult = array_slice($listResult, 0, $limit, true);
+
+        foreach ($listResult as $itemId => $itemData) {
             $result[$itemId] = $this->hoClient->get($this->className, $itemId, $itemData[$this->target], $itemData);
         }
 
@@ -98,5 +123,13 @@ abstract class AbstractEntities
     public function getTarget()
     {
         return $this->target;
+    }
+
+    /**
+     * @param int $pageSize
+     */
+    public function setPageSize($pageSize)
+    {
+        $this->pageSize = $pageSize;
     }
 }
