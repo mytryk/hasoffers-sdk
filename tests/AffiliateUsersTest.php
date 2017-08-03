@@ -30,6 +30,7 @@ class AffiliateUsersTest extends HasoffersPHPUnit
         $users = $this->hoClient->get(AffiliateUsers::class);
         $list = $users->find([
             'limit' => 100,
+            'sort'  => [],
         ]);
 
         /** @var AffiliateUser $user */

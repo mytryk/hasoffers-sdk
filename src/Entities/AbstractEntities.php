@@ -62,7 +62,6 @@ abstract class AbstractEntities
 
         $limit = $conditions->get('limit', self::DEFAULT_LIMIT, 'int');
 
-        $result = [];
         $apiRequest = [
             'Method'  => 'findAll',
             'Target'  => $this->target,
@@ -95,6 +94,7 @@ abstract class AbstractEntities
 
         $listResult = array_slice($listResult, 0, $limit, true);
 
+        $result = [];
         foreach ($listResult as $itemId => $itemData) {
             $result[$itemId] = $this->hoClient->get($this->className, $itemId, $itemData[$this->target], $itemData);
         }
