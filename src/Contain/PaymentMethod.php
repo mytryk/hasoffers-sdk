@@ -167,9 +167,16 @@ class PaymentMethod extends AbstractContain
 
     /**
      * Save changed payment method info
+     *
+     * @param array $properies
+     * @return bool
      */
-    public function save()
+    public function save(array $properies = [])
     {
+        if (count($properies) !== 0) {
+            return $this->mergeData($properies)->save();
+        }
+
         $changedData = $this->getChangedFields();
         $this->hoClient->trigger("{$this->target}.save.before", [$this, &$changedData]);
 

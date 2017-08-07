@@ -112,4 +112,20 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
 
         isSame($paymentMethod->getParent(), $affiliate);
     }
+
+    public function testSaveByArgument()
+    {
+        $someId = '1004';
+        $newEmail = Email::random();
+
+        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $paymentMethod = $affiliate->getPaymentMethod();
+
+        $paymentMethod->setType(PaymentMethod::TYPE_PAYPAL);
+        isTrue($paymentMethod->save(['email' => $newEmail]));
+
+        $affiliateCheker = $this->hoClient->get(Affiliate::class, $someId);
+        $paymentMethodChecker = $affiliateCheker->getPaymentMethod();
+        isSame($newEmail, $paymentMethodChecker->email);
+    }
 }

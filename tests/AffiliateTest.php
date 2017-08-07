@@ -296,6 +296,98 @@ class AffiliateTest extends HasoffersPHPUnit
         $affiliate = $this->hoClient->get(Affiliate::class, 1004);
         $affiliate->save();
 
+        isSame([], $affiliate->getChangedFields());
         is(1004, $affiliate->id);
+    }
+
+    public function testNoRequestOnEmptyDataSave()
+    {
+        $eventChecker = [];
+        $this->eManager->on('ho.Affiliate.save.*', function () use (&$eventChecker) {
+            $args = func_get_args();
+            $eventChecker[] = end($args);
+        });
+
+        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate->save();
+
+        isSame([], $affiliate->getChangedFields());
+        isSame(['ho.affiliate.save.before'], $eventChecker);
+    }
+
+    public function testNoChangeStatOnSameValues()
+    {
+        $eventChecker = [];
+        $this->eManager->on('ho.Affiliate.save.*', function () use (&$eventChecker) {
+            $args = func_get_args();
+            $eventChecker[] = end($args);
+        });
+
+        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate->reload();
+
+        isSame([], $affiliate->getChangedFields());
+        $affiliate->save();
+
+        isSame(['ho.affiliate.save.before'], $eventChecker);
+    }
+
+    public function testNoChangeStatOnSameValuesAfterSet()
+    {
+        $eventChecker = [];
+        $this->eManager->on('ho.Affiliate.save.*', function () use (&$eventChecker) {
+            $args = func_get_args();
+            $eventChecker[] = end($args);
+        });
+
+        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $company = $affiliate->company;
+        $affiliate->company = $company;
+        isSame([], $affiliate->getChangedFields());
+
+        $affiliate->save();
+        isSame(['ho.affiliate.save.before'], $eventChecker);
+    }
+
+    public function testSaveByArgument()
+    {
+        $eventChecker = [];
+        $this->eManager->on('ho.Affiliate.save.*', function () use (&$eventChecker) {
+            $args = func_get_args();
+            $eventChecker[] = end($args);
+        });
+
+        $newCompany = Str::random();
+
+        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate->save(['company' => $newCompany]);
+
+        isSame([
+            'ho.affiliate.save.before',
+            'ho.affiliate.save.after',
+        ], $eventChecker);
+    }
+
+    public function testNoSaveByArgumentWithSameProps()
+    {
+        $eventChecker = [];
+        $this->eManager
+            ->on('ho.Affiliate.save.*', function () use (&$eventChecker) {
+                $args = func_get_args();
+                $eventChecker[] = end($args);
+            })
+            ->on('ho.api.request.*', function () use (&$eventChecker) {
+                $args = func_get_args();
+                $eventChecker[] = end($args);
+            });
+
+        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate->save(['company' => $affiliate->company]);
+
+        isSame([
+            'ho.api.request.before',
+            'ho.api.request.after',
+            'ho.affiliate.save.before',
+        ], $eventChecker);
     }
 }

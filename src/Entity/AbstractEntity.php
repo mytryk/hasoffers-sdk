@@ -167,11 +167,16 @@ abstract class AbstractEntity
     }
 
     /**
+     * @param array $properies
      * @return $this
      * @throws Exception
      */
-    public function save()
+    public function save(array $properies = [])
     {
+        if (count($properies) !== 0) {
+            return $this->mergeData($properies)->save();
+        }
+
         $isNew = !$this->objectId;
         $this->hoClient->trigger("{$this->target}.save.before", [$this, $isNew]);
         $targetKey = $this->targetAlias ?: $this->target;
@@ -188,6 +193,9 @@ abstract class AbstractEntity
                 'data'          => $dataRequest,
                 'return_object' => 1,
             ]);
+
+            $this->hoClient->trigger("{$this->target}.save.after", [$this, $isNew]);
+
         } else {
             $dataRequest = $this->removeExcludedKeys($this->getChangedFields());
             if (count($dataRequest) > 0) {
@@ -200,6 +208,8 @@ abstract class AbstractEntity
                     'id'            => $this->objectId,
                     'return_object' => '1',
                 ]);
+
+                $this->hoClient->trigger("{$this->target}.save.after", [$this, $isNew]);
             } else {
                 $this->reloadIfNeed();
                 $data = [$targetKey => $this->origData];
@@ -215,8 +225,6 @@ abstract class AbstractEntity
         $this->origData = (array)$data[$targetKey];
         $this->objectId = $data[$targetKey]['id'];
         $this->changedData = [];
-
-        $this->hoClient->trigger("{$this->target}.save.after", [$this, $isNew]);
 
         return $this;
     }
