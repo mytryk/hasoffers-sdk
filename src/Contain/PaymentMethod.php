@@ -204,4 +204,13 @@ class PaymentMethod extends AbstractContain
 
         return false;
     }
+
+    /**
+     * @return array
+     */
+    public function getChangedFields()
+    {
+        $this->reloadIfNeed();
+        return array_diff_assoc($this->changedData, $this->data()->getArrayCopy());
+    }
 }

@@ -303,7 +303,7 @@ class AffiliateTest extends HasoffersPHPUnit
     public function testNoRequestOnEmptyDataSave()
     {
         $eventChecker = [];
-        $this->eManager->on('ho.Affiliate.save.*', function () use (&$eventChecker) {
+        $this->eManager->on('ho.*.save.*', function () use (&$eventChecker) {
             $args = func_get_args();
             $eventChecker[] = end($args);
         });
@@ -318,7 +318,7 @@ class AffiliateTest extends HasoffersPHPUnit
     public function testNoChangeStatOnSameValues()
     {
         $eventChecker = [];
-        $this->eManager->on('ho.Affiliate.save.*', function () use (&$eventChecker) {
+        $this->eManager->on('ho.*.save.*', function () use (&$eventChecker) {
             $args = func_get_args();
             $eventChecker[] = end($args);
         });
@@ -335,7 +335,7 @@ class AffiliateTest extends HasoffersPHPUnit
     public function testNoChangeStatOnSameValuesAfterSet()
     {
         $eventChecker = [];
-        $this->eManager->on('ho.Affiliate.save.*', function () use (&$eventChecker) {
+        $this->eManager->on('ho.*.save.*', function () use (&$eventChecker) {
             $args = func_get_args();
             $eventChecker[] = end($args);
         });
@@ -352,7 +352,7 @@ class AffiliateTest extends HasoffersPHPUnit
     public function testSaveByArgument()
     {
         $eventChecker = [];
-        $this->eManager->on('ho.Affiliate.save.*', function () use (&$eventChecker) {
+        $this->eManager->on('ho.*.save.*', function () use (&$eventChecker) {
             $args = func_get_args();
             $eventChecker[] = end($args);
         });
@@ -372,7 +372,7 @@ class AffiliateTest extends HasoffersPHPUnit
     {
         $eventChecker = [];
         $this->eManager
-            ->on('ho.Affiliate.save.*', function () use (&$eventChecker) {
+            ->on('ho.*.save.*', function () use (&$eventChecker) {
                 $args = func_get_args();
                 $eventChecker[] = end($args);
             })

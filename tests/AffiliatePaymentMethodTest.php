@@ -116,6 +116,14 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
     public function testSaveByArgument()
     {
         $someId = '1004';
+
+        $eventChecker = [];
+        $this->eManager
+            ->on('ho.paymentmethod.save.*', function () use (&$eventChecker) {
+                $args = func_get_args();
+                $eventChecker[] = end($args);
+            });
+
         $newEmail = Email::random();
 
         $affiliate = $this->hoClient->get(Affiliate::class, $someId);
@@ -127,5 +135,34 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
         $affiliateCheker = $this->hoClient->get(Affiliate::class, $someId);
         $paymentMethodChecker = $affiliateCheker->getPaymentMethod();
         isSame($newEmail, $paymentMethodChecker->email);
+
+        isSame([
+            'ho.paymentmethod.save.before',
+            'ho.paymentmethod.save.after',
+        ], $eventChecker);
+    }
+
+    public function testNoSaveByArgumentOnSetSameValues()
+    {
+        $someId = '1004';
+
+        $eventChecker = [];
+        $this->eManager
+            ->on('ho.paymentmethod.save.*', function () use (&$eventChecker) {
+                $args = func_get_args();
+                $eventChecker[] = end($args);
+            });
+
+        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $paymentMethod = $affiliate->getPaymentMethod();
+
+        $paymentMethod->setType(PaymentMethod::TYPE_PAYPAL);
+        isFalse($paymentMethod->save(['email' => $paymentMethod->email]));
+
+        $affiliateCheker = $this->hoClient->get(Affiliate::class, $someId);
+        $paymentMethodChecker = $affiliateCheker->getPaymentMethod();
+        isSame($paymentMethod->email, $paymentMethodChecker->email);
+
+        isSame(['ho.paymentmethod.save.before'], $eventChecker);
     }
 }
