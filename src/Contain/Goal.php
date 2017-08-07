@@ -14,6 +14,7 @@
 
 namespace Unilead\HasOffers\Contain;
 
+use Unilead\HasOffers\Entity\AbstractEntity;
 use Unilead\HasOffers\Entity\Offer;
 
 /**
@@ -97,4 +98,18 @@ class Goal extends AbstractContain
      * @var Offer
      */
     protected $parentEntity;
+
+    /**
+     * @inheritdoc
+     */
+    public function __construct(array $data, AbstractEntity $parentEntity)
+    {
+        $this->parentEntity = $parentEntity;
+        $this->hoClient = $this->parentEntity->getClient();
+        $this->bindData($data);
+
+        if (!$this->target) {
+            throw new Exception('Target is no set for ' . static::class);
+        }
+    }
 }
