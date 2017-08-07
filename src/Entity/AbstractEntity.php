@@ -296,4 +296,12 @@ abstract class AbstractEntity
         }
         return true;
     }
+
+    /**
+     * @return bool
+     */
+    public function isNew()
+    {
+        return (int)$this->objectId === 0;
+    }
 }

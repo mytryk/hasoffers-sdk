@@ -215,7 +215,9 @@ class AffiliateTest extends HasoffersPHPUnit
         $affiliate = $this->hoClient->get(Affiliate::class);
         $affiliate->company = 'Test Company';
         $affiliate->phone = '+7 845 845 84 54';
+        isTrue($affiliate->isNew());
         $affiliate->save();
+        isFalse($affiliate->isNew());
 
         /** @var Affiliate $affiliateCheck */
         $affiliateCheck = $this->hoClient->get(Affiliate::class, $affiliate->id);
