@@ -57,6 +57,7 @@ class OfferTest extends HasoffersPHPUnit
 
         isTrue($offer->getGoal()->data()->getArrayCopy());
         $goals = $offer->getGoal()->data()->getArrayCopy();
+        isSame(1, count($goals));
         isSame('2', $goals[0]['id']);
         isSame('Tutorial', $goals[0]['name']);
         isSame('0.70000', $goals[0]['default_payout']);
