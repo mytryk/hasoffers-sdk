@@ -48,6 +48,7 @@ abstract class AbstractContain
         $this->parentEntity = $parentEntity;
         $this->hoClient = $this->parentEntity->getClient();
         $this->bindData($data);
+        $this->origData = $data;
 
         if (!$this->target) {
             throw new Exception('Target is no set for ' . static::class);

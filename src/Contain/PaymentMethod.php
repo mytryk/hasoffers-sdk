@@ -128,6 +128,7 @@ class PaymentMethod extends AbstractContain
 
         $data = (new Data($data))->find($this->getType(), [], 'arr');
         $this->bindData($data);
+        $this->origData = $data;
     }
 
     /**
@@ -180,7 +181,7 @@ class PaymentMethod extends AbstractContain
         $changedData = $this->getChangedFields();
         $this->hoClient->trigger("{$this->target}.save.before", [$this, &$changedData]);
 
-        if (empty($changedData)) {
+        if (count($changedData) === 0) {
             return false;
         }
 
@@ -205,12 +206,4 @@ class PaymentMethod extends AbstractContain
         return false;
     }
 
-    /**
-     * @return array
-     */
-    public function getChangedFields()
-    {
-        $this->reloadIfNeed();
-        return array_diff_assoc($this->changedData, $this->data()->getArrayCopy());
-    }
 }

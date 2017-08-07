@@ -54,6 +54,7 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
         isSame(PaymentMethod::TYPE_PAYPAL, $paymentMethod->getType());
 
         $paymentMethod->email = $randomEmail;
+        isSame(['email' => $randomEmail], $paymentMethod->getChangedFields());
         isSame($randomEmail, $paymentMethod->email);
         isTrue($paymentMethod->save());
         isSame($randomEmail, $paymentMethod->email);
@@ -82,7 +83,7 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
 
         $paymentMethod->email = $randomEmail;
         isSame($randomEmail, $paymentMethod->email);
-        isTrue($paymentMethod->save());
+        $paymentMethod->save();
         isSame($randomEmail, $paymentMethod->email);
 
         // Check updated field
