@@ -48,6 +48,7 @@ try {
     
     // CRUD
     $affiliate->save();
+    $affiliate->save(['company' => 'New Company Name']);
     $affiliate->reload(); // forced loading actual info from HO
     $affiliate->delete(); // set deleted status
     
