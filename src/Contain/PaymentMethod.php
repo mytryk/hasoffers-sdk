@@ -205,5 +205,4 @@ class PaymentMethod extends AbstractContain
 
         return false;
     }
-
 }

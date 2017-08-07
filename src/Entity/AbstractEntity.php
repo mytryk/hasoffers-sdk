@@ -195,7 +195,6 @@ abstract class AbstractEntity
             ]);
 
             $this->hoClient->trigger("{$this->target}.save.after", [$this, $isNew]);
-
         } else {
             $dataRequest = $this->removeExcludedKeys($this->getChangedFields());
             if (count($dataRequest) > 0) {
