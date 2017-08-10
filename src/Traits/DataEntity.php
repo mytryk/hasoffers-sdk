@@ -101,8 +101,8 @@ trait DataEntity
         $this->reloadIfNeed();
 
         // TODO: THINK! Remove hardcode!
-        if (array_key_exists('access', $this->changedData)) {
-            unset($this->changedData['access']);
+        if (array_key_exists('access', $this->origData)) {
+            unset($this->origData['access']);
         }
 
         // TODO: THINK! Remove hardcode!
@@ -121,8 +121,8 @@ trait DataEntity
         $this->reloadIfNeed();
 
         // TODO: THINK! Remove hardcode!
-        if (array_key_exists('access', $this->changedData)) {
-            unset($this->changedData['access']);
+        if (array_key_exists('access', $this->origData)) {
+            unset($this->origData['access']);
         }
 
         // TODO: THINK! Remove hardcode!
