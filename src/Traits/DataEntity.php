@@ -108,8 +108,17 @@ trait DataEntity
     public function getChangedFields()
     {
         $this->reloadIfNeed();
-        @unset($this->origData['access']);
-        @unset($this->changedData['access']);
+
+        // TODO: THINK! Remove hardcode!
+        if (array_key_exists('access', $this->changedData)) {
+            unset($this->origData['access']);
+        }
+
+        // TODO: THINK! Remove hardcode!
+        if (array_key_exists('access', $this->changedData)) {
+            unset($this->changedData['access']);
+        }
+
         return array_diff_assoc($this->changedData, $this->origData);
     }
 
