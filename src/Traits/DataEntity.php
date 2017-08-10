@@ -99,6 +99,17 @@ trait DataEntity
     public function data()
     {
         $this->reloadIfNeed();
+
+        // TODO: THINK! Remove hardcode!
+        if (array_key_exists('access', $this->changedData)) {
+            unset($this->changedData['access']);
+        }
+
+        // TODO: THINK! Remove hardcode!
+        if (array_key_exists('access', $this->changedData)) {
+            unset($this->changedData['access']);
+        }
+
         return new JBZooData(array_merge($this->origData, $this->changedData));
     }
 
@@ -111,7 +122,7 @@ trait DataEntity
 
         // TODO: THINK! Remove hardcode!
         if (array_key_exists('access', $this->changedData)) {
-            unset($this->origData['access']);
+            unset($this->changedData['access']);
         }
 
         // TODO: THINK! Remove hardcode!
