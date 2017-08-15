@@ -29,53 +29,6 @@ use Unilead\HasOffers\Entity\AffiliateUser;
  */
 class AffiliateTest extends HasoffersPHPUnit
 {
-    public function testEventManagerAttach()
-    {
-        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
-
-        $checkerCounter = 0;
-        $this->eManager->on('ho.Affiliate.reload.*', function () use (&$checkerCounter) {
-            $checkerCounter++;
-        });
-
-        $affiliate->reload();
-
-        isSame(2, $checkerCounter);
-    }
-
-    public function testEventManagerExceptions()
-    {
-        $checkedMessage = '';
-        $this->eManager->on('ho.exception', function (\Exception $exception) use (&$checkedMessage) {
-            $checkedMessage = $exception->getMessage();
-        });
-
-        try {
-            $affiliate = $this->hoClient->get(Affiliate::class);
-            $affiliate->save();
-        } catch (\Exception $exception) {
-            // noop
-        }
-
-        isSame('No data to create new object "Unilead\HasOffers\Entity\Affiliate" in HasOffers', $checkedMessage);
-    }
-
-    public function testLimitOption()
-    {
-        $this->hoClient->setTimeout(5);
-        $this->hoClient->setRequestsLimit(2);
-
-        $startTime = time();
-        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
-        $affiliate->reload();
-        $affiliate->reload();
-        $affiliate->reload();
-        $affiliate->reload();
-        $finishTime = time();
-
-        isTrue($finishTime - $startTime > 9, 'Timeout is ' . ($finishTime - $startTime));
-    }
-
     public function testCreatingAffiliateWays()
     {
         $affiliate1 = $this->hoClient->get(Affiliate::class); // recommended!

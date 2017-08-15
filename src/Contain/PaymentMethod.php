@@ -169,21 +169,23 @@ class PaymentMethod extends AbstractContain
     /**
      * Save changed payment method info
      *
-     * @param array $properies
+     * @param array $properties
      * @return bool
      */
-    public function save(array $properies = [])
+    public function save(array $properties = [])
     {
-        if (count($properies) !== 0) {
-            return $this->mergeData($properies)->save();
+        if (count($properties) !== 0) {
+            return $this->mergeData($properties)->save();
         }
 
         $changedData = $this->getChangedFields();
-        $this->hoClient->trigger("{$this->target}.save.before", [$this, &$changedData]);
-
-        if (count($changedData) === 0) {
+        if (count($changedData) !== 0) {
+            $changedData = array_intersect_assoc($changedData, $this->data()->getArrayCopy());
+        } else {
             return false;
         }
+
+        $this->hoClient->trigger("{$this->target}.save.before", [$this, &$changedData]);
 
         $result = $this->hoClient->apiRequest([
             'Target'       => $this->parentEntity->getTarget(),

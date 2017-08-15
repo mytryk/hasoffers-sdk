@@ -110,10 +110,11 @@ class HasOffersClient
 
     /**
      * @param array $requestParams
+     * @param bool  $returnOnlyData
      * @return Data
      * @throws Exception
      */
-    public function apiRequest(array $requestParams)
+    public function apiRequest(array $requestParams, $returnOnlyData = true)
     {
         try {
             $this->requestCounter++;
@@ -165,10 +166,14 @@ class HasOffersClient
                 throw new Exception('HasOffers Error. Dump of response: ' . print_r($response, true));
             }
         } catch (\Exception $httpException) {
-            throw new Exception($httpException->getMessage(), $httpException->getCode());
+            throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);
         }
 
-        return json($json->find('response.data'));
+        $data = $json->getArrayCopy();
+        $data['request']['NetworkToken'] = '*** hidden ***';
+        $json = json($data);
+
+        return $returnOnlyData ? json($json->find('response.data')) : json($json);
     }
 
     /**
