@@ -88,4 +88,22 @@ class HoClientTest extends HasoffersPHPUnit
 
         isSame($response->getArrayCopy(), $responseFull->find('response.data', null, 'data')->getArrayCopy());
     }
+
+    public function testLastRequestResponse()
+    {
+        $customRequest = [
+            'Target' => 'Preference',
+            'Method' => 'findAll',
+        ];
+
+        $response = $this->hoClient->apiRequest($customRequest);
+
+        isSame($customRequest, $this->hoClient->getLastRequest()->getArrayCopy());
+
+        isNotEmpty($response->find('0.Preference.name'));
+        isSame(
+            $response->find('0.Preference.name'),
+            $this->hoClient->getLastResponse()->find('response.data.0.Preference.name')
+        );
+    }
 }

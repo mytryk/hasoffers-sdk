@@ -67,6 +67,16 @@ class HasOffersClient
     protected $eManager;
 
     /**
+     * @var Data
+     */
+    protected $lastRequest;
+
+    /**
+     * @var Data
+     */
+    protected $lastResponse;
+
+    /**
      * HasOffersClient constructor.
      *
      * @param string $networkId
@@ -140,12 +150,20 @@ class HasOffersClient
             $httpClient = new HttpClient($httpClientParams);
 
             $url = str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
-            $requestParams = array_merge($requestParams, ['NetworkToken' => $this->networkToken]);
-
+            $this->lastRequest = $requestParams;
             $this->trigger('api.request.before', [$this, &$requestParams, &$url]);
 
+            $requestParams = array_merge($requestParams, ['NetworkToken' => $this->networkToken]);
+
             $response = $httpClient->request($url, $requestParams, 'get', $httpClientParams);
+
+            // Prepare response
             $json = $response->getJSON();
+            $data = $json->getArrayCopy();
+            $data['request']['NetworkToken'] = '*** hidden ***';
+            $json = json($data);
+
+            $this->lastResponse = $json;
 
             $this->trigger('api.request.after', [$this, $json, $response, $requestParams]);
 
@@ -168,10 +186,6 @@ class HasOffersClient
         } catch (\Exception $httpException) {
             throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);
         }
-
-        $data = $json->getArrayCopy();
-        $data['request']['NetworkToken'] = '*** hidden ***';
-        $json = json($data);
 
         return $returnOnlyData ? json($json->find('response.data')) : json($json);
     }
@@ -228,5 +242,21 @@ class HasOffersClient
     public function getRequestCounter()
     {
         return $this->requestCounter;
+    }
+
+    /**
+     * @return Data
+     */
+    public function getLastRequest()
+    {
+        return json($this->lastRequest);
+    }
+
+    /**
+     * @return Data
+     */
+    public function getLastResponse()
+    {
+        return json($this->lastResponse);
     }
 }
