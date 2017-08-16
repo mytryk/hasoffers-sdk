@@ -27,8 +27,22 @@ use Unilead\HasOffers\Contain\PaymentMethod;
 class AffiliatePaymentMethodTest extends HasoffersPHPUnit
 {
     /**
-     * @todo Refactor test, think about idempotence
+     * @inheritdoc
      */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $someId = '1004';
+        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $paymentMethod = $affiliate->getPaymentMethod();
+
+        // Revert to Paypal method
+        $paymentMethod->setType(PaymentMethod::TYPE_PAYPAL);
+        $paymentMethod->email = Email::random();
+        $paymentMethod->save();
+    }
+
     public function testGetAffiliatePaymentMethodType()
     {
         $someId = '1004';

@@ -49,10 +49,10 @@ class AffiliatesTest extends HasoffersPHPUnit
         /** @var Affiliate $affiliate */
         $affiliate = $list[1004];
 
-        isSame('Moscow', $affiliate->city);
-        isSame('RU', $affiliate->country);
-        isSame('432072', $affiliate->zipcode);
-        isSame('Lvovsky 12', $affiliate->address1);
+        isNotEmpty($affiliate->city);
+        isNotEmpty($affiliate->country);
+        isNotEmpty($affiliate->zipcode);
+        isNotEmpty($affiliate->address1);
 
         $paymentMethod = $affiliate->getPaymentMethod();
         isSame(PaymentMethod::TYPE_PAYPAL, $paymentMethod->getType());

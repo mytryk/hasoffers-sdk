@@ -118,7 +118,6 @@ class HasoffersPHPUnit extends PHPUnit
 
     /**
      * @return string
-     * @throws Exception
      */
     private function getTestName()
     {
@@ -132,7 +131,7 @@ class HasoffersPHPUnit extends PHPUnit
             }
         }
 
-        throw new Exception('Test name not found');
+        return 'undefined_test_name';
     }
 
     /**
