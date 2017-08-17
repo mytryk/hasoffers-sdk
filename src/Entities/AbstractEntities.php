@@ -41,12 +41,24 @@ abstract class AbstractEntities
     /**
      * @var string
      */
+    protected $targetAlias;
+
+    /**
+     * @var string
+     */
     protected $className;
 
     /**
      * @var array
      */
     protected $contain = [];
+
+    /**
+     * @var array
+     */
+    protected $methods = [
+        'findAll' => 'findAll',
+    ];
 
     /**
      * @param array $conditions
@@ -63,7 +75,7 @@ abstract class AbstractEntities
         $limit = $conditions->get('limit', self::DEFAULT_LIMIT, 'int');
 
         $apiRequest = [
-            'Method'  => 'findAll',
+            'Method'  => $this->methods['findAll'],
             'Target'  => $this->target,
             'fields'  => $conditions->get('fields', [], 'arr'),
             'filters' => $conditions->get('filters', [], 'arr'),
@@ -95,8 +107,9 @@ abstract class AbstractEntities
         $listResult = array_slice($listResult, 0, $limit, true);
 
         $result = [];
+        $key = $this->targetAlias ?: $this->target;
         foreach ($listResult as $itemId => $itemData) {
-            $result[$itemId] = $this->hoClient->get($this->className, $itemId, $itemData[$this->target], $itemData);
+            $result[$itemId] = $this->hoClient->get($this->className, $itemId, $itemData[$key], $itemData);
         }
 
         $this->hoClient->trigger("{$this->target}.find.after", [$this, &$result]);

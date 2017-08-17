@@ -133,23 +133,6 @@ class Affiliate extends AbstractEntity
     ];
 
     /**
-     * Unblock Affiliate in HasOffers.
-     *
-     * @return $this
-     */
-    public function unblock()
-    {
-        $this->hoClient->trigger("{$this->target}.unblock.before", [$this]);
-
-        $this->status = self::STATUS_ACTIVE;
-        $result = $this->save();
-
-        $this->hoClient->trigger("{$this->target}.unblock.after", [$this]);
-
-        return $result;
-    }
-
-    /**
      * Find sing up answers for given affiliate.
      *
      * @return mixed

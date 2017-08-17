@@ -33,4 +33,17 @@ trait Deleted
 
         $this->hoClient->trigger("{$this->target}.delete.after");
     }
+
+    /**
+     * @return null
+     */
+    public function activate()
+    {
+        $this->hoClient->trigger("{$this->target}.active.before", [$this]);
+
+        $this->status = 'active'; // Replace hardcore to const...
+        $this->save();
+
+        $this->hoClient->trigger("{$this->target}.active.after");
+    }
 }

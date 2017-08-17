@@ -96,7 +96,7 @@ try {
  - ho.{entity}.unblock.(before|after)                   // Only Affiliate
  - ho.{entity}.find.(before|after)
 
- - ho.{entity}.related.{related}.init.(before|after)
+ - ho.{entity}.related.{contain}.init.(before|after)
  - ho.{related}.reload.(before|after)
 ```
 

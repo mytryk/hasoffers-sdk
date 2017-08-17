@@ -97,7 +97,7 @@ class Advertiser extends AbstractEntity
     /**
      * Restore Advertiser in HasOffers.
      * Sets status to active.
-     *
+     * @deprecated Use activate()
      * @return $this
      */
     public function restore()

@@ -33,4 +33,21 @@ trait Blocked
 
         $this->hoClient->trigger("{$this->target}.block.after");
     }
+
+    /**
+     * Unblock Affiliate in HasOffers.
+     *
+     * @return $this
+     */
+    public function unblock()
+    {
+        $this->hoClient->trigger("{$this->target}.unblock.before", [$this]);
+
+        $this->status = 'active';
+        $result = $this->save();
+
+        $this->hoClient->trigger("{$this->target}.unblock.after", [$this]);
+
+        return $result;
+    }
 }
