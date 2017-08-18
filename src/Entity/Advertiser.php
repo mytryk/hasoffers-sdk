@@ -95,24 +95,6 @@ class Advertiser extends AbstractEntity
     ];
 
     /**
-     * Restore Advertiser in HasOffers.
-     * Sets status to active.
-     * @deprecated Use activate()
-     * @return $this
-     */
-    public function restore()
-    {
-        $this->hoClient->trigger("{$this->target}.restore.before", [$this]);
-
-        $this->status = self::STATUS_ACTIVE;
-        $result = $this->save();
-
-        $this->hoClient->trigger("{$this->target}.restore.after", [$this]);
-
-        return $result;
-    }
-
-    /**
      * Find sing up answers for given affiliate.
      *
      * @return mixed

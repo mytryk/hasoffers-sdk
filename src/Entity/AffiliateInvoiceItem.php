@@ -66,6 +66,8 @@ class AffiliateInvoiceItem extends AbstractEntity
     ];
 
     /**
+     * @TODO WTF??? Move it to contain method
+     * @deprecated
      * @return mixed
      * @throws Exception
      */
@@ -90,6 +92,8 @@ class AffiliateInvoiceItem extends AbstractEntity
     }
 
     /**
+     * @TODO WTF??? Move it to contain method
+     * @deprecated
      * @param int $itemId
      *
      * @return mixed

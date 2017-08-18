@@ -156,7 +156,7 @@ class AdvertiserTest extends HasoffersPHPUnit
     {
         /** @var Advertiser $advertiser */
         $advertiser = $this->hoClient->get(Advertiser::class, 504);
-        $advertiser->restore();
+        $advertiser->activate();
 
         isSame(Advertiser::STATUS_ACTIVE, $advertiser->status);
     }

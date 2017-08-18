@@ -92,9 +92,12 @@ class AdvertiserInvoiceItem extends AbstractEntity
     }
 
     /**
+     * @TODO WTF??? Move it to contain method
+     *
      * @param int $itemId
      *
      * @return mixed
+     * @deprecated
      */
     public function delete($itemId)
     {
