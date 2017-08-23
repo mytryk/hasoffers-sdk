@@ -32,7 +32,6 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
 
         $items = $invoice->getAdvertiserInvoiceItem()->data();
 
-        skip('Fix fixture AdvertiserInvoiceItem for AdvertiserInvoice id=' . $someId);
         is($someId, $items->find('0.invoice_id'));
     }
 
@@ -74,10 +73,11 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $bill = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
         $items = $bill->getAdvertiserInvoiceItem()->data();
 
-        //find first one and delete it
+        // find last added and delete it
+        $lastAddedId = end($items)['id'];
         /** @var AdvertiserInvoiceItem $billItem */
         $billItem = $this->hoClient->get(AdvertiserInvoiceItem::class);
-        $billItem->delete($items[0]['id']);
+        $billItem->delete($lastAddedId);
 
         //get invoice items again
         /** @var AdvertiserInvoice $billCheck */
@@ -85,7 +85,7 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $itemsCheck = $billCheck->getAdvertiserInvoiceItem()->data()->getArrayCopy();
 
         //check item is not among them
-        $itemKey = array_search((string)$items[0]['id'], array_column($itemsCheck, 'id'), true);
+        $itemKey = array_search((string)$lastAddedId, array_column($itemsCheck, 'id'), true);
         isSame(false, $itemKey);
     }
 }
