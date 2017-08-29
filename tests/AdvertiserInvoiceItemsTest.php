@@ -30,9 +30,11 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         /** @var AdvertiserInvoice $invoice */
         $invoice = $this->hoClient->get(AdvertiserInvoice::class, $someId);
 
-        $items = $invoice->getAdvertiserInvoiceItem()->data();
+        $items = $invoice->getAdvertiserInvoiceItem()->getList();
 
-        is($someId, $items->find('0.invoice_id'));
+        foreach ($items as $item) {
+            is($someId, $item->invoice_id);
+        }
     }
 
     public function testCanCreateInvoiceItem()
@@ -53,39 +55,35 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $invoiceItem->revenue_type = 'cpa_flat';
         $invoiceItem->create();
 
-        /** @var AdvertiserInvoiceItem $invoiceCheck */
+        /** @var AdvertiserInvoice $invoiceCheck */
         $invoiceCheck = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
+        $item = $invoiceCheck->getAdvertiserInvoiceItem()->getItemById($invoiceItem->id);
 
-        $items = $invoiceCheck->getAdvertiserInvoiceItem()->data()->getArrayCopy();
-
-        $itemKey = array_search((string)$invoiceItem->id[0], array_column($items, 'id'), true);
-        isNotSame(false, $itemKey);
-        isSame((string)$rand, $items[$itemKey]['actions']);
-        isSame($memo, $items[$itemKey]['memo']);
-        isSame($type, $items[$itemKey]['type']);
+        isNotSame(false, $item);
+        isSame((string)$rand, $item->actions);
+        isSame($memo, $item->memo);
+        isSame($type, $item->type);
     }
 
     public function testCanDeleteInvoiceItem()
     {
         $invoiceId = 36;
         //get invoice items
-        /** @var AdvertiserInvoice $bill */
-        $bill = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
-        $items = $bill->getAdvertiserInvoiceItem()->data();
+        /** @var AdvertiserInvoice $invoice */
+        $invoice = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
+        $items = $invoice->getAdvertiserInvoiceItem()->getList();
 
         // find last added and delete it
-        $lastAddedId = end($items)['id'];
-        /** @var AdvertiserInvoiceItem $billItem */
-        $billItem = $this->hoClient->get(AdvertiserInvoiceItem::class);
-        $billItem->delete($lastAddedId);
+        $lastAddedItem = end($items);
+        $lastAddedId = $lastAddedItem->id;
+        $lastAddedItem->delete();
 
         //get invoice items again
-        /** @var AdvertiserInvoice $billCheck */
-        $billCheck = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
-        $itemsCheck = $billCheck->getAdvertiserInvoiceItem()->data()->getArrayCopy();
+        /** @var AdvertiserInvoice $invoiceCheck */
+        $invoiceCheck = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
 
         //check item is not among them
-        $itemKey = array_search((string)$lastAddedId, array_column($itemsCheck, 'id'), true);
-        isSame(false, $itemKey);
+        $notExistenItem = $invoiceCheck->getAdvertiserInvoiceItem()->getItemById($lastAddedId);
+        isSame(false, $notExistenItem);
     }
 }
