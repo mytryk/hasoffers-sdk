@@ -84,7 +84,8 @@ class AdvertiserInvoiceItem extends AbstractEntity
 
         $this->getClient()->trigger('invoice_item.create.after', [$this, &$this->changedData]);
 
-        $this->origData = (array)['id' => $data];
+        // TODO: remove magic
+        $this->origData = (array)['id' => $data[0]];
         $this->objectId = $data;
         $this->changedData = [];
 

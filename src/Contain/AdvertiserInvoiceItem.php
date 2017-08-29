@@ -62,4 +62,44 @@ class AdvertiserInvoiceItem extends AbstractContain
      * @var string
      */
     protected $target = 'AdvertiserInvoiceItem';
+
+    /**
+     * @return mixed
+     */
+    public function delete()
+    {
+        // TODO: допилить
+//        if (!$this->isExists()) {
+//            throw new Exception('Try to delete non object!');
+//        }
+
+        $this->getClient()->trigger('advertiser-invoice-item.delete.before', [$this, &$this->changedData]);
+
+        $data = $this->hoClient->apiRequest([
+            'Method' => $this->methods['delete'],
+            'Target' => $this->target,
+            'id'     => $this->id,
+        ]);
+
+        $this->getClient()->trigger('advertiser-invoice-item.delete.after', [$this, &$this->changedData]);
+
+        return $data;
+    }
+
+    public function save()
+    {
+        // TODO:
+        // if !exist
+        // create
+        // else
+        // delete - silent(no event)
+        // create
+    }
+
+    public function create()
+    {
+        // check for existing
+        // create - save
+        // return
+    }
 }
