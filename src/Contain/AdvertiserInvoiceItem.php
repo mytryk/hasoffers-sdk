@@ -54,6 +54,7 @@ use Unilead\HasOffers\Entity\AdvertiserInvoice;
 class AdvertiserInvoiceItem extends AbstractContain
 {
     /**
+     * TODO: change to LIST
      * @var AdvertiserInvoice
      */
     protected $parentEntity;
@@ -65,14 +66,34 @@ class AdvertiserInvoiceItem extends AbstractContain
 
     /**
      * @return mixed
+     * @throws Exception
+     */
+    public function create()
+    {
+        $this->getClient()->trigger('advertiser-invoice-item.create.before', [$this, &$this->changedData]);
+
+        $data = $this->hoClient->apiRequest([
+            'Method'     => $this->methods['create'],
+            'Target'     => $this->target,
+            'data'       => $this->changedData,
+            'invoice_id' => $this->invoice_id,
+        ]);
+
+        $this->getClient()->trigger('advertiser-invoice-item.create.after', [$this, &$this->changedData]);
+
+        // TODO: remove magic
+        $this->origData = (array)['id' => $data[0]];
+        $this->objectId = $data;
+        $this->changedData = [];
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
      */
     public function delete()
     {
-        // TODO: допилить
-//        if (!$this->isExists()) {
-//            throw new Exception('Try to delete non object!');
-//        }
-
         $this->getClient()->trigger('advertiser-invoice-item.delete.before', [$this, &$this->changedData]);
 
         $data = $this->hoClient->apiRequest([
@@ -84,22 +105,5 @@ class AdvertiserInvoiceItem extends AbstractContain
         $this->getClient()->trigger('advertiser-invoice-item.delete.after', [$this, &$this->changedData]);
 
         return $data;
-    }
-
-    public function save()
-    {
-        // TODO:
-        // if !exist
-        // create
-        // else
-        // delete - silent(no event)
-        // create
-    }
-
-    public function create()
-    {
-        // check for existing
-        // create - save
-        // return
     }
 }

@@ -14,8 +14,8 @@
 
 namespace JBZoo\PHPUnit;
 
+use Unilead\HasOffers\Contain\AdvertiserInvoiceItem;
 use Unilead\HasOffers\Entity\AdvertiserInvoice;
-use Unilead\HasOffers\Entity\AdvertiserInvoiceItem;
 
 /**
  * Class AdvertiserInvoiceItemsTest

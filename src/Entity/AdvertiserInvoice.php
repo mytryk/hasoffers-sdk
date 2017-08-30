@@ -16,9 +16,6 @@ namespace Unilead\HasOffers\Entity;
 
 use Unilead\HasOffers\Contain\AdvertiserInvoiceItemList;
 use Unilead\HasOffers\Traits\Deleted;
-use Unilead\HasOffers\Contain\AdvertiserInvoiceItem;
-
-// TODO: remove this instance
 
 /* @noinspection ClassOverridesFieldOfSuperClassInspection */
 
