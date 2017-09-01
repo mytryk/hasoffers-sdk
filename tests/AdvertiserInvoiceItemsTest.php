@@ -53,9 +53,9 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $invoiceItem->amount = $rand;
         $invoiceItem->type = $type;
         $invoiceItem->revenue_type = 'cpa_flat';
-        $addedId = $invoiceItem->save();
+        $invoiceItem->save();
 
-        $item = $invoice->getAdvertiserInvoiceItem()->getItemById($addedId);
+        $item = $invoice->getAdvertiserInvoiceItem()->getItemById($invoiceItem->id);
 
         isNotSame(false, $item);
         isSame((string)$rand, $item->actions);
@@ -77,7 +77,44 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $lastAddedItem->delete();
 
         //check item is not among them
-        $notExistenItem = $invoice->getAdvertiserInvoiceItem()->getItemById($lastAddedId);
-        isSame(false, $notExistenItem);
+        $notExistingItem = $invoice->getAdvertiserInvoiceItem()->getItemById($lastAddedId);
+        isSame(false, $notExistingItem);
+    }
+
+    public function testCanUpdateInvoiceItem()
+    {
+        $invoiceId = 36;
+        $rand = random_int(1, 500);
+        $memo = 'Test Invoice Item';
+        $type = 'stats';
+
+        /** @var AdvertiserInvoice $invoice */
+        $invoice = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
+        // Add item
+        $invoiceItem = $invoice
+            ->getAdvertiserInvoiceItem()
+            ->addItem([
+                'invoice_id'   => $invoiceId,
+                'offer_id'     => 8,
+                'memo'         => $memo,
+                'actions'      => $rand,
+                'amount'       => $rand,
+                'type'         => $type,
+                'revenue_type' => 'cpa_flat'
+            ])->save();
+        $itemIdBeforeUpdate = $invoiceItem->id;
+
+        // Update item
+        $updatedMemo = "{$memo}: {$rand}";
+        $invoiceItem->memo = $updatedMemo;
+        $invoiceItem->save();
+        $itemIdAfterUpdate = $invoiceItem->id;
+
+        // Check fields
+        isNotSame($itemIdBeforeUpdate, $itemIdAfterUpdate);
+        isSame($updatedMemo, $invoiceItem->memo);
+
+        // Delete item
+        $invoiceItem->delete();
     }
 }

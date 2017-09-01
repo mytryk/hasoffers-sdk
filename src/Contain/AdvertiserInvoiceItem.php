@@ -82,20 +82,8 @@ class AdvertiserInvoiceItem extends AbstractContain
     ];
 
     /**
-     * @inheritdoc
-     */
-    public function __construct(array $data = [], AbstractEntity $parentEntity)
-    {
-        $this->parentEntity = $parentEntity;
-        $this->hoClient = $this->parentEntity->getClient();
-        $this->bindData($data);
-        $this->origData = $data;
-    }
-
-
-    /**
      * @param array $properies
-     * @return int
+     * @return $this
      * @throws Exception
      */
     public function save(array $properies = [])
@@ -120,7 +108,6 @@ class AdvertiserInvoiceItem extends AbstractContain
             $this->remove();
         }
 
-        // TODO: think. Need it?
         $this->mergeData($this->getChangedFields());
         $dataForCreate = $this->removeExcludedKeys($this->changedData);
 
@@ -135,11 +122,12 @@ class AdvertiserInvoiceItem extends AbstractContain
 
         $this->hoClient->trigger('advertiser-invoice-item.create.after', [$this, &$this->changedData]);
 
-        // TODO: remove magic
-        $this->id = $data[0];
+        // Because HO return only ID
+        $this->origData = array_merge($this->origData, $dataForCreate);
+        $this->origData['id'] = $data[0];
         $this->changedData = [];
 
-        return (int)$data[0];
+        return $this;
     }
 
     /**
