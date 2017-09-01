@@ -14,7 +14,7 @@
 
 namespace Unilead\HasOffers\Contain;
 
-use Unilead\HasOffers\Entity\AdvertiserInvoice;
+use Unilead\HasOffers\Entity\AbstractEntity;
 
 /**
  * Class AdvertiserInvoiceItem
@@ -54,39 +54,92 @@ use Unilead\HasOffers\Entity\AdvertiserInvoice;
 class AdvertiserInvoiceItem extends AbstractContain
 {
     /**
-     * TODO: change to LIST
-     * @var AdvertiserInvoice
+     * @var AdvertiserInvoiceItemList
      */
     protected $parentEntity;
 
     /**
      * @var string
      */
-    protected $target = 'AdvertiserInvoiceItem';
+    protected $target = 'AdvertiserBilling';
 
     /**
-     * @return mixed
+     * // TODO: move to abstract
+     * @var array
+     */
+    protected $excludedKeys = [
+        'id',
+        'advertiser_id',
+        'objectId'
+    ];
+
+    /**
+     * @var array
+     */
+    protected $methods = [
+        'create' => 'addInvoiceItem',
+        'delete' => 'removeInvoiceItem',
+    ];
+
+    /**
+     * @inheritdoc
+     */
+    public function __construct(array $data = [], AbstractEntity $parentEntity)
+    {
+        $this->parentEntity = $parentEntity;
+        $this->hoClient = $this->parentEntity->getClient();
+        $this->bindData($data);
+        $this->origData = $data;
+    }
+
+
+    /**
+     * @param array $properies
+     * @return int
      * @throws Exception
      */
-    public function create()
+    public function save(array $properies = [])
     {
-        $this->getClient()->trigger('advertiser-invoice-item.create.before', [$this, &$this->changedData]);
+        if (count($properies) !== 0) {
+            return $this->mergeData($properies)->save();
+        }
+
+        $isNew = !$this->id;
+        $this->hoClient->trigger('advertiser-invoice-item.create.before', [$this, &$this->changedData]);
+
+        if ($isNew) {
+            if (count($this->changedData) === 0) {
+                throw new Exception('No data to create new object "' . static::class . '" in HasOffers');
+            }
+        } else {
+            $dataRequest = $this->getChangedFields();
+            if (count($dataRequest) === 0) {
+                throw new Exception('No data to update object "' . static::class . '" in HasOffers');
+            }
+
+            $this->remove();
+        }
+
+        // TODO: think. Need it?
+        $this->mergeData($this->getChangedFields());
+        $dataForCreate = $this->removeExcludedKeys($this->changedData);
 
         $data = $this->hoClient->apiRequest([
             'Method'     => $this->methods['create'],
             'Target'     => $this->target,
-            'data'       => $this->changedData,
+            'data'       => $dataForCreate,
             'invoice_id' => $this->invoice_id,
         ]);
 
-        $this->getClient()->trigger('advertiser-invoice-item.create.after', [$this, &$this->changedData]);
+        $this->parentEntity && $this->parentEntity->reload();
+
+        $this->hoClient->trigger('advertiser-invoice-item.create.after', [$this, &$this->changedData]);
 
         // TODO: remove magic
-        $this->origData = (array)['id' => $data[0]];
-        $this->objectId = $data;
+        $this->id = $data[0];
         $this->changedData = [];
 
-        return $this;
+        return (int)$data[0];
     }
 
     /**
@@ -94,15 +147,43 @@ class AdvertiserInvoiceItem extends AbstractContain
      */
     public function delete()
     {
-        $this->getClient()->trigger('advertiser-invoice-item.delete.before', [$this, &$this->changedData]);
+        $this->hoClient->trigger('advertiser-invoice-item.delete.before', [$this, &$this->changedData]);
 
-        $data = $this->hoClient->apiRequest([
+        $data = $this->remove();
+        $this->parentEntity->reload();
+
+        $this->hoClient->trigger('advertiser-invoice-item.delete.after', [$this, &$this->changedData]);
+
+        return $data;
+    }
+
+    // TODO: think about naming
+    private function remove()
+    {
+        return $this->hoClient->apiRequest([
             'Method' => $this->methods['delete'],
             'Target' => $this->target,
             'id'     => $this->id,
         ]);
+    }
 
-        $this->getClient()->trigger('advertiser-invoice-item.delete.after', [$this, &$this->changedData]);
+    /**
+     * // TODO: move to abstract
+     * @param array $data
+     *
+     * @return mixed
+     */
+    private function removeExcludedKeys($data)
+    {
+        if (empty($this->excludedKeys)) {
+            return $data;
+        }
+
+        foreach ($this->excludedKeys as $value) {
+            if (array_key_exists($value, $data)) {
+                unset($data[$value]);
+            }
+        }
 
         return $data;
     }

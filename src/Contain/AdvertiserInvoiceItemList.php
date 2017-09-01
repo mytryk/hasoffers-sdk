@@ -71,4 +71,18 @@ class AdvertiserInvoiceItemList extends AbstractContain
 
         return false;
     }
+
+    // TODO: need it?
+    public function addItem(array $data = [])
+    {
+        $invoiceItem = new AdvertiserInvoiceItem($data, $this->parentEntity);
+        $this->items[] = $invoiceItem;
+
+        return $invoiceItem;
+    }
+
+    public function reload()
+    {
+        $this->parentEntity && $this->parentEntity->reload();
+    }
 }

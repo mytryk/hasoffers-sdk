@@ -14,7 +14,6 @@
 
 namespace JBZoo\PHPUnit;
 
-use Unilead\HasOffers\Contain\AdvertiserInvoiceItem;
 use Unilead\HasOffers\Entity\AdvertiserInvoice;
 
 /**
@@ -41,11 +40,12 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
     {
         $invoiceId = 36;
         $rand = random_int(1, 500);
-        $memo = 'Test Bill Item';
+        $memo = 'Test Invoice Item';
         $type = 'stats';
 
-        /** @var AdvertiserInvoiceItem $invoiceItem */
-        $invoiceItem = $this->hoClient->get(AdvertiserInvoiceItem::class);
+        /** @var AdvertiserInvoice $invoice */
+        $invoice = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
+        $invoiceItem = $invoice->getAdvertiserInvoiceItem()->addItem();
         $invoiceItem->invoice_id = $invoiceId;
         $invoiceItem->offer_id = 8;
         $invoiceItem->memo = $memo;
@@ -53,11 +53,9 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $invoiceItem->amount = $rand;
         $invoiceItem->type = $type;
         $invoiceItem->revenue_type = 'cpa_flat';
-        $invoiceItem->create();
+        $addedId = $invoiceItem->save();
 
-        /** @var AdvertiserInvoice $invoiceCheck */
-        $invoiceCheck = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
-        $item = $invoiceCheck->getAdvertiserInvoiceItem()->getItemById($invoiceItem->id);
+        $item = $invoice->getAdvertiserInvoiceItem()->getItemById($addedId);
 
         isNotSame(false, $item);
         isSame((string)$rand, $item->actions);
@@ -78,12 +76,8 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $lastAddedId = $lastAddedItem->id;
         $lastAddedItem->delete();
 
-        //get invoice items again
-        /** @var AdvertiserInvoice $invoiceCheck */
-        $invoiceCheck = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
-
         //check item is not among them
-        $notExistenItem = $invoiceCheck->getAdvertiserInvoiceItem()->getItemById($lastAddedId);
+        $notExistenItem = $invoice->getAdvertiserInvoiceItem()->getItemById($lastAddedId);
         isSame(false, $notExistenItem);
     }
 }

@@ -39,6 +39,7 @@ use Unilead\HasOffers\Traits\Deleted;
  * @property string $start_date    Start of date range; use "YYYY-MM-DD" format
  * @property string $status        The status of the invoice
  *
+ * // TODO: think about naming
  * @method  AdvertiserInvoiceItemList  getAdvertiserInvoiceItem()
  *
  * @package Unilead\HasOffers\Entity
