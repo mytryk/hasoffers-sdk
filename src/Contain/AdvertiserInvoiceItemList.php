@@ -60,9 +60,9 @@ class AdvertiserInvoiceItemList extends AbstractContain
         return $this->items;
     }
 
-    public function findById($id)
+    public function findById($itemId)
     {
-        $searchId = (int)$id;
+        $searchId = (int)$itemId;
         foreach ($this->items as $item) {
             if ($searchId === (int)$item->id) {
                 return $item;
