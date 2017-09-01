@@ -64,7 +64,6 @@ class AdvertiserInvoiceItem extends AbstractContain
     protected $target = 'AdvertiserBilling';
 
     /**
-     * // TODO: move to abstract
      * @var array
      */
     protected $excludedKeys = [
@@ -153,26 +152,5 @@ class AdvertiserInvoiceItem extends AbstractContain
             'Target' => $this->target,
             'id'     => $this->id,
         ]);
-    }
-
-    /**
-     * // TODO: move to abstract
-     * @param array $data
-     *
-     * @return mixed
-     */
-    private function removeExcludedKeys($data)
-    {
-        if (empty($this->excludedKeys)) {
-            return $data;
-        }
-
-        foreach ($this->excludedKeys as $value) {
-            if (array_key_exists($value, $data)) {
-                unset($data[$value]);
-            }
-        }
-
-        return $data;
     }
 }
