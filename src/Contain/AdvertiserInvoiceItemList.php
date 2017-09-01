@@ -55,12 +55,12 @@ class AdvertiserInvoiceItemList extends AbstractContain
         $this->origData = $data;
     }
 
-    public function getList()
+    public function findAll()
     {
         return $this->items;
     }
 
-    public function getItemById($id)
+    public function findById($id)
     {
         $searchId = (int)$id;
         foreach ($this->items as $item) {

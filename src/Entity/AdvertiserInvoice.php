@@ -39,9 +39,6 @@ use Unilead\HasOffers\Traits\Deleted;
  * @property string $start_date    Start of date range; use "YYYY-MM-DD" format
  * @property string $status        The status of the invoice
  *
- * // TODO: think about naming
- * @method  AdvertiserInvoiceItemList  getAdvertiserInvoiceItem()
- *
  * @package Unilead\HasOffers\Entity
  */
 class AdvertiserInvoice extends AbstractEntity
@@ -76,4 +73,14 @@ class AdvertiserInvoice extends AbstractEntity
     protected $contain = [
         'AdvertiserInvoiceItem' => AdvertiserInvoiceItemList::class,
     ];
+
+    /**
+     * Just fix naming
+     *
+     * @return AdvertiserInvoiceItemList
+     */
+    public function getItemsResultSet()
+    {
+        return $this->getAdvertiserInvoiceItem();
+    }
 }

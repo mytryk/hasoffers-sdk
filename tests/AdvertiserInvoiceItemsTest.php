@@ -29,7 +29,7 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         /** @var AdvertiserInvoice $invoice */
         $invoice = $this->hoClient->get(AdvertiserInvoice::class, $someId);
 
-        $items = $invoice->getAdvertiserInvoiceItem()->getList();
+        $items = $invoice->getItemsResultSet()->findAll();
 
         foreach ($items as $item) {
             is($someId, $item->invoice_id);
@@ -45,7 +45,7 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
 
         /** @var AdvertiserInvoice $invoice */
         $invoice = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
-        $invoiceItem = $invoice->getAdvertiserInvoiceItem()->addItem();
+        $invoiceItem = $invoice->getItemsResultSet()->addItem();
         $invoiceItem->invoice_id = $invoiceId;
         $invoiceItem->offer_id = 8;
         $invoiceItem->memo = $memo;
@@ -55,7 +55,7 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $invoiceItem->revenue_type = 'cpa_flat';
         $invoiceItem->save();
 
-        $item = $invoice->getAdvertiserInvoiceItem()->getItemById($invoiceItem->id);
+        $item = $invoice->getItemsResultSet()->findById($invoiceItem->id);
 
         isNotSame(false, $item);
         isSame((string)$rand, $item->actions);
@@ -69,7 +69,7 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         //get invoice items
         /** @var AdvertiserInvoice $invoice */
         $invoice = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
-        $items = $invoice->getAdvertiserInvoiceItem()->getList();
+        $items = $invoice->getItemsResultSet()->findAll();
 
         // find last added and delete it
         $lastAddedItem = end($items);
@@ -77,7 +77,7 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $lastAddedItem->delete();
 
         //check item is not among them
-        $notExistingItem = $invoice->getAdvertiserInvoiceItem()->getItemById($lastAddedId);
+        $notExistingItem = $invoice->getItemsResultSet()->findById($lastAddedId);
         isSame(false, $notExistingItem);
     }
 
@@ -92,7 +92,7 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $invoice = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
         // Add item
         $invoiceItem = $invoice
-            ->getAdvertiserInvoiceItem()
+            ->getItemsResultSet()
             ->addItem([
                 'invoice_id'   => $invoiceId,
                 'offer_id'     => 8,
