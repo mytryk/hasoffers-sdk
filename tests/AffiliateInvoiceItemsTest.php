@@ -68,23 +68,19 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
 
     public function testCanDeleteInvoiceItem()
     {
-        // get
-        /** @var AffiliateInvoice $bill */
-        $bill = $this->hoClient->get(AffiliateInvoice::class, 56);
-        $items = $bill->getAffiliateInvoiceItem()->data()->getArrayCopy();
+        $billId = 56;
 
-        // find first one and delete it
-        /** @var AffiliateInvoiceItem $billItem */
-        $billItem = $this->hoClient->get(AffiliateInvoiceItem::class);
-        $billItem->delete($items[0]['id']);
+        /** @var AffiliateInvoice $affInvoice */
+        $affInvoice = $this->hoClient->get(AffiliateInvoice::class, $billId);
+        $items = $affInvoice->getItemsResultSet()->findAll();
 
-        // get bill items again
-        /** @var AffiliateInvoice $billCheck */
-        $billCheck = $this->hoClient->get(AffiliateInvoice::class, 56);
-        $itemsCheck = $billCheck->getAffiliateInvoiceItem()->data()->getArrayCopy();
+        // find last added and delete it
+        $lastAddedItem = end($items);
+        $lastAddedId = $lastAddedItem->id;
+        $lastAddedItem->delete();
 
-        // check item is not among them
-        $itemKey = array_search((string)$items[0]['id'], array_column($itemsCheck, 'id'), true);
-        isSame(false, $itemKey);
+        //check item is not among them
+        $notExistingItem = $affInvoice->getItemsResultSet()->findById($lastAddedId);
+        isSame(false, $notExistingItem);
     }
 }
