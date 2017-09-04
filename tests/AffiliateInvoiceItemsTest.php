@@ -15,7 +15,6 @@
 namespace JBZoo\PHPUnit;
 
 use Unilead\HasOffers\Entity\AffiliateInvoice;
-use Unilead\HasOffers\Entity\AffiliateInvoiceItem;
 
 /**
  * Class AffiliateInvoiceItemTest
@@ -31,9 +30,11 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         $affiliateInvoice = $this->hoClient->get(AffiliateInvoice::class, $someId);
         $affiliateInvoice->reload();
 
-        $items = $affiliateInvoice->getAffiliateInvoiceItem()->data();
+        $items = $affiliateInvoice->getItemsResultSet()->findAll();
 
-        is($someId, $items->find('0.invoice_id'));
+        foreach ($items as $item) {
+            is($someId, $item->invoice_id);
+        }
     }
 
     public function testCanCreateInvoiceItem()
