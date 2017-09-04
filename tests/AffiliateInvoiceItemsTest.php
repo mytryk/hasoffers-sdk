@@ -83,4 +83,41 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         $notExistingItem = $affInvoice->getItemsResultSet()->findById($lastAddedId);
         isSame(false, $notExistingItem);
     }
+
+    public function testCanUpdateInvoiceItem()
+    {
+        $billId = 56;
+        $rand = random_int(1, 500);
+        $memo = 'Test Invoice Item';
+        $type = 'stats';
+
+        /** @var AffiliateInvoice $affInvoice */
+        $affInvoice = $this->hoClient->get(AffiliateInvoice::class, $billId);
+        // Add item
+        $invoiceItem = $affInvoice
+            ->getItemsResultSet()
+            ->addItem([
+                'invoice_id'  => $billId,
+                'offer_id'    => 8,
+                'memo'        => $memo,
+                'actions'     => $rand,
+                'amount'      => $rand,
+                'type'        => $type,
+                'payout_type' => 'cpa_flat'
+            ])->save();
+        $itemIdBeforeUpdate = $invoiceItem->id;
+
+        // Update item
+        $updatedMemo = "{$memo}: {$rand}";
+        $invoiceItem->memo = $updatedMemo;
+        $invoiceItem->save();
+        $itemIdAfterUpdate = $invoiceItem->id;
+
+        // Check fields
+        isNotSame($itemIdBeforeUpdate, $itemIdAfterUpdate);
+        isSame($updatedMemo, $invoiceItem->memo);
+
+        // Delete item
+        $invoiceItem->delete();
+    }
 }
