@@ -14,8 +14,6 @@
 
 namespace Unilead\HasOffers\Contain;
 
-use Unilead\HasOffers\Entity\AbstractEntity;
-
 /**
  * Class AdvertiserInvoiceItem
  *

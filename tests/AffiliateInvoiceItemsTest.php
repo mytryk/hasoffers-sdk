@@ -14,6 +14,7 @@
 
 namespace JBZoo\PHPUnit;
 
+use Unilead\HasOffers\Contain\AffiliateInvoiceItem;
 use Unilead\HasOffers\Entity\AffiliateInvoice;
 
 /**
@@ -44,8 +45,10 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         $memo = 'Test Item';
         $type = 'stats';
 
-        /** @var AffiliateInvoiceItem $affInvoiceItem */
-        $affInvoiceItem = $this->hoClient->get(AffiliateInvoiceItem::class);
+        /** @var AffiliateInvoice $affInvoice */
+        $affInvoice = $this->hoClient->get(AffiliateInvoice::class, $billId);
+        $affInvoiceItemsResultSet = $affInvoice->getItemsResultSet();
+        $affInvoiceItem = $affInvoiceItemsResultSet->addItem();
         $affInvoiceItem->invoice_id = $billId;
         $affInvoiceItem->offer_id = 8;
         $affInvoiceItem->memo = $memo;
@@ -53,18 +56,14 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         $affInvoiceItem->amount = $rand;
         $affInvoiceItem->type = $type;
         $affInvoiceItem->payout_type = 'cpa_flat';
-        $affInvoiceItem->create();
+        $affInvoiceItem->save();
 
-        /** @var AffiliateInvoice $affInvoiceItemCheck */
-        $affInvoiceItemCheck = $this->hoClient->get(AffiliateInvoice::class, $billId);
+        $item = $affInvoiceItemsResultSet->findById($affInvoiceItem->id);
 
-        $items = $affInvoiceItemCheck->getAffiliateInvoiceItem()->data()->getArrayCopy();
-
-        $itemKey = array_search((string)$affInvoiceItem->id[0], array_column($items, 'id'), true);
-        isNotSame(false, $itemKey);
-        isSame((string)$rand, $items[$itemKey]['actions']);
-        isSame($memo, $items[$itemKey]['memo']);
-        isSame($type, $items[$itemKey]['type']);
+        isNotSame(false, $item);
+        isSame((string)$rand, (string)$item->actions);
+        isSame($memo, $item->memo);
+        isSame($type, $item->type);
     }
 
     public function testCanDeleteInvoiceItem()
