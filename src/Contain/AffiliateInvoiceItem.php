@@ -51,14 +51,11 @@ namespace Unilead\HasOffers\Contain;
 class AffiliateInvoiceItem extends AbstractContain
 {
     /**
-     * @var AffiliateInvoiceItemList
-     */
-    protected $parentEntity;
-
-    /**
      * @var string
      */
     protected $target = 'AffiliateBilling';
+
+    protected $triggerTarget = 'affiliate-invoice-item';
 
     /**
      * @var array
@@ -76,78 +73,4 @@ class AffiliateInvoiceItem extends AbstractContain
         'create' => 'addInvoiceItem',
         'delete' => 'removeInvoiceItem',
     ];
-
-    /**
-     * @param array $properies
-     * @return $this
-     * @throws Exception
-     */
-    public function save(array $properies = [])
-    {
-        if (count($properies) !== 0) {
-            return $this->mergeData($properies)->save();
-        }
-
-        $isNew = !$this->id;
-        $this->hoClient->trigger('affiliate-invoice-item.create.before', [$this, &$this->changedData]);
-
-        if ($isNew) {
-            if (count($this->changedData) === 0) {
-                throw new Exception('No data to create new object "' . static::class . '" in HasOffers');
-            }
-        } else {
-            $dataRequest = $this->getChangedFields();
-            if (count($dataRequest) === 0) {
-                throw new Exception('No data to update object "' . static::class . '" in HasOffers');
-            }
-
-            $this->remove();
-        }
-
-        $this->mergeData($this->getChangedFields());
-        $dataForCreate = $this->removeExcludedKeys($this->changedData);
-
-        $data = $this->hoClient->apiRequest([
-            'Method'     => $this->methods['create'],
-            'Target'     => $this->target,
-            'data'       => $dataForCreate,
-            'invoice_id' => $this->invoice_id,
-        ]);
-
-        $this->parentEntity && $this->parentEntity->reload();
-
-        $this->hoClient->trigger('affiliate-invoice-item.create.after', [$this, &$this->changedData]);
-
-        // Because HO return only ID
-        $this->origData = array_merge($this->origData, $dataForCreate);
-        $this->origData['id'] = $data[0];
-        $this->changedData = [];
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function delete()
-    {
-        $this->hoClient->trigger('affiliate-invoice-item.delete.before', [$this, &$this->changedData]);
-
-        $data = $this->remove();
-        $this->parentEntity->reload();
-
-        $this->hoClient->trigger('affiliate-invoice-item.delete.after', [$this, &$this->changedData]);
-
-        return $data;
-    }
-
-    // TODO: think about naming
-    private function remove()
-    {
-        return $this->hoClient->apiRequest([
-            'Method' => $this->methods['delete'],
-            'Target' => $this->target,
-            'id'     => $this->id,
-        ]);
-    }
 }

@@ -15,7 +15,7 @@
 namespace Unilead\HasOffers\Contain;
 
 use Unilead\HasOffers\Entity\AbstractEntity;
-use Unilead\HasOffers\Entity\AffiliateInvoice;
+use Unilead\HasOffers\Traits\DataList;
 
 /**
  * Class AffiliateInvoiceItemList
@@ -24,20 +24,12 @@ use Unilead\HasOffers\Entity\AffiliateInvoice;
  */
 class AffiliateInvoiceItemList extends AbstractContain
 {
-    /**
-     * @var AffiliateInvoice
-     */
-    protected $parentEntity;
+    use DataList;
 
     /**
      * @var string
      */
     protected $target = 'AffiliateInvoiceItem';
-
-    /**
-     * @var AffiliateInvoiceItem[]
-     */
-    protected $items = [];
 
     /**
      * @inheritdoc
@@ -53,23 +45,6 @@ class AffiliateInvoiceItemList extends AbstractContain
 
         $this->bindData($data);
         $this->origData = $data;
-    }
-
-    public function findAll()
-    {
-        return $this->items;
-    }
-
-    public function findById($itemId)
-    {
-        $searchId = (int)$itemId;
-        foreach ($this->items as $item) {
-            if ($searchId === (int)$item->id) {
-                return $item;
-            }
-        }
-
-        return false;
     }
 
     public function addItem(array $data = [])
