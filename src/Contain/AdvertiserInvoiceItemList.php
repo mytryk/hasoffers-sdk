@@ -15,7 +15,7 @@
 namespace Unilead\HasOffers\Contain;
 
 use Unilead\HasOffers\Entity\AbstractEntity;
-use Unilead\HasOffers\Entity\AdvertiserInvoice;
+use Unilead\HasOffers\Traits\DataList;
 
 /**
  * Class AdvertiserInvoiceItemList
@@ -24,10 +24,7 @@ use Unilead\HasOffers\Entity\AdvertiserInvoice;
  */
 class AdvertiserInvoiceItemList extends AbstractContain
 {
-    /**
-     * @var AdvertiserInvoice
-     */
-    protected $parentEntity;
+    use DataList;
 
     /**
      * @var string
@@ -53,23 +50,6 @@ class AdvertiserInvoiceItemList extends AbstractContain
 
         $this->bindData($data);
         $this->origData = $data;
-    }
-
-    public function findAll()
-    {
-        return $this->items;
-    }
-
-    public function findById($itemId)
-    {
-        $searchId = (int)$itemId;
-        foreach ($this->items as $item) {
-            if ($searchId === (int)$item->id) {
-                return $item;
-            }
-        }
-
-        return false;
     }
 
     public function addItem(array $data = [])

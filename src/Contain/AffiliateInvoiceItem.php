@@ -55,6 +55,9 @@ class AffiliateInvoiceItem extends AbstractContain
      */
     protected $target = 'AffiliateBilling';
 
+    /**
+     * @var string
+     */
     protected $triggerTarget = 'affiliate-invoice-item';
 
     /**
