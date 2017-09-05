@@ -18,23 +18,18 @@ use Unilead\HasOffers\Entity\AbstractEntity;
 use Unilead\HasOffers\Traits\DataList;
 
 /**
- * Class AdvertiserInvoiceItemList
+ * Class AffiliateInvoiceItemList
  *
  * @package Unilead\HasOffers
  */
-class AdvertiserInvoiceItemList extends AbstractContain
+class AffiliateInvoiceItemList extends AbstractContain
 {
     use DataList;
 
     /**
      * @var string
      */
-    protected $target = 'AdvertiserInvoiceItem';
-
-    /**
-     * @var AdvertiserInvoiceItem[]
-     */
-    protected $items = [];
+    protected $target = 'AffiliateInvoiceItem';
 
     /**
      * @inheritdoc
@@ -44,7 +39,7 @@ class AdvertiserInvoiceItemList extends AbstractContain
         parent::__construct($data, $parentEntity);
 
         foreach ($data as $item) {
-            $invoiceItem = new AdvertiserInvoiceItem($item, $parentEntity);
+            $invoiceItem = new AffiliateInvoiceItem($item, $parentEntity);
             $this->items[] = $invoiceItem;
         }
 
@@ -54,7 +49,7 @@ class AdvertiserInvoiceItemList extends AbstractContain
 
     public function addItem(array $data = [])
     {
-        $invoiceItem = new AdvertiserInvoiceItem($data, $this->parentEntity);
+        $invoiceItem = new AffiliateInvoiceItem($data, $this->parentEntity);
         $this->items[] = $invoiceItem;
 
         return $invoiceItem;

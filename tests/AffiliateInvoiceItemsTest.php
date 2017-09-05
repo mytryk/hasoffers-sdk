@@ -14,8 +14,8 @@
 
 namespace JBZoo\PHPUnit;
 
+use Unilead\HasOffers\Contain\AffiliateInvoiceItem;
 use Unilead\HasOffers\Entity\AffiliateInvoice;
-use Unilead\HasOffers\Entity\AffiliateInvoiceItem;
 
 /**
  * Class AffiliateInvoiceItemTest
@@ -31,9 +31,11 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         $affiliateInvoice = $this->hoClient->get(AffiliateInvoice::class, $someId);
         $affiliateInvoice->reload();
 
-        $items = $affiliateInvoice->getAffiliateInvoiceItem()->data();
+        $items = $affiliateInvoice->getItemsResultSet()->findAll();
 
-        is($someId, $items->find('0.invoice_id'));
+        foreach ($items as $item) {
+            is($someId, $item->invoice_id);
+        }
     }
 
     public function testCanCreateInvoiceItem()
@@ -43,8 +45,10 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         $memo = 'Test Item';
         $type = 'stats';
 
-        /** @var AffiliateInvoiceItem $affInvoiceItem */
-        $affInvoiceItem = $this->hoClient->get(AffiliateInvoiceItem::class);
+        /** @var AffiliateInvoice $affInvoice */
+        $affInvoice = $this->hoClient->get(AffiliateInvoice::class, $billId);
+        $affInvoiceItemsResultSet = $affInvoice->getItemsResultSet();
+        $affInvoiceItem = $affInvoiceItemsResultSet->addItem();
         $affInvoiceItem->invoice_id = $billId;
         $affInvoiceItem->offer_id = 8;
         $affInvoiceItem->memo = $memo;
@@ -52,39 +56,68 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         $affInvoiceItem->amount = $rand;
         $affInvoiceItem->type = $type;
         $affInvoiceItem->payout_type = 'cpa_flat';
-        $affInvoiceItem->create();
+        $affInvoiceItem->save();
 
-        /** @var AffiliateInvoice $affInvoiceItemCheck */
-        $affInvoiceItemCheck = $this->hoClient->get(AffiliateInvoice::class, $billId);
+        $item = $affInvoiceItemsResultSet->findById($affInvoiceItem->id);
 
-        $items = $affInvoiceItemCheck->getAffiliateInvoiceItem()->data()->getArrayCopy();
-
-        $itemKey = array_search((string)$affInvoiceItem->id[0], array_column($items, 'id'), true);
-        isNotSame(false, $itemKey);
-        isSame((string)$rand, $items[$itemKey]['actions']);
-        isSame($memo, $items[$itemKey]['memo']);
-        isSame($type, $items[$itemKey]['type']);
+        isNotSame(false, $item);
+        isSame((string)$rand, (string)$item->actions);
+        isSame($memo, $item->memo);
+        isSame($type, $item->type);
     }
 
     public function testCanDeleteInvoiceItem()
     {
-        // get
-        /** @var AffiliateInvoice $bill */
-        $bill = $this->hoClient->get(AffiliateInvoice::class, 56);
-        $items = $bill->getAffiliateInvoiceItem()->data()->getArrayCopy();
+        $billId = 56;
 
-        // find first one and delete it
-        /** @var AffiliateInvoiceItem $billItem */
-        $billItem = $this->hoClient->get(AffiliateInvoiceItem::class);
-        $billItem->delete($items[0]['id']);
+        /** @var AffiliateInvoice $affInvoice */
+        $affInvoice = $this->hoClient->get(AffiliateInvoice::class, $billId);
+        $items = $affInvoice->getItemsResultSet()->findAll();
 
-        // get bill items again
-        /** @var AffiliateInvoice $billCheck */
-        $billCheck = $this->hoClient->get(AffiliateInvoice::class, 56);
-        $itemsCheck = $billCheck->getAffiliateInvoiceItem()->data()->getArrayCopy();
+        // find last added and delete it
+        $lastAddedItem = end($items);
+        $lastAddedId = $lastAddedItem->id;
+        $lastAddedItem->delete();
 
-        // check item is not among them
-        $itemKey = array_search((string)$items[0]['id'], array_column($itemsCheck, 'id'), true);
-        isSame(false, $itemKey);
+        //check item is not among them
+        $notExistingItem = $affInvoice->getItemsResultSet()->findById($lastAddedId);
+        isSame(false, $notExistingItem);
+    }
+
+    public function testCanUpdateInvoiceItem()
+    {
+        $billId = 56;
+        $rand = random_int(1, 500);
+        $memo = 'Test Invoice Item';
+        $type = 'stats';
+
+        /** @var AffiliateInvoice $affInvoice */
+        $affInvoice = $this->hoClient->get(AffiliateInvoice::class, $billId);
+        // Add item
+        $invoiceItem = $affInvoice
+            ->getItemsResultSet()
+            ->addItem([
+                'invoice_id'  => $billId,
+                'offer_id'    => 8,
+                'memo'        => $memo,
+                'actions'     => $rand,
+                'amount'      => $rand,
+                'type'        => $type,
+                'payout_type' => 'cpa_flat'
+            ])->save();
+        $itemIdBeforeUpdate = $invoiceItem->id;
+
+        // Update item
+        $updatedMemo = "{$memo}: {$rand}";
+        $invoiceItem->memo = $updatedMemo;
+        $invoiceItem->save();
+        $itemIdAfterUpdate = $invoiceItem->id;
+
+        // Check fields
+        isNotSame($itemIdBeforeUpdate, $itemIdAfterUpdate);
+        isSame($updatedMemo, $invoiceItem->memo);
+
+        // Delete item
+        $invoiceItem->delete();
     }
 }

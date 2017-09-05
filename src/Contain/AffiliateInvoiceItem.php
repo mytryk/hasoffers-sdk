@@ -14,8 +14,6 @@
 
 namespace Unilead\HasOffers\Contain;
 
-use Unilead\HasOffers\Entity\AffiliateInvoice;
-
 /**
  * Class AffiliateInvoiceItem
  *
@@ -53,12 +51,29 @@ use Unilead\HasOffers\Entity\AffiliateInvoice;
 class AffiliateInvoiceItem extends AbstractContain
 {
     /**
-     * @var AffiliateInvoice
+     * @var string
      */
-    protected $parentEntity;
+    protected $target = 'AffiliateBilling';
 
     /**
      * @var string
      */
-    protected $target = 'AffiliateInvoice';
+    protected $triggerTarget = 'affiliate-invoice-item';
+
+    /**
+     * @var array
+     */
+    protected $excludedKeys = [
+        'id',
+        'affiliate_id',
+        'objectId'
+    ];
+
+    /**
+     * @var array
+     */
+    protected $methods = [
+        'create' => 'addInvoiceItem',
+        'delete' => 'removeInvoiceItem',
+    ];
 }
