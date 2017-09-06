@@ -41,13 +41,16 @@ use Unilead\HasOffers\Traits\Deleted;
  * @property string $transaction_id     A payment reference field without any predefined meaning.
  *                                      Empty string if no value is present.
  *
+ * @method AffiliateInvoice[]           getAffiliateInvoice()
+ * @method Affiliate                    getAffiliate()
+ *
  * @package Unilead\HasOffers\Entity
  */
 class AffiliateReceipt extends AbstractEntity
 {
     use Deleted;
 
-    const STATUS_ACTIVE  = 'active';
+    const STATUS_SUCCESS = 'success';
     const STATUS_DELETED = 'deleted';
     const STATUS_PENDING = 'pending';
     const STATUS_FAILED  = 'failed';
