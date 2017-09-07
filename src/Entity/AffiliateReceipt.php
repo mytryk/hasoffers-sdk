@@ -58,27 +58,27 @@ class AffiliateReceipt extends AbstractEntity
     /**
      * @var string
      */
-    protected $target = 'AffiliateReceipt';
+    protected $target = 'AffiliateBilling';
 
     /**
-     * @var array
+     * @var string
      */
-    protected $excludedKeys = [];
+    protected $targetAlias = 'AffiliateReceipt';
 
     /**
      * @var array
      */
     protected $methods = [
-        'get'    => 'findById',
-        'create' => 'create',
-        'update' => 'update',
+        'get'    => 'findReceiptById',
+        'create' => 'createReceipt',
+        'update' => 'updateReceipt',
     ];
 
     /**
      * @var array
      */
     protected $contain = [
-        'Affiliate' => Affiliate::class,
-        'Invoice'   => AffiliateInvoice::class,
+//        'Affiliate' => Affiliate::class,
+//        'Invoice'   => AffiliateInvoice::class,
     ];
 }
