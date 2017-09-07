@@ -165,7 +165,6 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
 
     public function testCanCreate()
     {
-        // TODO: check test!
         /** @var AffiliateReceipt $affReceipt */
         $affReceipt = $this->hoClient->get(AffiliateReceipt::class);
         $affReceipt->affiliate_id = '1000';
@@ -173,7 +172,7 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
         $affReceipt->currency = 'EUR';
         $affReceipt->amount = 20.0;
         $affReceipt->status = AffiliateReceipt::STATUS_SUCCESS;
-        $affReceipt->method = PaymentMethod::TYPE_WIRE;
+        $affReceipt->method = AffiliateReceipt::PAYMENT_METHOD_WIRE;
         isTrue($affReceipt->isNew());
         $affReceipt->save();
         isFalse($affReceipt->isNew());
@@ -256,7 +255,8 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
         $affReceipt->save();
 
         isSame([], $affReceipt->getChangedFields());
-        isSame(['ho.affiliatereceipt.save.before'], $eventChecker);
+        // TODO: change to affiliatereceipt
+        isSame(['ho.affiliatebilling.save.before'], $eventChecker);
     }
 
     public function testNoChangeStatOnSameValues()
@@ -273,7 +273,8 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
         isSame([], $affReceipt->getChangedFields());
         $affReceipt->save();
 
-        isSame(['ho.affiliatereceipt.save.before'], $eventChecker);
+        // TODO: change to affiliatereceipt
+        isSame(['ho.affiliatebilling.save.before'], $eventChecker);
     }
 
     public function testNoChangeStatOnSameValuesAfterSet()
@@ -290,7 +291,8 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
         isSame([], $affReceipt->getChangedFields());
 
         $affReceipt->save();
-        isSame(['ho.affiliatereceipt.save.before'], $eventChecker);
+        // TODO: change to affiliatereceipt
+        isSame(['ho.affiliatebilling.save.before'], $eventChecker);
     }
 
     public function testSaveByArgument()
@@ -304,9 +306,10 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
         $affReceipt = $this->hoClient->get(AffiliateReceipt::class, 2);
         $affReceipt->save(['memo' => Str::random()]);
 
+        // TODO: change to affiliatereceipt
         isSame([
-            'ho.affiliatereceipt.save.before',
-            'ho.affiliatereceipt.save.after',
+            'ho.affiliatebilling.save.before',
+            'ho.affiliatebilling.save.after',
         ], $eventChecker);
     }
 
@@ -326,10 +329,11 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
         $affReceipt = $this->hoClient->get(AffiliateReceipt::class, 2);
         $affReceipt->save(['memo' => $affReceipt->memo]);
 
+        // TODO: change to affiliatereceipt
         isSame([
             'ho.api.request.before',
             'ho.api.request.after',
-            'ho.affiliatereceipt.save.before',
+            'ho.affiliatebilling.save.before',
         ], $eventChecker);
     }
 }

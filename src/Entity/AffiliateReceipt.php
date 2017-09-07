@@ -55,6 +55,14 @@ class AffiliateReceipt extends AbstractEntity
     const STATUS_PENDING = 'pending';
     const STATUS_FAILED  = 'failed';
 
+    const PAYMENT_METHOD_CHECK         = 'check';
+    const PAYMENT_METHOD_DIRECTDEPOSIT = 'direct_deposit';
+    const PAYMENT_METHOD_OTHER         = 'other';
+    const PAYMENT_METHOD_PAYONEER      = 'payoneer';
+    const PAYMENT_METHOD_PAYPAL        = 'paypal';
+    const PAYMENT_METHOD_PAYQUICKER    = 'payquicker';
+    const PAYMENT_METHOD_WIRE          = 'wire';
+
     /**
      * @var string
      */
@@ -72,13 +80,5 @@ class AffiliateReceipt extends AbstractEntity
         'get'    => 'findReceiptById',
         'create' => 'createReceipt',
         'update' => 'updateReceipt',
-    ];
-
-    /**
-     * @var array
-     */
-    protected $contain = [
-//        'Affiliate' => Affiliate::class,
-//        'Invoice'   => AffiliateInvoice::class,
     ];
 }
