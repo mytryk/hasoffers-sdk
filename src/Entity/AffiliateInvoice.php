@@ -88,7 +88,7 @@ class AffiliateInvoice extends AbstractEntity
      *
      * @return AffiliateInvoiceItemList
      */
-    public function getItemsResultSet()
+    public function getItemsList()
     {
         return $this->getAffiliateInvoiceItem();
     }

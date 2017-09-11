@@ -48,8 +48,15 @@ namespace Unilead\HasOffers\Contain;
  *
  * @package Unilead\HasOffers\Contain
  */
-class AffiliateInvoiceItem extends AbstractContain
+class AffiliateInvoiceItem extends AbstractItemContain
 {
+    const PAYOUT_TYPE_CPA_FLAT       = 'cpa_flat';
+    const PAYOUT_TYPE_CPA_PERCENTAGE = 'cpa_percentage';
+    const PAYOUT_TYPE_CPA_BOTH       = 'cpa_both';
+    const PAYOUT_TYPE_CPC            = 'cpc';
+    const PAYOUT_TYPE_CPM            = 'cpm';
+    const PAYOUT_TYPE_AMOUNT         = 'amount';
+
     /**
      * @var string
      */

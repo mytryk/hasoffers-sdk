@@ -49,8 +49,15 @@ namespace Unilead\HasOffers\Contain;
  *
  * @package Unilead\HasOffers
  */
-class AdvertiserInvoiceItem extends AbstractContain
+class AdvertiserInvoiceItem extends AbstractItemContain
 {
+    const REVENUE_TYPE_CPA_FLAT       = 'cpa_flat';
+    const REVENUE_TYPE_CPA_PERCENTAGE = 'cpa_percentage';
+    const REVENUE_TYPE_CPA_BOTH       = 'cpa_both';
+    const REVENUE_TYPE_CPC            = 'cpc';
+    const REVENUE_TYPE_CPM            = 'cpm';
+    const REVENUE_TYPE_AMOUNT         = 'amount';
+
     /**
      * @var string
      */

@@ -39,8 +39,7 @@ class AffiliateInvoiceItemList extends AbstractContain
         parent::__construct($data, $parentEntity);
 
         foreach ($data as $item) {
-            $invoiceItem = new AffiliateInvoiceItem($item, $parentEntity);
-            $this->items[] = $invoiceItem;
+            $this->addItem($item);
         }
 
         $this->bindData($data);

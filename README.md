@@ -64,7 +64,7 @@ try {
     // Work with contain items
     $billId = 56;
     $affInvoice = $hoClient->get(AffiliateInvoice::class, $billId);
-    $affInvoiceItemsResultSet = $affInvoice->getItemsResultSet();
+    $affInvoiceItemsResultSet = $affInvoice->getItemsList();
     
     // Find all: iterable
     $affInvoiceItems = $affInvoiceItemsResultSet->findAll();
@@ -80,13 +80,13 @@ try {
     
     // Add item
     $invoiceItem = $affInvoice
-        ->getItemsResultSet()
+        ->getItemsList()
         ->addItem([
             'invoice_id'  => $billId,
             'offer_id'    => 8,
             'memo'        => 'memo',
             'amount'      => 0.0,
-            'payout_type' => 'cpa_flat'
+            'payout_type' => AffiliateInvoiceItem::PAYOUT_TYPE_CPA_FLAT
         ])->save();
     
     // Or

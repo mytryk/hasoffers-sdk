@@ -79,7 +79,7 @@ class AdvertiserInvoice extends AbstractEntity
      *
      * @return AdvertiserInvoiceItemList
      */
-    public function getItemsResultSet()
+    public function getItemsList()
     {
         return $this->getAdvertiserInvoiceItem();
     }
