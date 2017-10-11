@@ -29,9 +29,11 @@ use Unilead\HasOffers\Entity\AffiliateUser;
  */
 class HoClientTest extends HasoffersPHPUnit
 {
+    protected $testId = 2;
+
     public function testEventManagerAttach()
     {
-        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
 
         $checkerCounter = 0;
         $this->eManager->on('ho.Affiliate.reload.*', function () use (&$checkerCounter) {
@@ -66,7 +68,7 @@ class HoClientTest extends HasoffersPHPUnit
         $this->hoClient->setRequestsLimit(2);
 
         $startTime = time();
-        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $affiliate->reload();
         $affiliate->reload();
         $affiliate->reload();

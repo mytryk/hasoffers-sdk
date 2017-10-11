@@ -23,6 +23,8 @@ use Unilead\HasOffers\Entity\AffiliateInvoice;
  */
 class AffiliateInvoiceTest extends HasoffersPHPUnit
 {
+    protected $testId = '4';
+
     public function testCreatingAffiliateInvoiceWays()
     {
         $bill1 = $this->hoClient->get(AffiliateInvoice::class); // recommended!
@@ -56,21 +58,19 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
      */
     public function testCannotGetUndefinedProperty()
     {
-        $someId = '24';
         /** @var AffiliateInvoice $bill */
-        $bill = $this->hoClient->get(AffiliateInvoice::class, $someId);
-        is($someId, $bill->id);
+        $bill = $this->hoClient->get(AffiliateInvoice::class, $this->testId);
+        is($this->testId, $bill->id);
 
         $bill->undefined_property;
     }
 
     public function testCanGetAffiliateInvoiceById()
     {
-        $someId = '24';
         /** @var AffiliateInvoice $bill */
-        $bill = $this->hoClient->get(AffiliateInvoice::class, $someId);
+        $bill = $this->hoClient->get(AffiliateInvoice::class, $this->testId);
 
-        is($someId, $bill->id);
+        is($this->testId, $bill->id);
     }
 
     public function testCanCreateAffiliateInvoice()
@@ -90,14 +90,16 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
         isSame($bill->id, $invoiceCheck->id);
         isSame($bill->start_date, $invoiceCheck->start_date);
         isSame($bill->end_date, $invoiceCheck->end_date);
+
+        $bill->delete(); // Clean up after test
     }
 
     public function testCanUpdateAffiliateInvoice()
     {
         /** @var AffiliateInvoice $bill */
-        $bill = $this->hoClient->get(AffiliateInvoice::class, 24);
-        $bill->currency = 'EUR';
-        $bill->memo = 'test';
+        $bill = $this->hoClient->get(AffiliateInvoice::class, $this->testId);
+        $bill->currency = $this->faker->currencyCode;
+        $bill->memo = $this->faker->sentence();
         $bill->status = AffiliateInvoice::STATUS_ACTIVE;
         $bill->save();
 
@@ -111,14 +113,13 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
 
     public function testCanDeleteAffiliateInvoice()
     {
-        $billId = 24;
         /** @var AffiliateInvoice $billReset */
-        $billReset = $this->hoClient->get(AffiliateInvoice::class, $billId);
+        $billReset = $this->hoClient->get(AffiliateInvoice::class, $this->testId);
         $billReset->status = AffiliateInvoice::STATUS_ACTIVE;
         $billReset->save();
 
         /** @var AffiliateInvoice $bill */
-        $bill = $this->hoClient->get(AffiliateInvoice::class, $billId);
+        $bill = $this->hoClient->get(AffiliateInvoice::class, $this->testId);
         $bill->delete();
 
         isSame(AffiliateInvoice::STATUS_DELETED, $bill->status);

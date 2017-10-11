@@ -24,34 +24,21 @@ use Unilead\HasOffers\Entity\AffiliateInvoice;
  */
 class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
 {
-    public function testCanGetItemsByInvoiceId()
-    {
-        $someId = 24;
-        /** @var AffiliateInvoice $affiliateInvoice */
-        $affiliateInvoice = $this->hoClient->get(AffiliateInvoice::class, $someId);
-        $affiliateInvoice->reload();
-
-        $items = $affiliateInvoice->getItemsList()->findAll();
-
-        foreach ($items as $item) {
-            is($someId, $item->invoice_id);
-        }
-    }
+    protected $testId = '12';
 
     public function testCanCreateInvoiceItem()
     {
-        $billId = 56;
-        $randActions = random_int(1, 500);
-        $randAmount = random_int(1, 500);
-        $memo = 'Test Item';
+        $randActions = $this->faker->randomNumber();
+        $randAmount = $this->faker->randomNumber();
+        $memo = $this->faker->text();
         $type = 'stats';
 
         /** @var AffiliateInvoice $affInvoice */
-        $affInvoice = $this->hoClient->get(AffiliateInvoice::class, $billId);
+        $affInvoice = $this->hoClient->get(AffiliateInvoice::class, $this->testId);
         $affInvoiceItemsResultSet = $affInvoice->getItemsList();
         $affInvoiceItem = $affInvoiceItemsResultSet->addItem();
-        $affInvoiceItem->invoice_id = $billId;
-        $affInvoiceItem->offer_id = 8;
+        $affInvoiceItem->invoice_id = $this->testId;
+        $affInvoiceItem->offer_id = 10;
         $affInvoiceItem->memo = $memo;
         $affInvoiceItem->actions = $randActions;
         $affInvoiceItem->amount = $randAmount;
@@ -65,11 +52,26 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         isSame((string)$randActions, (string)$item->actions);
         isSame($memo, $item->memo);
         isSame($type, $item->type);
+
+        //$affInvoiceItem->delete(); // Clean up after test
+    }
+
+    public function testCanGetItemsByInvoiceId()
+    {
+        /** @var AffiliateInvoice $affiliateInvoice */
+        $affiliateInvoice = $this->hoClient->get(AffiliateInvoice::class, $this->testId);
+        $affiliateInvoice->reload();
+
+        $items = $affiliateInvoice->getItemsList()->findAll();
+
+        foreach ($items as $item) {
+            is($this->testId, $item->invoice_id);
+        }
     }
 
     public function testCanDeleteInvoiceItem()
     {
-        $billId = 56;
+        $billId = $this->testId;
 
         /** @var AffiliateInvoice $affInvoice */
         $affInvoice = $this->hoClient->get(AffiliateInvoice::class, $billId);
@@ -87,10 +89,10 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
 
     public function testCanUpdateInvoiceItem()
     {
-        $billId = 56;
-        $randActions = random_int(1, 500);
-        $randAmount = random_int(1, 500);
-        $memo = 'Test Invoice Item';
+        $billId = $this->testId;
+        $randActions = $this->faker->randomNumber();
+        $randAmount = $this->faker->randomNumber();
+        $memo = $this->faker->text(20);
         $type = 'stats';
 
         /** @var AffiliateInvoice $affInvoice */
@@ -100,12 +102,12 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
             ->getItemsList()
             ->addItem([
                 'invoice_id'  => $billId,
-                'offer_id'    => 8,
+                'offer_id'    => 10,
                 'memo'        => $memo,
                 'actions'     => $randActions,
                 'amount'      => $randAmount,
                 'type'        => $type,
-                'payout_type' => AffiliateInvoiceItem::PAYOUT_TYPE_CPA_FLAT
+                'payout_type' => AffiliateInvoiceItem::PAYOUT_TYPE_CPA_FLAT,
             ])->save();
         $itemIdBeforeUpdate = $invoiceItem->id;
 

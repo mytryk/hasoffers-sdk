@@ -21,35 +21,42 @@ namespace PHPSTORM_META {
     use Unilead\HasOffers\Entities\Advertisers;
     use Unilead\HasOffers\Entities\Affiliates;
     use Unilead\HasOffers\Entities\Employees;
+    use Unilead\HasOffers\Entities\AdvertiserInvoices;
+    use Unilead\HasOffers\Entities\AdvertiserUsers;
+    use Unilead\HasOffers\Entities\AffiliateUsers;
+    use Unilead\HasOffers\Entities\Offers;
+
     use Unilead\HasOffers\Entity\Advertiser;
     use Unilead\HasOffers\Entity\AdvertiserInvoice;
-    use Unilead\HasOffers\Entity\AdvertiserInvoiceItem;
     use Unilead\HasOffers\Entity\AdvertiserUser;
     use Unilead\HasOffers\Entity\Affiliate;
     use Unilead\HasOffers\Entity\AffiliateInvoice;
-    use Unilead\HasOffers\Entity\AffiliateInvoiceItem;
+    use Unilead\HasOffers\Entity\AffiliateReceipt;
     use Unilead\HasOffers\Entity\AffiliateUser;
     use Unilead\HasOffers\Entity\Employee;
     use Unilead\HasOffers\Entity\Offer;
+
     use Unilead\HasOffers\HasOffersClient;
 
     override(HasOffersClient::get(0),
         map([
             // object
-            Advertiser::class            => Advertiser::class,
-            AdvertiserInvoice::class     => AdvertiserInvoice::class,
-            AdvertiserInvoiceItem::class => AdvertiserInvoiceItem::class,
-            AdvertiserUser::class        => AdvertiserUser::class,
-            Affiliate::class             => Affiliate::class,
-            AffiliateInvoice::class      => AffiliateInvoice::class,
-            AffiliateInvoiceItem::class  => AffiliateInvoiceItem::class,
-            AffiliateUser::class         => AffiliateUser::class,
-            Employee::class              => Employee::class,
-            Offer::class                 => Offer::class,
+            Advertiser::class         => Advertiser::class,
+            AdvertiserInvoice::class  => AdvertiserInvoice::class,
+            AdvertiserUser::class     => AdvertiserUser::class,
+            Affiliate::class          => Affiliate::class,
+            AffiliateInvoice::class   => AffiliateInvoice::class,
+            AffiliateReceipt::class   => AffiliateReceipt::class,
+            AffiliateUser::class      => AffiliateUser::class,
+            Employee::class           => Employee::class,
+            Offer::class              => Offer::class,
             // list
-            Advertisers::class           => Advertisers::class,
-            Affiliates::class            => Affiliates::class,
-            Employees::class             => Employees::class,
-            Offers::class                => Offers::class,
+            Advertisers::class        => Advertisers::class,
+            AdvertiserInvoices::class => AdvertiserInvoices::class,
+            AdvertiserUsers::class    => AdvertiserUsers::class,
+            AffiliateUsers::class     => AffiliateUsers::class,
+            Affiliates::class         => Affiliates::class,
+            Employees::class          => Employees::class,
+            Offers::class             => Offers::class,
         ]));
 }

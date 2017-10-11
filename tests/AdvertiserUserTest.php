@@ -24,6 +24,8 @@ use Unilead\HasOffers\Entity\AdvertiserUser;
  */
 class AdvertiserUserTest extends HasoffersPHPUnit
 {
+    protected $testId = '12';
+
     public function testCreatingAdvertiserUserWays()
     {
         $advertiserUser1 = $this->hoClient->get(AdvertiserUser::class); // recommended!
@@ -53,11 +55,10 @@ class AdvertiserUserTest extends HasoffersPHPUnit
 
     public function testCanGetAdvertiserUserById()
     {
-        $someId = '12';
         /** @var AdvertiserUser $advertiserUser */
-        $advertiserUser = $this->hoClient->get(AdvertiserUser::class, $someId);
+        $advertiserUser = $this->hoClient->get(AdvertiserUser::class, $this->testId);
 
-        is($someId, $advertiserUser->id);
+        is($this->testId, $advertiserUser->id);
     }
 
     /**
@@ -76,10 +77,9 @@ class AdvertiserUserTest extends HasoffersPHPUnit
      */
     public function testCannotGetUndefinedProperty()
     {
-        $someId = '12';
         /** @var AdvertiserUser $advertiserUser */
-        $advertiserUser = $this->hoClient->get(AdvertiserUser::class, $someId);
-        is($someId, $advertiserUser->id);
+        $advertiserUser = $this->hoClient->get(AdvertiserUser::class, $this->testId);
+        is($this->testId, $advertiserUser->id);
 
         $advertiserUser->undefined_property;
     }
@@ -88,13 +88,13 @@ class AdvertiserUserTest extends HasoffersPHPUnit
     {
         $this->skipIfFakeServer();
 
-        $password = Str::random(13);
-        $email = Str::random(10) . '@' . Str::random(5) . '.com';
+        $password = Str::random();
+        $email = $this->faker->companyEmail;
         /** @var AdvertiserUser $advertiserUser */
         $advertiserUser = $this->hoClient->get(AdvertiserUser::class);
-        $advertiserUser->advertiser_id = '524';
-        $advertiserUser->first_name = 'Test Company';
-        $advertiserUser->phone = '+7 845 845 84 54';
+        $advertiserUser->advertiser_id = '500';
+        $advertiserUser->first_name = $this->faker->company;
+        $advertiserUser->phone = $this->faker->phoneNumber;
         $advertiserUser->email = $email;
         $advertiserUser->password = $password;
         $advertiserUser->password_confirmation = $password;
@@ -107,6 +107,8 @@ class AdvertiserUserTest extends HasoffersPHPUnit
         isSame($advertiserUser->first_name, $advertiserCheck->first_name);
         isSame($advertiserUser->phone, $advertiserCheck->phone);
         isSame($advertiserUser->email, $advertiserCheck->email);
+
+        $advertiserUser->delete(); // Clean up after test
     }
 
     public function testCanUpdateAdvertiserUser()
@@ -114,21 +116,21 @@ class AdvertiserUserTest extends HasoffersPHPUnit
         $this->skipIfFakeServer();
 
         /** @var AdvertiserUser $advertiserUserBeforeSave */
-        $advertiserUserBeforeSave = $this->hoClient->get(AdvertiserUser::class, 12);
+        $advertiserUserBeforeSave = $this->hoClient->get(AdvertiserUser::class, $this->testId);
 
         $beforeFirstName = $advertiserUserBeforeSave->first_name;
-        $advertiserUserBeforeSave->first_name = Str::random();
+        $advertiserUserBeforeSave->first_name = $this->faker->firstName();
         $advertiserUserBeforeSave->save();
 
         /** @var AdvertiserUser $advertiserAfterSave */
-        $advertiserAfterSave = $this->hoClient->get(AdvertiserUser::class, 12);
+        $advertiserAfterSave = $this->hoClient->get(AdvertiserUser::class, $this->testId);
         isNotSame($beforeFirstName, $advertiserAfterSave->first_name);
     }
 
     public function testCanDeleteAdvertiserUser()
     {
         /** @var AdvertiserUser $advertiserUser */
-        $advertiserUser = $this->hoClient->get(AdvertiserUser::class, 12);
+        $advertiserUser = $this->hoClient->get(AdvertiserUser::class, $this->testId);
 
         $advertiserUser->delete();
 

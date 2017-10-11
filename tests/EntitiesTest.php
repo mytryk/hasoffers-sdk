@@ -69,6 +69,6 @@ class EntitiesTest extends HasoffersPHPUnit
         $affiliates = $this->hoClient->get(Affiliates::class);
         $list = $affiliates->find();
 
-        isTrue(count($list) > 700);
+        isTrue(count($list) > 20);
     }
 }

@@ -26,6 +26,8 @@ use Unilead\HasOffers\Entity\AffiliateUser;
  */
 class AffiliatesTest extends HasoffersPHPUnit
 {
+    protected $testId = '2';
+
     public function testCreateList()
     {
         $affiliates1 = $this->hoClient->get(Affiliates::class);
@@ -47,7 +49,7 @@ class AffiliatesTest extends HasoffersPHPUnit
         $list = $affiliates->find();
 
         /** @var Affiliate $affiliate */
-        $affiliate = $list[1004];
+        $affiliate = $list[$this->testId];
 
         isNotEmpty($affiliate->city);
         isNotEmpty($affiliate->country);
@@ -64,12 +66,10 @@ class AffiliatesTest extends HasoffersPHPUnit
         $list = $affiliates->find();
 
         /** @var Affiliate $affiliate */
-        $affiliate = $list[1004];
+        $affiliate = $list[$this->testId];
 
         $users = $affiliate->getAffiliateUser()->getList();
 
-        isSame('10', $users->find('0.id'));
-        isSame('anbelov83@belov.ru', $users->find('0.email'));
-        isSame(AffiliateUser::STATUS_DELETED, $users->find('0.status'));
+        isSame('2', $users->find('0.id'));
     }
 }

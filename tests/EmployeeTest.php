@@ -25,6 +25,8 @@ use Unilead\HasOffers\Entity\Employee;
  */
 class EmployeeTest extends HasoffersPHPUnit
 {
+    protected $testId = '8';
+
     public function testCreatingEmployeeWays()
     {
         $employee1 = $this->hoClient->get(Employee::class); // recommended!
@@ -44,11 +46,10 @@ class EmployeeTest extends HasoffersPHPUnit
 
     public function testCanGetEmployeeById()
     {
-        $someId = '8';
         /** @var Employee $employee */
-        $employee = $this->hoClient->get(Employee::class, $someId);
+        $employee = $this->hoClient->get(Employee::class, $this->testId);
 
-        is($someId, $employee->id);
+        is($this->testId, $employee->id);
     }
 
     /**
@@ -67,24 +68,23 @@ class EmployeeTest extends HasoffersPHPUnit
      */
     public function testCannotGetUndefinedProperty()
     {
-        $someId = '8';
         /** @var Employee $employee */
-        $employee = $this->hoClient->get(Employee::class, $someId);
-        is($someId, $employee->id);
+        $employee = $this->hoClient->get(Employee::class, $this->testId);
+        is($this->testId, $employee->id);
 
         $employee->undefined_property;
     }
 
     public function testCanCreateEmployee()
     {
-        $password = Str::random(12);
-        $email = Str::random(10) . '@' . Str::random(5) . '.com';
+        $password = Str::random();
+        $email = $this->faker->email;
 
         /** @var Employee $employee */
         $employee = $this->hoClient->get(Employee::class);
-        $employee->first_name = 'Test';
-        $employee->last_name = 'User';
-        $employee->phone = '+7 845 845 84 54';
+        $employee->first_name = $this->faker->firstName;
+        $employee->last_name = $this->faker->lastName;
+        $employee->phone = $this->faker->phoneNumber;
         $employee->email = $email;
         $employee->password = $password;
         $employee->password_confirmation = $password;
@@ -97,36 +97,38 @@ class EmployeeTest extends HasoffersPHPUnit
         isSame($employee->first_name, $employeeCheck->first_name);
         isSame($employee->last_name, $employeeCheck->last_name);
         isSame($employee->phone, $employeeCheck->phone);
+
+        $employee->delete(); // Clean up after test
     }
 
     public function testCanUpdateEmployee()
     {
         /** @var Employee $employeeBeforeSave */
-        $employeeBeforeSave = $this->hoClient->get(Employee::class, 8);
+        $employeeBeforeSave = $this->hoClient->get(Employee::class, $this->testId);
 
         $beforeCompany = $employeeBeforeSave->first_name;
-        $employeeBeforeSave->first_name = Str::random();
+        $employeeBeforeSave->first_name = $this->faker->name();
 
         $employeeBeforeSave->save();
 
         /** @var Employee $employeeAfterSave */
-        $employeeAfterSave = $this->hoClient->get(Employee::class, 8);
+        $employeeAfterSave = $this->hoClient->get(Employee::class, $this->testId);
         isNotSame($beforeCompany, $employeeAfterSave->first_name);
     }
 
     public function testCanDeleteEmployee()
     {
         /** @var Employee $affiliateReset */
-        $affiliateReset = $this->hoClient->get(Employee::class, 8);
+        $affiliateReset = $this->hoClient->get(Employee::class, $this->testId);
         $affiliateReset->status = 'active';
         $affiliateReset->save();
 
         /** @var Employee $employee */
-        $employee = $this->hoClient->get(Employee::class, 8);
+        $employee = $this->hoClient->get(Employee::class, $this->testId);
         $employee->delete();
 
         /** @var Employee $employeeAfterSave */
-        $employeeAfterSave = $this->hoClient->get(Employee::class, 8);
+        $employeeAfterSave = $this->hoClient->get(Employee::class, $this->testId);
 
         isSame(Employee::STATUS_DELETED, $employeeAfterSave->status);
     }

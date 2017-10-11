@@ -24,16 +24,18 @@ use Unilead\HasOffers\Entity\Employee;
  */
 class EmployeesTest extends HasoffersPHPUnit
 {
+    protected $testId = '2';
+
     public function testFindList()
     {
         $employee = $this->hoClient->get(Employees::class);
         $list = $employee->find();
 
         /** @var Employee $employee */
-        $employee = $list[14];
+        $employee = $list[$this->testId];
 
-        isSame('Advertiser', $employee->first_name);
-        isSame('Account Manager', $employee->last_name);
-        isSame('advmanager@4tune.systems', $employee->email);
+        isSame('Dmitry', $employee->first_name);
+        isSame('Semenov', $employee->last_name);
+        isSame('dmitry.semenov@item8.io', $employee->email);
     }
 }

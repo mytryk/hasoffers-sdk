@@ -19,7 +19,7 @@
     },
     "require-dev"       : {
         "jbzoo/phpunit"     : "^2.0",
-        "unilead/codestyle" : "^1.0"
+        "unilead/codestyle" : "^1.2"
     },
     "repositories"      : {
         "unilead/codestyle" : {

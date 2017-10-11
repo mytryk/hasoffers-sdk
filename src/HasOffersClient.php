@@ -165,6 +165,7 @@ class HasOffersClient
 
             $this->lastResponse = $json;
 
+            $requestParams['NetworkToken'] = '*** hidden ***';
             $this->trigger('api.request.after', [$this, $json, $response, $requestParams]);
 
             $apiStatus = $json->find('response.status', null, 'int');
