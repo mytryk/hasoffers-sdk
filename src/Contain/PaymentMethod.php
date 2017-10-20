@@ -171,6 +171,7 @@ class PaymentMethod extends AbstractContain
      *
      * @param array $properties
      * @return bool
+     * @throws \Unilead\HasOffers\Exception
      */
     public function save(array $properties = [])
     {
@@ -178,12 +179,7 @@ class PaymentMethod extends AbstractContain
             return $this->mergeData($properties)->save();
         }
 
-        $changedData = $this->getChangedFields();
-        if (count($changedData) !== 0) {
-            $changedData = array_intersect_assoc($changedData, $this->data()->getArrayCopy());
-        } else {
-            return false;
-        }
+        $changedData = $properties;
 
         $this->hoClient->trigger("{$this->target}.save.before", [$this, &$changedData]);
 
