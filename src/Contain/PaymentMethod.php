@@ -179,7 +179,7 @@ class PaymentMethod extends AbstractContain
             return $this->mergeData($properties)->save();
         }
 
-        $changedData = $properties;
+        $changedData = $this->data()->getArrayCopy();
 
         $this->hoClient->trigger("{$this->target}.save.before", [$this, &$changedData]);
 
