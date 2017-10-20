@@ -10,8 +10,10 @@
 use Unilead\HasOffers\Exception;
 use Unilead\HasOffers\Entity\AbstractEntity;
 use Unilead\HasOffers\Entity\Affiliate;
+use Unilead\HasOffers\Entity\AffiliateInvoice;
 use Unilead\HasOffers\HasOffersClient;
 use Unilead\HasOffers\Contain\PaymentMethod;
+use Unilead\HasOffers\Contain\AffiliateInvoiceItem;
 use JBZoo\Event\EventManager;
 use JBZoo\Event\ExceptionStop;
 
@@ -58,6 +60,42 @@ try {
     $paymentType = $paymentMethod->getType(); 
     $paypalEmail1 = $paymentMethod->email; 
     $paypalEmail2 = $paymentMethod->data()->find('email');
+    
+    // Work with contain items
+    $billId = 56;
+    $affInvoice = $hoClient->get(AffiliateInvoice::class, $billId);
+    $affInvoiceItemsResultSet = $affInvoice->getItemsList();
+    
+    // Find all: iterable
+    $affInvoiceItems = $affInvoiceItemsResultSet->findAll();
+    foreach ($affInvoiceItems as $affInvoiceItem) {
+        $affInvoiceItem->amount = 0.0;
+        $affInvoiceItem->save();
+    }
+
+    // Find by ID
+    $affInvoiceItemId = 123;
+    $affInvoiceItem = $affInvoiceItemsResultSet->findById($affInvoiceItemId);
+    $affInvoiceItem->delete(); // delete from HO and reload parent
+    
+    // Add item
+    $invoiceItem = $affInvoice
+        ->getItemsList()
+        ->addItem([
+            'invoice_id'  => $billId,
+            'offer_id'    => 8,
+            'memo'        => 'memo',
+            'amount'      => 0.0,
+            'payout_type' => AffiliateInvoiceItem::PAYOUT_TYPE_CPA_FLAT
+        ])->save();
+    
+    // Or
+    $affInvoiceItem = $affInvoiceItemsResultSet->addItem();
+    $affInvoiceItem->invoice_id = $billId;
+    $affInvoiceItem->offer_id = 8;
+    $affInvoiceItem->amount = 0.0;
+    $affInvoiceItem->payout_type = 'cpa_flat';
+    $affInvoiceItem->save();
     
     // Attach event handlers
     $eManager

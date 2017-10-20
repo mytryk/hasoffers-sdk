@@ -14,6 +14,9 @@
 
 namespace JBZoo\PHPUnit;
 
+use Faker\Factory;
+use Faker\Generator;
+use Faker\Provider\pt_BR\PhoneNumber;
 use function JBZoo\Data\json;
 use JBZoo\Event\EventManager;
 use JBZoo\HttpClient\HttpClient;
@@ -28,7 +31,7 @@ use Unilead\HasOffers\Helper;
  *
  * @package JBZoo\PHPUnit
  */
-class HasoffersPHPUnit extends PHPUnit
+abstract class HasoffersPHPUnit extends PHPUnit
 {
     /**
      * @var HasOffersClient
@@ -40,9 +43,17 @@ class HasoffersPHPUnit extends PHPUnit
      */
     protected $eManager;
 
+    /**
+     * @var Generator
+     */
+    protected $faker;
+
     public function setUp()
     {
         parent::setUp();
+
+        $this->faker = Factory::create();
+        $this->faker->addProvider(new PhoneNumber($this->faker));
 
         $apiUrl = Env::get('HO_API_URL') ?: HasOffersClient::DEFAULT_API_URL;
         $isLearning = Env::get('HO_FAKE_SERVER_LEARNING', false, Env::VAR_BOOL);

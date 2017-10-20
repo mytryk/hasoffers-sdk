@@ -14,8 +14,6 @@
 
 namespace Unilead\HasOffers\Contain;
 
-use Unilead\HasOffers\Entity\AffiliateInvoice;
-
 /**
  * Class AffiliateInvoiceItem
  *
@@ -50,15 +48,39 @@ use Unilead\HasOffers\Entity\AffiliateInvoice;
  *
  * @package Unilead\HasOffers\Contain
  */
-class AffiliateInvoiceItem extends AbstractContain
+class AffiliateInvoiceItem extends AbstractItemContain
 {
-    /**
-     * @var AffiliateInvoice
-     */
-    protected $parentEntity;
+    const PAYOUT_TYPE_CPA_FLAT       = 'cpa_flat';
+    const PAYOUT_TYPE_CPA_PERCENTAGE = 'cpa_percentage';
+    const PAYOUT_TYPE_CPA_BOTH       = 'cpa_both';
+    const PAYOUT_TYPE_CPC            = 'cpc';
+    const PAYOUT_TYPE_CPM            = 'cpm';
+    const PAYOUT_TYPE_AMOUNT         = 'amount';
 
     /**
      * @var string
      */
-    protected $target = 'AffiliateInvoice';
+    protected $target = 'AffiliateBilling';
+
+    /**
+     * @var string
+     */
+    protected $triggerTarget = 'affiliate-invoice-item';
+
+    /**
+     * @var array
+     */
+    protected $excludedKeys = [
+        'id',
+        'affiliate_id',
+        'objectId'
+    ];
+
+    /**
+     * @var array
+     */
+    protected $methods = [
+        'create' => 'addInvoiceItem',
+        'delete' => 'removeInvoiceItem',
+    ];
 }

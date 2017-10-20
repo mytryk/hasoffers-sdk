@@ -25,6 +25,8 @@ use Unilead\HasOffers\Entity\AdvertiserUser;
  */
 class AdvertisersTest extends HasoffersPHPUnit
 {
+    protected $testId = '2';
+
     public function testFindList()
     {
         /** @var Advertisers $advertisers */
@@ -32,12 +34,9 @@ class AdvertisersTest extends HasoffersPHPUnit
         $list = $advertisers->find();
 
         /** @var Advertiser $advertiser */
-        $advertiser = $list[504];
+        $advertiser = $list[$this->testId];
 
         isNotEmpty($advertiser->city);
-        isNotEmpty($advertiser->country);
-        isNotEmpty($advertiser->zipcode);
-        isNotEmpty($advertiser->address1);
     }
 
     public function testCanGetAdvertiserUser()
@@ -47,12 +46,10 @@ class AdvertisersTest extends HasoffersPHPUnit
         $list = $advertisers->find();
 
         /** @var Advertiser $advertiser */
-        $advertiser = $list[504];
+        $advertiser = $list[$this->testId];
 
         $users = $advertiser->getAdvertiserUser()->getList();
 
-        isSame("10", $users[0]['id']);
-        isSame('ivan@test.com', $users[0]['email']);
-        isSame(AdvertiserUser::STATUS_ACTIVE, $users[0]['status']);
+        isSame('2', $users[0]['id']);
     }
 }

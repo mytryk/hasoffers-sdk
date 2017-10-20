@@ -14,7 +14,6 @@
 
 namespace JBZoo\PHPUnit;
 
-use JBZoo\Utils\Str;
 use Unilead\HasOffers\Entity\Affiliate;
 use Unilead\HasOffers\Entity\AffiliateUser;
 
@@ -25,6 +24,8 @@ use Unilead\HasOffers\Entity\AffiliateUser;
  */
 class AffiliateTest extends HasoffersPHPUnit
 {
+    protected $testId = '2';
+
     public function testCreatingAffiliateWays()
     {
         $affiliate1 = $this->hoClient->get(Affiliate::class); // recommended!
@@ -44,10 +45,9 @@ class AffiliateTest extends HasoffersPHPUnit
 
     public function testCanGetAffiliateById()
     {
-        $someId = '1004';
-        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
 
-        is($someId, $affiliate->id);
+        is($this->testId, $affiliate->id);
     }
 
     public function testIsExist()
@@ -61,13 +61,13 @@ class AffiliateTest extends HasoffersPHPUnit
         $affiliate = $this->hoClient->get(Affiliate::class, '10000000');
         isFalse($affiliate->isExist());
 
-        $affiliate = $this->hoClient->get(Affiliate::class, '1004');
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         isTrue($affiliate->isExist());
     }
 
     public function testUnset()
     {
-        $affiliate = $this->hoClient->get(Affiliate::class, '1004');
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         isTrue($affiliate->city);
         unset($affiliate->city);
         isFalse($affiliate->city);
@@ -77,7 +77,7 @@ class AffiliateTest extends HasoffersPHPUnit
 
     public function testBindData()
     {
-        $affiliate = $this->hoClient->get(Affiliate::class, '1004');
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $oldCity = $affiliate->city;
 
         $affiliate->mergeData(['city' => 'New city']);
@@ -102,47 +102,41 @@ class AffiliateTest extends HasoffersPHPUnit
      */
     public function testCannotGetUndefinedProperty()
     {
-        $someId = '1004';
-        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
-        is($someId, $affiliate->id);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
+        is($this->testId, $affiliate->id);
 
         $affiliate->undefined_property;
     }
 
     public function testData()
     {
-        $someId = '1004';
-        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         isNotEmpty($affiliate->data());
     }
 
     public function testIsset()
     {
-        $someId = '1004';
-        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         isTrue(isset($affiliate->status));
         isFalse(isset($affiliate->undefined));
     }
 
     /**
-     * @expectedExceptionMessage Undefined method "getFakeContainObject" or related object "FakeContainObject" in
-     *                           Unilead\HasOffers\Entity\Affiliate for objectId=1004
      * @expectedException \Unilead\HasOffers\Exception
      */
     public function testCannotGetUndefinedContain()
     {
-        $someId = '1004';
-        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
 
         $affiliate->getFakeContainObject();
     }
 
     public function testGetAffiliateSignUpAnswers()
     {
-        $someId = '1004';
-        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $answers = $affiliate->getAnswers();
 
+        skip('TODO: Create answers in affiliate id=2');
         isSame(2, count($answers));
         isSame('What language do you speak?', $answers[1]['question']);
         isSame('English', $answers[1]['answer']);
@@ -150,20 +144,17 @@ class AffiliateTest extends HasoffersPHPUnit
 
     public function testGetAffiliateUser()
     {
-        $someId = '1004';
-        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $users = $affiliate->getAffiliateUser()->getList();
 
-        isSame('10', $users->find('0.id'));
-        isSame('anbelov83@belov.ru', $users->find('0.email'));
-        isSame(AffiliateUser::STATUS_DELETED, $users->find('0.status'));
+        isSame('2', $users->find('0.id'));
     }
 
     public function testCanCreateAffiliate()
     {
         $affiliate = $this->hoClient->get(Affiliate::class);
-        $affiliate->company = 'Test Company';
-        $affiliate->phone = '+7 845 845 84 54';
+        $affiliate->company = $this->faker->company;
+        $affiliate->phone = $this->faker->phoneNumber;
         isTrue($affiliate->isNew());
         $affiliate->save();
         isFalse($affiliate->isNew());
@@ -174,19 +165,21 @@ class AffiliateTest extends HasoffersPHPUnit
         isSame($affiliate->id, $affiliateCheck->id); // Check is new id bind to object
         isSame($affiliate->company, $affiliateCheck->company);
         isSame($affiliate->phone, $affiliateCheck->phone);
+
+        $affiliate->delete(); // Clean up after test
     }
 
     public function testCanUpdateAffiliate()
     {
         $this->skipIfFakeServer();
 
-        $affiliateBeforeSave = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliateBeforeSave = $this->hoClient->get(Affiliate::class, $this->testId);
 
         $beforeCompany = $affiliateBeforeSave->company;
-        $affiliateBeforeSave->company = Str::random();
+        $affiliateBeforeSave->company = $this->faker->company;
         $affiliateBeforeSave->save();
 
-        $affiliateAfterSave = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliateAfterSave = $this->hoClient->get(Affiliate::class, $this->testId);
         isNotSame($beforeCompany, $affiliateAfterSave->company);
     }
 
@@ -194,10 +187,10 @@ class AffiliateTest extends HasoffersPHPUnit
     {
         $this->skipIfFakeServer();
 
-        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $affiliate->delete();
 
-        $affiliateAfterSave = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliateAfterSave = $this->hoClient->get(Affiliate::class, $this->testId);
 
         isSame(Affiliate::STATUS_DELETED, $affiliateAfterSave->status);
     }
@@ -206,29 +199,29 @@ class AffiliateTest extends HasoffersPHPUnit
     {
         $this->skipIfFakeServer();
 
-        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $affiliate->block();
 
-        $affiliateAfterSave = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliateAfterSave = $this->hoClient->get(Affiliate::class, $this->testId);
         isSame(Affiliate::STATUS_BLOCKED, $affiliateAfterSave->status);
     }
 
     public function testCanUnblockAffiliate()
     {
-        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $affiliate->unblock();
 
         isSame(Affiliate::STATUS_ACTIVE, $affiliate->status);
 
-        $affiliateAfterSave = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliateAfterSave = $this->hoClient->get(Affiliate::class, $this->testId);
         isSame(Affiliate::STATUS_ACTIVE, $affiliateAfterSave->status);
     }
 
     public function testUpdateOnlyChangedFields()
     {
-        $randomValue = Str::random();
+        $randomValue = $this->faker->email;
 
-        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $affiliate->company = $randomValue;
         $affiliate->phone = $randomValue;
 
@@ -244,11 +237,11 @@ class AffiliateTest extends HasoffersPHPUnit
 
     public function testNoDataToUpdateIsNotError()
     {
-        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $affiliate->save();
 
         isSame([], $affiliate->getChangedFields());
-        is(1004, $affiliate->id);
+        is($this->testId, $affiliate->id);
     }
 
     public function testNoRequestOnEmptyDataSave()
@@ -259,7 +252,7 @@ class AffiliateTest extends HasoffersPHPUnit
             $eventChecker[] = end($args);
         });
 
-        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $affiliate->save();
 
         isSame([], $affiliate->getChangedFields());
@@ -274,7 +267,7 @@ class AffiliateTest extends HasoffersPHPUnit
             $eventChecker[] = end($args);
         });
 
-        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $affiliate->reload();
 
         isSame([], $affiliate->getChangedFields());
@@ -291,7 +284,7 @@ class AffiliateTest extends HasoffersPHPUnit
             $eventChecker[] = end($args);
         });
 
-        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $company = $affiliate->company;
         $affiliate->company = $company;
         isSame([], $affiliate->getChangedFields());
@@ -308,9 +301,9 @@ class AffiliateTest extends HasoffersPHPUnit
             $eventChecker[] = end($args);
         });
 
-        $newCompany = Str::random();
+        $newCompany = $this->faker->company;
 
-        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $affiliate->save(['company' => $newCompany]);
 
         isSame([
@@ -332,7 +325,7 @@ class AffiliateTest extends HasoffersPHPUnit
                 $eventChecker[] = end($args);
             });
 
-        $affiliate = $this->hoClient->get(Affiliate::class, 1004);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $affiliate->save(['company' => $affiliate->company]);
 
         isSame([

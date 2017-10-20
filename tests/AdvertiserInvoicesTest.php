@@ -24,6 +24,8 @@ use Unilead\HasOffers\Entity\AdvertiserUser;
  */
 class AdvertiserInvoicesTest extends HasoffersPHPUnit
 {
+    protected $testId = '2';
+
     public function testFindList()
     {
         /** @var AdvertiserInvoices $users */
@@ -31,12 +33,12 @@ class AdvertiserInvoicesTest extends HasoffersPHPUnit
         /** @var AdvertiserUser $user */
         $condition = [
             'filters' => [
-                'id' => 32
-            ]
+                'id' => $this->testId,
+            ],
         ];
-        $invoice = $invoices->find($condition)[32];
+        $invoice = $invoices->find($condition)[$this->testId];
 
-        isSame('32', $invoice->id);
-        isSame('502', $invoice->advertiser_id);
+        isSame($this->testId, $invoice->id);
+        isSame('500', $invoice->advertiser_id);
     }
 }

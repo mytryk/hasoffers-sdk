@@ -130,7 +130,39 @@ trait DataEntity
             unset($this->changedData['access']);
         }
 
-        return array_diff_assoc($this->changedData, $this->origData);
+        return $this->arrayRecursiveDiff($this->changedData, $this->origData);
+    }
+
+    /**
+     * @param array $source
+     * @param array $target
+     *
+     * @return array
+     */
+    private function arrayRecursiveDiff(array $source, array $target)
+    {
+        $differences = [];
+
+        foreach ($source as $sourceKey => $sourceValue) {
+            if (!array_key_exists($sourceKey, $target)) {
+                $differences[$sourceKey] = $sourceValue;
+                continue;
+            }
+
+            if (!is_array($sourceValue)) {
+                if ($sourceValue !== $target[$sourceKey]) {
+                    $differences[$sourceKey] = $sourceValue;
+                }
+                continue;
+            }
+
+            $aRecursiveDiff = $this->arrayRecursiveDiff($sourceValue, $target[$sourceKey]);
+            if (count($aRecursiveDiff)) {
+                $differences[$sourceKey] = $aRecursiveDiff;
+            }
+        }
+
+        return $differences;
     }
 
     /**

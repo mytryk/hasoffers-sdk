@@ -23,6 +23,8 @@ use Unilead\HasOffers\Entity\AdvertiserInvoice;
  */
 class AdvertiserInvoiceTest extends HasoffersPHPUnit
 {
+    protected $testId = '2';
+
     public function testCreatingAdvertiserInvoiceWays()
     {
         $invoice1 = $this->hoClient->get(AdvertiserInvoice::class); // recommended!
@@ -56,7 +58,7 @@ class AdvertiserInvoiceTest extends HasoffersPHPUnit
      */
     public function testCannotGetUndefinedProperty()
     {
-        $someId = 32;
+        $someId = $this->testId;
         /** @var AdvertiserInvoice $invoice */
         $invoice = $this->hoClient->get(AdvertiserInvoice::class, $someId);
         is($someId, $invoice->id);
@@ -66,20 +68,19 @@ class AdvertiserInvoiceTest extends HasoffersPHPUnit
 
     public function testCanGetAdvertiserInvoiceById()
     {
-        $someId = 32;
         /** @var AdvertiserInvoice $invoice */
-        $invoice = $this->hoClient->get(AdvertiserInvoice::class, $someId);
+        $invoice = $this->hoClient->get(AdvertiserInvoice::class, $this->testId);
 
-        is($someId, $invoice->id);
+        is($this->testId, $invoice->id);
     }
 
     public function testCanCreateAdvertiserInvoice()
     {
         /** @var AdvertiserInvoice $invoice */
         $invoice = $this->hoClient->get(AdvertiserInvoice::class);
-        $invoice->advertiser_id = 502;
-        $invoice->start_date = '2017-05-01';
-        $invoice->end_date = '2017-05-31';
+        $invoice->advertiser_id = '500';
+        $invoice->start_date = $this->faker->date();
+        $invoice->end_date = $this->faker->date();
         $invoice->save();
 
         /** @var AdvertiserInvoice $invoiceCheck */
@@ -88,14 +89,16 @@ class AdvertiserInvoiceTest extends HasoffersPHPUnit
         isSame($invoice->id, $invoiceCheck->id);
         isSame($invoice->start_date, $invoiceCheck->start_date);
         isSame($invoice->end_date, $invoiceCheck->end_date);
+
+        $invoice->delete(); // Clean up after test
     }
 
     public function testCanUpdateAdvertiserInvoice()
     {
         /** @var AdvertiserInvoice $invoice */
-        $invoice = $this->hoClient->get(AdvertiserInvoice::class, 32);
-        $invoice->currency = 'EUR';
-        $invoice->memo = 'test';
+        $invoice = $this->hoClient->get(AdvertiserInvoice::class, $this->testId);
+        $invoice->currency = $this->faker->currencyCode;
+        $invoice->memo = $this->faker->realText();
         $invoice->status = AdvertiserInvoice::STATUS_ACTIVE;
         $invoice->save();
 
@@ -109,7 +112,7 @@ class AdvertiserInvoiceTest extends HasoffersPHPUnit
 
     public function testCanDeleteAdvertiserInvoice()
     {
-        $invoiceId = 32;
+        $invoiceId = $this->testId;
         /** @var AdvertiserInvoice $invoiceReset */
         $invoiceReset = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
         if ($invoiceReset->status !== AdvertiserInvoice::STATUS_ACTIVE) {

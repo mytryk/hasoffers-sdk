@@ -24,6 +24,8 @@ use Unilead\HasOffers\Entity\AffiliateUser;
  */
 class AffiliateUserTest extends HasoffersPHPUnit
 {
+    protected $testId = '2';
+
     public function testCreatingAffiliateUserWays()
     {
         $affiliateUser1 = $this->hoClient->get(AffiliateUser::class); // recommended!
@@ -53,11 +55,10 @@ class AffiliateUserTest extends HasoffersPHPUnit
 
     public function testCanGetAffiliateUserById()
     {
-        $someId = '14';
         /** @var AffiliateUser $affiliateUser */
-        $affiliateUser = $this->hoClient->get(AffiliateUser::class, $someId);
+        $affiliateUser = $this->hoClient->get(AffiliateUser::class, $this->testId);
 
-        is($someId, $affiliateUser->id);
+        is($this->testId, $affiliateUser->id);
     }
 
     /**
@@ -76,10 +77,9 @@ class AffiliateUserTest extends HasoffersPHPUnit
      */
     public function testCannotGetUndefinedProperty()
     {
-        $someId = '14';
         /** @var AffiliateUser $affiliateUser */
-        $affiliateUser = $this->hoClient->get(AffiliateUser::class, $someId);
-        is($someId, $affiliateUser->id);
+        $affiliateUser = $this->hoClient->get(AffiliateUser::class, $this->testId);
+        is($this->testId, $affiliateUser->id);
 
         $affiliateUser->undefined_property;
     }
@@ -88,13 +88,13 @@ class AffiliateUserTest extends HasoffersPHPUnit
     {
         $this->skipIfFakeServer();
 
-        $password = Str::random(13);
-        $email = Str::random(10) . '@' . Str::random(5) . '.com';
+        $password = Str::random();
+        $email = $this->faker->email;
         /** @var AffiliateUser $affiliateUser */
         $affiliateUser = $this->hoClient->get(AffiliateUser::class);
         $affiliateUser->affiliate_id = '1004';
-        $affiliateUser->first_name = 'Test Company';
-        $affiliateUser->phone = '+7 845 845 84 54';
+        $affiliateUser->first_name = $this->faker->company;
+        $affiliateUser->phone = $this->faker->phoneNumber;
         $affiliateUser->email = $email;
         $affiliateUser->password = $password;
         $affiliateUser->password_confirmation = $password;
@@ -107,6 +107,8 @@ class AffiliateUserTest extends HasoffersPHPUnit
         isSame($affiliateUser->first_name, $affiliateCheck->first_name);
         isSame($affiliateUser->phone, $affiliateCheck->phone);
         isSame($affiliateUser->email, $affiliateCheck->email);
+
+        $affiliateUser->delete(); // Clean up after test
     }
 
     public function testCanUpdateAffiliateUser()
@@ -114,21 +116,21 @@ class AffiliateUserTest extends HasoffersPHPUnit
         $this->skipIfFakeServer();
 
         /** @var AffiliateUser $affiliateUserBeforeSave */
-        $affiliateUserBeforeSave = $this->hoClient->get(AffiliateUser::class, 14);
+        $affiliateUserBeforeSave = $this->hoClient->get(AffiliateUser::class, $this->testId);
 
         $beforeFirstName = $affiliateUserBeforeSave->first_name;
-        $affiliateUserBeforeSave->first_name = Str::random();
+        $affiliateUserBeforeSave->first_name = $this->faker->name();
         $affiliateUserBeforeSave->save();
 
         /** @var AffiliateUser $affiliateAfterSave */
-        $affiliateAfterSave = $this->hoClient->get(AffiliateUser::class, 14);
+        $affiliateAfterSave = $this->hoClient->get(AffiliateUser::class, $this->testId);
         isNotSame($beforeFirstName, $affiliateAfterSave->first_name);
     }
 
     public function testCanDeleteAffiliateUser()
     {
         /** @var AffiliateUser $affiliateUser */
-        $affiliateUser = $this->hoClient->get(AffiliateUser::class, 14);
+        $affiliateUser = $this->hoClient->get(AffiliateUser::class, $this->testId);
 
         $affiliateUser->delete();
 

@@ -14,8 +14,8 @@
 
 namespace Unilead\HasOffers\Entity;
 
+use Unilead\HasOffers\Contain\AdvertiserInvoiceItemList;
 use Unilead\HasOffers\Traits\Deleted;
-use Unilead\HasOffers\Contain\AdvertiserInvoiceItem;
 
 /* @noinspection ClassOverridesFieldOfSuperClassInspection */
 
@@ -38,8 +38,6 @@ use Unilead\HasOffers\Contain\AdvertiserInvoiceItem;
  * @property string $notes         Internal notes the Network can attach to this invoice
  * @property string $start_date    Start of date range; use "YYYY-MM-DD" format
  * @property string $status        The status of the invoice
- *
- * #@method  AdvertiserInvoiceItem getAdvertiserInvoiceItem()
  *
  * @package Unilead\HasOffers\Entity
  */
@@ -73,6 +71,16 @@ class AdvertiserInvoice extends AbstractEntity
      * @var array
      */
     protected $contain = [
-        'AdvertiserInvoiceItem' => AdvertiserInvoiceItem::class,
+        'AdvertiserInvoiceItem' => AdvertiserInvoiceItemList::class,
     ];
+
+    /**
+     * Just fix naming
+     *
+     * @return AdvertiserInvoiceItemList
+     */
+    public function getItemsList()
+    {
+        return $this->getAdvertiserInvoiceItem();
+    }
 }

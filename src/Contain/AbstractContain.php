@@ -37,6 +37,16 @@ abstract class AbstractContain
     protected $target = '';
 
     /**
+     * @var string
+     */
+    protected $triggerTarget = '';
+
+    /**
+     * @var array
+     */
+    protected $excludedKeys = [];
+
+    /**
      * AbstractContain constructor.
      *
      * @param array          $data
@@ -61,5 +71,25 @@ abstract class AbstractContain
     public function getParent()
     {
         return $this->parentEntity;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return mixed
+     */
+    protected function removeExcludedKeys($data)
+    {
+        if (empty($this->excludedKeys)) {
+            return $data;
+        }
+
+        foreach ($this->excludedKeys as $value) {
+            if (array_key_exists($value, $data)) {
+                unset($data[$value]);
+            }
+        }
+
+        return $data;
     }
 }

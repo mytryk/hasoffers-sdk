@@ -24,18 +24,20 @@ use Unilead\HasOffers\Entities\AffiliateUsers;
  */
 class AffiliateUsersTest extends HasoffersPHPUnit
 {
+    protected $testId = '8';
+
     public function testFindList()
     {
         /** @var AffiliateUsers $users */
         $users = $this->hoClient->get(AffiliateUsers::class);
         $list = $users->find([
             'filters' => [
-                'id' => 8,
+                'id' => $this->testId,
             ],
         ]);
 
         /** @var AffiliateUser $user */
-        $user = $list[8];
+        $user = $list[$this->testId];
 
         isSame('Jack', $user->first_name);
         isSame('Birdman', $user->last_name);
