@@ -111,6 +111,9 @@ class PaymentMethod extends AbstractContain
     const TYPE_PAYABILITY    = 'Payability';
     const TYPE_UNDEFINED     = 'Undefined';
 
+    /**
+     * @var array
+     */
     protected $fieldMap = [
         'all_types'     => [
             'affiliate_id',
@@ -271,27 +274,23 @@ class PaymentMethod extends AbstractContain
             return $this->mergeData($properties)->save();
         }
 
-        $changedData = $this->getChangedFields();
-        if (count($changedData) !== 0) {
-            $changedData = array_intersect_assoc(
-                $this->filterData($changedData),
-                $this->filterData($this->data()->getArrayCopy())
-            );
-        } else {
-            return false;
-        }
+        // TODO: Add suuport test testNoSaveByArgumentOnSetSameValues (Den)
+        $savedData = array_merge(
+            $this->filterData($this->getChangedFields()),
+            $this->filterData($this->data()->getArrayCopy())
+        );
 
-        $this->hoClient->trigger("{$this->target}.save.before", [$this, &$changedData]);
+        $this->hoClient->trigger("{$this->target}.save.before", [$this, &$savedData]);
 
         $result = $this->hoClient->apiRequest([
             'Target'       => $this->parentEntity->getTarget(),
             'Method'       => 'updatePaymentMethod' . $this->getType(),
             'affiliate_id' => $this->parentEntity->id,
-            'data'         => $changedData,
+            'data'         => $savedData,
         ]);
 
         if ($result->get('0', null, 'bool')) {
-            $newData = array_merge($this->data()->getArrayCopy(), $changedData);
+            $newData = array_merge($this->data()->getArrayCopy(), $savedData);
             $this->bindData($newData);
             $this->origData = $newData;
             $this->changedData = [];
@@ -317,13 +316,5 @@ class PaymentMethod extends AbstractContain
         );
 
         return array_merge($customeKeys, $generalKeys);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getChangedFields()
-    {
-        return $this->filterData(parent::getChangedFields());
     }
 }
