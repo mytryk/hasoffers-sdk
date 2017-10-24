@@ -122,6 +122,23 @@ class AffiliateUserTest extends HasoffersPHPUnit
         isSame(['first_name' => null], $affiliateUser->getChangedFields());
     }
 
+    /**
+     * @expectedException \Unilead\HasOffers\Exception
+     */
+    public function testUnsetUndefined()
+    {
+        $affiliateUser = $this->hoClient->get(AffiliateUser::class, $this->testId);
+
+        unset($affiliateUser->undefined);
+    }
+
+    public function testIsset()
+    {
+        $affiliate = $this->hoClient->get(AffiliateUser::class, $this->testId);
+        isTrue(isset($affiliate->first_name));
+        isFalse(isset($affiliate->undefined));
+    }
+
     public function testCanUpdateAffiliateUser()
     {
         $this->skipIfFakeServer();
