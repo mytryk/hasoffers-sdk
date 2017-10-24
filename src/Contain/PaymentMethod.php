@@ -318,4 +318,12 @@ class PaymentMethod extends AbstractContain
 
         return array_merge($customeKeys, $generalKeys);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getChangedFields()
+    {
+        return $this->filterData(parent::getChangedFields());
+    }
 }
