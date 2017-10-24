@@ -111,6 +111,98 @@ class PaymentMethod extends AbstractContain
     const TYPE_PAYABILITY    = 'Payability';
     const TYPE_UNDEFINED     = 'Undefined';
 
+    protected $fieldMap = [
+        'all_types'     => [
+            'affiliate_id',
+        ],
+        'check'         => [
+            'address1',
+            'address2',
+            'city',
+            'country',
+            'payable_to',
+            'region',
+            'zipcode',
+            'is_individual',
+        ],
+        'directdeposit' => [
+            'account_holder',
+            'account_number',
+            'bank_name',
+            'other_details',
+            'routing_number',
+        ],
+        'other'         => [
+            'details',
+        ],
+        'payoneer'      => [
+            'status',
+        ],
+        'paypal'        => [
+            'email',
+            'modified',
+        ],
+        'payquicker'    => [
+            'advanced_accounting_id',
+            'advanced_email',
+            'advanced_security_id',
+            'advanced_security_id_hint',
+            'm2eft_account_name',
+            'm2eft_account_number',
+            'm2eft_account_tax_number',
+            'm2eft_account_type',
+            'm2eft_account_type_code',
+            'm2eft_bank_address',
+            'm2eft_bank_name',
+            'm2eft_bank_number',
+            'm2eft_bic',
+            'm2eft_city',
+            'm2eft_description',
+            'm2eft_destination_country_code',
+            'm2eft_iban',
+            'm2eft_postal_code',
+            'm2eft_routing_number',
+            'm2m_accounting_id',
+            'm2m_security_id',
+            'm2m_security_id_hint',
+            'm2papercheck_address1',
+            'm2papercheck_address2',
+            'm2papercheck_address3',
+            'm2papercheck_address4',
+            'm2papercheck_check_memo',
+            'm2papercheck_city',
+            'm2papercheck_destination_country_code',
+            'm2papercheck_postal_code',
+            'm2papercheck_recipient_name',
+            'm2papercheck_region',
+            'm2papercheck_return_address1',
+            'm2papercheck_return_address2',
+            'm2papercheck_return_address3',
+            'm2papercheck_return_city',
+            'm2papercheck_return_country_code',
+            'm2papercheck_return_postal_code',
+            'm2papercheck_return_region',
+            'method',
+            'usach_account_number',
+            'usach_account_type',
+            'usach_first_name',
+            'usach_last_name',
+            'usach_routing_number',
+        ],
+        'wire'          => [
+            'account_number',
+            'bank_name',
+            'other_details',
+            'routing_number',
+            'beneficiary_name',
+        ],
+        'payability'    => [
+            'payability_affiliate_status',
+            'payability_deferred_payment_method',
+            'payability_network_status',
+        ],
+    ];
+
     /** @var string */
     protected $target = 'PaymentMethod';
 
@@ -179,7 +271,15 @@ class PaymentMethod extends AbstractContain
             return $this->mergeData($properties)->save();
         }
 
-        $changedData = $this->data()->getArrayCopy();
+        $changedData = $this->getChangedFields();
+        if (count($changedData) !== 0) {
+            $changedData = array_intersect_assoc(
+                $this->filterData($changedData),
+                $this->filterData($this->data()->getArrayCopy())
+            );
+        } else {
+            return false;
+        }
 
         $this->hoClient->trigger("{$this->target}.save.before", [$this, &$changedData]);
 
@@ -202,5 +302,20 @@ class PaymentMethod extends AbstractContain
         }
 
         return false;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    protected function filterData($data)
+    {
+        $generalKeys = array_intersect_key($data, array_flip($this->fieldMap['all_types']));
+
+        $customeKeys = array_intersect_key($data,
+            array_flip($this->fieldMap[$this->parentEntity->payment_method])
+        );
+
+        return array_merge($customeKeys, $generalKeys);
     }
 }

@@ -33,7 +33,7 @@
         <env name="HO_API_REQUEST_LIMIT" value="1"/>
         <env name="HO_API_REQUEST_TIMEOUT" value="1"/>
 
-        <env name="HO_FAKE_SERVER_URL" value="http://localhost:8888"/>
+        <env name="HO_FAKE_SERVER_URL" value="http://fake-server.ci.item8.io"/>
         <env name="HO_FAKE_SERVER_LEARNING" value="0"/>
     </php>
 
@@ -49,9 +49,4 @@
             <directory suffix=".php">src</directory>
         </whitelist>
     </filter>
-
-    <logging>
-        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
-    </logging>
-
 </phpunit>
