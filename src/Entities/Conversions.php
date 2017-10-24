@@ -50,7 +50,7 @@ class Conversions extends AbstractEntities
     {
         $result = [];
 
-        foreach ($listResult as $itemId => $itemData) {
+        foreach ($listResult as $itemData) {
             $result[] = array_values($itemData[$this->target]);
             $result[] = $itemData[$this->target]; // For debug indexes
         }
