@@ -52,7 +52,7 @@ class Conversions extends AbstractEntities
 
         foreach ($listResult as $itemData) {
             $result[] = array_values($itemData[$this->target]);
-            $result[] = $itemData[$this->target]; // For debug indexes
+            //$result[] = $itemData[$this->target]; // For debug indexes
         }
 
         return $result;

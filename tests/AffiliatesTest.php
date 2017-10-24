@@ -57,7 +57,7 @@ class AffiliatesTest extends HasoffersPHPUnit
         isNotEmpty($affiliate->address1);
 
         $paymentMethod = $affiliate->getPaymentMethod();
-        isSame(PaymentMethod::TYPE_PAYPAL, $paymentMethod->getType());
+        isNotEmpty($paymentMethod);
     }
 
     public function testCanGetAffiliateUser()
