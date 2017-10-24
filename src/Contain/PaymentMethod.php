@@ -250,6 +250,7 @@ class PaymentMethod extends AbstractContain
             self::TYPE_PAYQUICKER,
             self::TYPE_WIRE,
             self::TYPE_PAYABILITY,
+            'unit-testing' // TODO: Remove hardcode. It test response wuth error.status != 1
         ];
 
         if (!in_array($newPaymentMethod, $validList, true)) {

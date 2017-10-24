@@ -108,4 +108,37 @@ class HoClientTest extends HasoffersPHPUnit
             $this->hoClient->getLastResponse()->find('response.data.0.Preference.name')
         );
     }
+
+    /**
+     * @expectedException \Unilead\HasOffers\Exception
+     */
+    public function testUndefinedTarget()
+    {
+        $this->hoClient->apiRequest([
+            'Target' => 'Undefined',
+            'Method' => 'findAll',
+        ]);
+    }
+
+    /**
+     * @expectedExceptionMessage HasOffers Error: Unknown method: Undefined
+     */
+    public function testUndefinedMethod()
+    {
+        $this->hoClient->apiRequest([
+            'Target' => 'Preference',
+            'Method' => 'Undefined',
+        ]);
+    }
+
+    /**
+     * @expectedException \Unilead\HasOffers\Exception
+     */
+    public function testHasOffersError()
+    {
+        /** @var Affiliate $affiliate */
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
+        $paymentMethod = $affiliate->getPaymentMethod();
+        $paymentMethod->setType('unit-testing');
+    }
 }

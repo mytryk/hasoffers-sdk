@@ -99,9 +99,9 @@ class AdvertiserTest extends HasoffersPHPUnit
 
     public function testGetAdvertiserUser()
     {
-        /** @var Advertiser $affiliate */
-        $affiliate = $this->hoClient->get(Advertiser::class, $this->testId);
-        $users = $affiliate->getAdvertiserUser()->getList();
+        /** @var Advertiser $advertiser */
+        $advertiser = $this->hoClient->get(Advertiser::class, $this->testId);
+        $users = $advertiser->getAdvertiserUser()->getList();
 
         isSame('2', $users[0]['id']);
         isNotEmpty($users[0]['email']);
