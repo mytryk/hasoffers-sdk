@@ -121,7 +121,7 @@ class HoClientTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage HasOffers Error: Unknown method: Undefined
+     * @expectedException \Unilead\HasOffers\Exception
      */
     public function testUndefinedMethod()
     {

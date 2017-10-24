@@ -61,6 +61,18 @@ abstract class AbstractEntities
     ];
 
     /**
+     * @var array|null
+     */
+    protected $forceFileds;
+
+    /**
+     * @var array
+     */
+    protected $noCreateObject = [
+        'Conversion',
+    ];
+
+    /**
      * @param array $conditions
      * @return array
      */
@@ -77,7 +89,7 @@ abstract class AbstractEntities
         $apiRequest = [
             'Method'  => $this->methods['findAll'],
             'Target'  => $this->target,
-            'fields'  => $conditions->get('fields', [], 'arr'),
+            'fields'  => $this->forceFileds ?: $conditions->get('fields', [], 'arr'),
             'filters' => $conditions->get('filters', [], 'arr'),
             'sort'    => $conditions->get('sort', ['id' => 'desc'], 'arr'),
             'limit'   => $this->pageSize,
@@ -106,11 +118,7 @@ abstract class AbstractEntities
 
         $listResult = array_slice($listResult, 0, $limit, true);
 
-        $result = [];
-        $key = $this->targetAlias ?: $this->target;
-        foreach ($listResult as $itemId => $itemData) {
-            $result[$itemId] = $this->hoClient->get($this->className, $itemId, $itemData[$key], $itemData);
-        }
+        $result = $this->prepareResults($listResult);
 
         $this->hoClient->trigger("{$this->target}.find.after", [$this, &$result]);
 
@@ -144,5 +152,21 @@ abstract class AbstractEntities
     public function setPageSize($pageSize)
     {
         $this->pageSize = $pageSize;
+    }
+
+    /**
+     * @param array $listResult
+     * @return array
+     */
+    protected function prepareResults(array $listResult)
+    {
+        $result = [];
+        $key = $this->targetAlias ?: $this->target;
+
+        foreach ($listResult as $itemId => $itemData) {
+            $result[$itemId] = $this->hoClient->get($this->className, $itemId, $itemData[$key], $itemData);
+        }
+
+        return $result;
     }
 }
