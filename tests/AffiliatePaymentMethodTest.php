@@ -177,7 +177,7 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
 
     public function testNoSaveByArgumentOnSetSameValues()
     {
-        //skip('Don\'t support mode " no changes = no request to HO"');
+        //skip('Don\'t support mode "no changes = no request to HO"');
         $eventChecker = [];
         $this->eManager
             ->on('ho.paymentmethod.save.*', function () use (&$eventChecker) {

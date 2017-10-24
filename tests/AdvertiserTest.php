@@ -88,26 +88,23 @@ class AdvertiserTest extends HasoffersPHPUnit
 
     public function testGetAdvertiserSignUpAnswers()
     {
-        skip('TODO: Create valid in HO');
-
         /** @var Advertiser $advertiser */
         $advertiser = $this->hoClient->get(Advertiser::class, $this->testId);
         $answers = $advertiser->getAnswers();
 
-        isSame(2, count($answers));
-        isSame('What language do you speak?', $answers[1]['question']);
-        isSame('English', $answers[1]['answer']);
+        isSame(1, count($answers));
+        isSame('What language do you speak?', $answers[0]['question']);
+        isSame('English', $answers[0]['answer']);
     }
 
     public function testGetAdvertiserUser()
     {
-        skip('TODO: Create valid in HO');
         /** @var Advertiser $affiliate */
         $affiliate = $this->hoClient->get(Advertiser::class, $this->testId);
         $users = $affiliate->getAdvertiserUser()->getList();
 
-        isSame('10', $users[0]['id']);
-        isSame('ivan@test.com', $users[0]['email']);
+        isSame('2', $users[0]['id']);
+        isNotEmpty($users[0]['email']);
         isSame(AdvertiserUser::STATUS_ACTIVE, $users[0]['status']);
     }
 

@@ -147,7 +147,7 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
 
     public function testGetAffiliate()
     {
-        $this->markTestSkipped('Contain not ready yet');
+        skip('Contain not ready yet (Nik)');
         $affiliate = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
         $affiliate = $affiliate->getAffiliate();
 

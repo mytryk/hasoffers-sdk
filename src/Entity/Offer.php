@@ -319,7 +319,7 @@ class Offer extends AbstractEntity
     {
         return (Filter::float($this->monthly_conversion_cap) > 0 && Filter::float($this->max_payout) > 0)
             ? Filter::float($this->monthly_conversion_cap) * Filter::float($this->max_payout)
-            : 0;
+            : 0.0;
     }
 
     /**
@@ -339,7 +339,7 @@ class Offer extends AbstractEntity
     {
         return (Filter::float($this->monthly_revenue_cap) > 0 && Filter::float($this->max_payout) > 0)
             ? (Filter::float($this->monthly_revenue_cap) / Filter::float($this->max_payout))
-            : 0;
+            : 0.0;
     }
 
     /**
@@ -428,9 +428,13 @@ class Offer extends AbstractEntity
     {
         $countries = $this->getCountry()->data()->getArrayCopy();
 
-        return implode(';', array_reduce($countries, function ($acc, $item) {
+        $countrieCodes = array_reduce($countries, function ($acc, $item) {
             $acc[] = $item['code'];
             return $acc;
-        }, []));
+        }, []);
+
+        sort($countrieCodes);
+
+        return implode(';', $countrieCodes);
     }
 }
