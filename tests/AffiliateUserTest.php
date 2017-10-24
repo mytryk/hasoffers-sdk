@@ -111,6 +111,17 @@ class AffiliateUserTest extends HasoffersPHPUnit
         $affiliateUser->delete(); // Clean up after test
     }
 
+    public function testUnset()
+    {
+        $affiliateUser = $this->hoClient->get(AffiliateUser::class, $this->testId);
+
+        isTrue($affiliateUser->first_name);
+        unset($affiliateUser->first_name);
+        isNull($affiliateUser->first_name);
+
+        isSame(['first_name' => null], $affiliateUser->getChangedFields());
+    }
+
     public function testCanUpdateAffiliateUser()
     {
         $this->skipIfFakeServer();

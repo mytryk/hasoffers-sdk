@@ -56,6 +56,8 @@ class OfferTest extends HasoffersPHPUnit
         isSame('iOS', $offer->getRuleTargeting()[0]['Name']);
         isSame('iOS operating system', $offer->getRuleTargeting()[0]['Description']);
         isSame('iOS', $offer->getRuleTargeting()[0]['Platform']);
+        isSame('Tutorial', $offer->getDefaultGoal());
+        isSame('Other', $offer->getTrackingSystem());
 
         isTrue($offer->getGoal()->data()->getArrayCopy());
         $goals = $offer->getGoal()->data()->getArrayCopy();

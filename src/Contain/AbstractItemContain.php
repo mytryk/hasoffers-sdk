@@ -14,9 +14,6 @@
 
 namespace Unilead\HasOffers\Contain;
 
-use Unilead\HasOffers\Entity\AbstractEntity;
-use Unilead\HasOffers\Traits\DataContain;
-
 /**
  * Class AbstractContain
  *
