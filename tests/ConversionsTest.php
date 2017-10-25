@@ -50,6 +50,7 @@ class ConversionsTest extends HasoffersPHPUnit
 
     public function testLoad100kItems()
     {
+        skip('This test only for profiling');
         $limit = 50000;
         $pageSize = 50000;
 
