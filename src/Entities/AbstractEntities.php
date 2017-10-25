@@ -101,26 +101,28 @@ abstract class AbstractEntities
 
         /** @var Data $response */
         $response = $this->hoClient->apiRequest($apiRequest);
-        $listResult = $response->get('data', [], 'arr');
+        $firstPageResponse = $response->get('data', [], 'arr');
         $allPages = $response->get('pageCount', 0, 'int');
 
-        if ($allPages > 1 && count($listResult) < $limit) {
+        if ($allPages > 1 && count($firstPageResponse) < $limit) {
+            $result = $this->prepareResults($firstPageResponse);
+
             for ($requestedPage = 2; $requestedPage <= $allPages; $requestedPage++) {
                 $apiRequest['page'] = $requestedPage;
 
                 $response = $this->hoClient->apiRequest($apiRequest);
                 $listCurrentStep = $response->get('data', [], 'arr');
 
-                $listResult = array_merge($listResult, $this->prepareResults($listCurrentStep));
-                if (count($listResult) >= $limit) {
+                $result += $this->prepareResults($listCurrentStep);
+                if (count($result) >= $limit) {
                     break;
                 }
             }
         } else {
-            $listResult = $this->prepareResults($listResult);
+            $result = $this->prepareResults($firstPageResponse);
         }
 
-        $result = array_slice($listResult, 0, $limit, true);
+        $result = array_slice($result, 0, $limit, true); // Force limit
 
         $this->hoClient->trigger("{$this->target}.find.after", [$this, &$result]);
 

@@ -131,36 +131,22 @@ class HasOffersClient
      */
     public function apiRequest(array $requestParams, $returnOnlyData = true)
     {
-        $this->requestCounter++;
+        $this->sleepBeforeRequest();
 
-        if ($this->limitCounter > 0 &&
-            $this->timeout > 0 &&
-            $this->requestCounter % $this->limitCounter === 0
-        ) {
-            $isSleep = true;
-            $this->trigger('api.request.sleep.before', [$this, &$isSleep]);
-            if ($isSleep) {
-                sleep($this->timeout);
-            }
-            $this->trigger('api.request.sleep.after', [$this, $isSleep]);
-        }
+        $url = str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
+        $this->lastRequest = $requestParams;
+        $this->trigger('api.request.before', [$this, &$requestParams, &$url]);
 
-        $httpClientParams = [
-            'timeout'    => self::HTTP_TIMEOUT,
-            'verify'     => true,
-            'exceptions' => true,
-        ];
+        $requestParams = array_merge($requestParams, ['NetworkToken' => $this->networkToken]);
 
         try {
-            $httpClient = new HttpClient($httpClientParams);
+            $httpClientParams = [
+                'timeout'    => self::HTTP_TIMEOUT,
+                'verify'     => true,
+                'exceptions' => true,
+            ];
 
-            $url = str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
-            $this->lastRequest = $requestParams;
-            $this->trigger('api.request.before', [$this, &$requestParams, &$url]);
-
-            $requestParams = array_merge($requestParams, ['NetworkToken' => $this->networkToken]);
-
-            $response = $httpClient->request($url, $requestParams, 'get', $httpClientParams);
+            $response = (new HttpClient($httpClientParams))->request($url, $requestParams, 'get', $httpClientParams);
         } catch (\Exception $httpException) {
             throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);
         }
@@ -184,11 +170,15 @@ class HasOffersClient
             $errorMessage = $json->find('response.errorMessage');
             $details = $json->find('response.errors.0.err_msg') ?: $json->find('response.errors.publicMessage');
 
-            if ($details && $details !== $errorMessage) {
+            if ($details !== $errorMessage) {
                 throw new Exception('HasOffers Error (details): ' . $errorMessage . ' ' . $details);
-            } elseif ($errorMessage) {
+            }
+
+            if ($errorMessage) {
                 throw new Exception('HasOffers Error: ' . $errorMessage);
-            } elseif ($details) {
+            }
+
+            if ($details) {
                 throw new Exception('HasOffers Error: ' . $details);
             }
 
@@ -280,5 +270,22 @@ class HasOffersClient
     {
         $this->lastResponseSave = (bool)$mode;
         return $this;
+    }
+
+    protected function sleepBeforeRequest()
+    {
+        $this->requestCounter++;
+
+        if ($this->limitCounter > 0 &&
+            $this->timeout > 0 &&
+            $this->requestCounter % $this->limitCounter === 0
+        ) {
+            $isSleep = true;
+            $this->trigger('api.request.sleep.before', [$this, &$isSleep]);
+            if ($isSleep) {
+                sleep($this->timeout);
+            }
+            $this->trigger('api.request.sleep.after', [$this, $isSleep]);
+        }
     }
 }
