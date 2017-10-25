@@ -19,7 +19,8 @@
     },
     "require-dev"       : {
         "jbzoo/phpunit"     : "^2.0",
-        "unilead/codestyle" : "^1.2"
+        "unilead/codestyle" : "^1.2",
+        "jbzoo/profiler"    : "^1.0"
     },
     "repositories"      : {
         "unilead/codestyle" : {
