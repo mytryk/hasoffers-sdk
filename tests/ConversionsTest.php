@@ -66,7 +66,7 @@ class ConversionsTest extends HasoffersPHPUnit
         isSame($limit, count($list));
     }
 
-    public function testLoad100kItems()
+    public function testProfiling()
     {
         skip('This test only for profiling');
         $limit = 50000;
