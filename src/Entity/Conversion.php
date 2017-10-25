@@ -89,6 +89,12 @@ class Conversion
     const STATUS_PENDING  = 'pending';
     const STATUS_REJECTED = 'rejected';
 
+    const TYPE_CPA_FLAT       = 'cpa_flat';
+    const TYPE_CPA_PERCENTAGE = 'cpa_percentage';
+    const TYPE_CPA_BOTH       = 'cpa_both';
+    const TYPE_CPC            = 'cpc';
+    const TYPE_CPM            = 'cpm';
+
     // ATTENTION! See dump of findAll results to set this indexes
     const ID            = 0;
     const AFFILIATE_ID  = 1;

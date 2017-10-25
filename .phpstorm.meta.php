@@ -25,6 +25,7 @@ namespace PHPSTORM_META {
     use Unilead\HasOffers\Entities\AdvertiserUsers;
     use Unilead\HasOffers\Entities\AffiliateUsers;
     use Unilead\HasOffers\Entities\Offers;
+    use Unilead\HasOffers\Entities\Conversions;
 
     use Unilead\HasOffers\Entity\Advertiser;
     use Unilead\HasOffers\Entity\AdvertiserInvoice;
@@ -58,5 +59,6 @@ namespace PHPSTORM_META {
             Affiliates::class         => Affiliates::class,
             Employees::class          => Employees::class,
             Offers::class             => Offers::class,
+            Conversions::class        => Conversions::class,
         ]));
 }
