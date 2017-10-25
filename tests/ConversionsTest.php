@@ -48,6 +48,24 @@ class ConversionsTest extends HasoffersPHPUnit
         isSame('USD', $list[2][Conversion::CURRENCY]);
     }
 
+    public function testTryToLoad50k()
+    {
+        $limit = 50000;
+        $pageSize = 50000;
+
+        /** @var Conversions $offers */
+        $offers = $this->hoClient
+            ->setTimeout(0)
+            ->setRequestsLimit(0)
+            ->lastResponseMode(false)
+            ->get(Conversions::class)
+            ->setPageSize($pageSize);
+
+        $list = $offers->find(['sort' => ['id' => 'asc'], 'limit' => $limit]);
+
+        isSame($limit, count($list));
+    }
+
     public function testLoad100kItems()
     {
         skip('This test only for profiling');
@@ -69,11 +87,10 @@ class ConversionsTest extends HasoffersPHPUnit
             ->on('ho.*.*.*.*', $profiler)
             ->on('ho.*.*.*.*.*', $profiler)
             ->on('ho.*.*.*.*.*.*', $profiler)
-            ->on('ho.api.request.after',
-                function ($client, $json, $response, $requestParams, $url) use (&$cleanUrl) {
-                    $requestParams['NetworkToken'] = Env::get('HO_API_NETWORK_TOKEN');
-                    $cleanUrl = $url . '?' . http_build_query($requestParams);
-                });
+            ->on('ho.api.request.after', function ($client, $json, $response, $requestParams, $url) use (&$cleanUrl) {
+                $requestParams['NetworkToken'] = Env::get('HO_API_NETWORK_TOKEN');
+                $cleanUrl = $url . '?' . http_build_query($requestParams);
+            });
 
         /** @var Conversions $offers */
         $offers = $this->hoClient
