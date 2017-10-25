@@ -104,7 +104,7 @@ abstract class AbstractEntities
         $listResult = $response->get('data', [], 'arr');
         $allPages = $response->get('pageCount', 0, 'int');
 
-        if (count($listResult) < $limit) {
+        if ($allPages > 1 && count($listResult) < $limit) {
             for ($requestedPage = 2; $requestedPage <= $allPages; $requestedPage++) {
                 $apiRequest['page'] = $requestedPage;
 
