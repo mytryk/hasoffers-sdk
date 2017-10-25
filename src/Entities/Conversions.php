@@ -28,6 +28,8 @@ class Conversions extends AbstractEntities
      */
     protected $target = 'Conversion';
 
+    protected $pageSize = 100000;
+
     /**
      * @var string
      */
@@ -48,12 +50,16 @@ class Conversions extends AbstractEntities
      */
     protected function prepareResults(array $listResult)
     {
+        $this->hoClient->trigger("{$this->target}.find.prepare.before", [$this]);
+
         $result = [];
 
-        foreach ($listResult as $itemData) {
-            $result[] = array_values($itemData[$this->target]);
-            //$result[] = $itemData[$this->target]; // For debug indexes
+        foreach ($listResult as $itemId => $itemData) {
+            $result[$itemId] = array_values($itemData[$this->target]);
+            //$result[$itemId] = $itemData[$this->target]; // For debug indexes
         }
+
+        $this->hoClient->trigger("{$this->target}.find.prepare.after", [$this, &$result]);
 
         return $result;
     }

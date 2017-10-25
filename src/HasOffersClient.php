@@ -77,6 +77,11 @@ class HasOffersClient
     protected $lastResponse;
 
     /**
+     * @var bool
+     */
+    protected $lastResponseSave = true;
+
+    /**
      * HasOffersClient constructor.
      *
      * @param string $networkId
@@ -126,27 +131,27 @@ class HasOffersClient
      */
     public function apiRequest(array $requestParams, $returnOnlyData = true)
     {
-        try {
-            $this->requestCounter++;
+        $this->requestCounter++;
 
-            if ($this->limitCounter > 0 &&
-                $this->timeout > 0 &&
-                $this->requestCounter % $this->limitCounter === 0
-            ) {
-                $isSleep = true;
-                $this->trigger('api.request.sleep.before', [$this, &$isSleep]);
-                if ($isSleep) {
-                    sleep($this->timeout);
-                }
-                $this->trigger('api.request.sleep.after', [$this, $isSleep]);
+        if ($this->limitCounter > 0 &&
+            $this->timeout > 0 &&
+            $this->requestCounter % $this->limitCounter === 0
+        ) {
+            $isSleep = true;
+            $this->trigger('api.request.sleep.before', [$this, &$isSleep]);
+            if ($isSleep) {
+                sleep($this->timeout);
             }
+            $this->trigger('api.request.sleep.after', [$this, $isSleep]);
+        }
 
-            $httpClientParams = [
-                'timeout'    => self::HTTP_TIMEOUT,
-                'verify'     => true,
-                'exceptions' => true,
-            ];
+        $httpClientParams = [
+            'timeout'    => self::HTTP_TIMEOUT,
+            'verify'     => true,
+            'exceptions' => true,
+        ];
 
+        try {
             $httpClient = new HttpClient($httpClientParams);
 
             $url = str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
@@ -156,36 +161,38 @@ class HasOffersClient
             $requestParams = array_merge($requestParams, ['NetworkToken' => $this->networkToken]);
 
             $response = $httpClient->request($url, $requestParams, 'get', $httpClientParams);
-
-            // Prepare response
-            $json = $response->getJSON();
-            $data = $json->getArrayCopy();
-            $data['request']['NetworkToken'] = '*** hidden ***';
-            $json = json($data);
-
-            $this->lastResponse = $json;
-
-            $requestParams['NetworkToken'] = '*** hidden ***';
-            $this->trigger('api.request.after', [$this, $json, $response, $requestParams]);
-
-            $apiStatus = $json->find('response.status', null, 'int');
-            if ($apiStatus !== 1) {
-                $errorMessage = $json->find('response.errorMessage');
-                $details = $json->find('response.errors.0.err_msg')
-                    ?: $json->find('response.errors.0.publicMessage');
-
-                if ($details !== $errorMessage) {
-                    throw new Exception('HasOffers Error (details): ' . $errorMessage . ' ' . $details);
-                }
-
-                if ($errorMessage) {
-                    throw new Exception('HasOffers Error: ' . $errorMessage);
-                }
-
-                throw new Exception('HasOffers Error. Dump of response: ' . print_r($response, true));
-            }
         } catch (\Exception $httpException) {
             throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);
+        }
+
+        // Prepare response
+        $json = $response->getJSON();
+        $data = $json->getArrayCopy();
+        $data['request']['NetworkToken'] = '*** hidden ***';
+        $json = json($data);
+
+        $this->lastResponse = null;
+        if ($this->lastResponseSave) {
+            $this->lastResponse = $json;
+        }
+
+        $requestParams['NetworkToken'] = '*** hidden ***';
+        $this->trigger('api.request.after', [$this, $json, $response, $requestParams, $url]);
+
+        $apiStatus = $json->find('response.status', null, 'int');
+        if ($apiStatus !== 1) {
+            $errorMessage = $json->find('response.errorMessage');
+            $details = $json->find('response.errors.0.err_msg') ?: $json->find('response.errors.publicMessage');
+
+            if ($details && $details !== $errorMessage) {
+                throw new Exception('HasOffers Error (details): ' . $errorMessage . ' ' . $details);
+            } elseif ($errorMessage) {
+                throw new Exception('HasOffers Error: ' . $errorMessage);
+            } elseif ($details) {
+                throw new Exception('HasOffers Error: ' . $details);
+            }
+
+            throw new Exception('HasOffers Error. Dump of response: ' . print_r($response, true));
         }
 
         return $returnOnlyData ? json($json->find('response.data')) : json($json);
@@ -223,18 +230,22 @@ class HasOffersClient
 
     /**
      * @param int $limitCounter
+     * @return $this
      */
     public function setRequestsLimit($limitCounter)
     {
         $this->limitCounter = (int)$limitCounter;
+        return $this;
     }
 
     /**
      * @param int $seconds
+     * @return $this
      */
     public function setTimeout($seconds)
     {
         $this->timeout = (int)$seconds;
+        return $this;
     }
 
     /**
@@ -259,5 +270,15 @@ class HasOffersClient
     public function getLastResponse()
     {
         return json($this->lastResponse);
+    }
+
+    /**
+     * @param bool $mode
+     * @return $this
+     */
+    public function lastResponseMode($mode)
+    {
+        $this->lastResponseSave = (bool)$mode;
+        return $this;
     }
 }

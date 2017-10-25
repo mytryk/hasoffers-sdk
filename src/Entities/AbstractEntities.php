@@ -92,10 +92,12 @@ abstract class AbstractEntities
             'fields'  => $this->forceFileds ?: $conditions->get('fields', [], 'arr'),
             'filters' => $conditions->get('filters', [], 'arr'),
             'sort'    => $conditions->get('sort', ['id' => 'desc'], 'arr'),
-            'limit'   => $this->pageSize,
+            'limit'   => $this->pageSize > $limit ? $limit : $this->pageSize,
             'page'    => $currentPage,
             'contain' => $conditions->get('contain', array_keys($this->contain), 'arr'),
         ];
+
+        $this->hoClient->trigger("{$this->target}.find.request", [$this]);
 
         /** @var Data $response */
         $response = $this->hoClient->apiRequest($apiRequest);
@@ -109,16 +111,16 @@ abstract class AbstractEntities
                 $response = $this->hoClient->apiRequest($apiRequest);
                 $listCurrentStep = $response->get('data', [], 'arr');
 
-                $listResult += $listCurrentStep;
+                $listResult = array_merge($listResult, $this->prepareResults($listCurrentStep));
                 if (count($listResult) >= $limit) {
                     break;
                 }
             }
+        } else {
+            $listResult = $this->prepareResults($listResult);
         }
 
-        $listResult = array_slice($listResult, 0, $limit, true);
-
-        $result = $this->prepareResults($listResult);
+        $result = array_slice($listResult, 0, $limit, true);
 
         $this->hoClient->trigger("{$this->target}.find.after", [$this, &$result]);
 
@@ -148,10 +150,12 @@ abstract class AbstractEntities
 
     /**
      * @param int $pageSize
+     * @return $this
      */
     public function setPageSize($pageSize)
     {
         $this->pageSize = $pageSize;
+        return $this;
     }
 
     /**
@@ -160,12 +164,16 @@ abstract class AbstractEntities
      */
     protected function prepareResults(array $listResult)
     {
+        $this->hoClient->trigger("{$this->target}.find.prepare.before", [$this]);
+
         $result = [];
         $key = $this->targetAlias ?: $this->target;
 
         foreach ($listResult as $itemId => $itemData) {
             $result[$itemId] = $this->hoClient->get($this->className, $itemId, $itemData[$key], $itemData);
         }
+
+        $this->hoClient->trigger("{$this->target}.find.prepare.after", [$this, &$result]);
 
         return $result;
     }
