@@ -23,11 +23,16 @@ use Unilead\HasOffers\Entity\Conversion;
  */
 class Conversions extends AbstractEntities
 {
+    const DEFAULT_LIMIT = 100000;
+
     /**
      * @var string
      */
     protected $target = 'Conversion';
 
+    /**
+     * @var int
+     */
     protected $pageSize = 100000;
 
     /**
@@ -36,12 +41,29 @@ class Conversions extends AbstractEntities
     protected $className = Conversion::class;
 
     /**
+     * @var array
+     */
+    protected $defaultSort = [];
+
+    /**
      * @inheritdoc
      */
     public function __construct()
     {
         //parent::__construct();
-        $this->forceFileds = Conversion::$fields;
+        $this->defaultFields = Conversion::$fields;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function find(array $conditions = [])
+    {
+        $this->hoClient->lastResponseMode(false);
+        $result = parent::find($conditions);
+        $this->hoClient->lastResponseMode(true);
+
+        return $result;
     }
 
     /**

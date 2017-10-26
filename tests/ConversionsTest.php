@@ -14,6 +14,7 @@
 
 namespace JBZoo\PHPUnit;
 
+use JBZoo\HttpClient\Response;
 use JBZoo\Profiler\Benchmark;
 use JBZoo\Utils\Env;
 use Unilead\HasOffers\Entities\Conversions;
@@ -26,10 +27,21 @@ use Unilead\HasOffers\Entity\Conversion;
  */
 class ConversionsTest extends HasoffersPHPUnit
 {
+    /**
+     * @var Conversions
+     */
+    protected $conversions;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->conversions = $this->hoClient->get(Conversions::class);
+    }
+
     public function testFindList()
     {
-        $conversions = $this->hoClient->get(Conversions::class);
-        $list = $conversions->find([
+        $list = $this->conversions->find([
             'sort'  => ['id' => 'asc'],
             'limit' => 1,
         ]);
@@ -49,20 +61,36 @@ class ConversionsTest extends HasoffersPHPUnit
         isSame('USD', $list[2][Conversion::CURRENCY]);
     }
 
+    public function testLoadAllConversions()
+    {
+        $customLimit = 62160;
+
+        $this->eManager->on('ho.api.request.after', function ($client, $json, Response $response, $requestParams) {
+            $arrResp = $response->getJSON()->getArrayCopy();
+            $arrResp['response']['data']['data'] = count($arrResp['response']['data']['data']);
+            unset($arrResp['request']);
+
+            //dump($requestParams, 0);
+            dump($arrResp, 0, '$response');
+        });
+
+        $list = $this->conversions->find(['limit' => $customLimit]);
+
+        $count = count($list);
+
+        //isMore True($count !== 0);
+        isSame($customLimit, $count);
+        isTrue($count > 60000);
+    }
+
     public function testTryToLoad50k()
     {
         $limit = 50000;
         $pageSize = 50000;
 
-        /** @var Conversions $conversions */
-        $conversions = $this->hoClient
-            ->setTimeout(0)
-            ->setRequestsLimit(0)
-            ->lastResponseMode(false)
-            ->get(Conversions::class)
-            ->setPageSize($pageSize);
+        $this->conversions->setPageSize($pageSize);
 
-        $list = $conversions->find(['sort' => ['id' => 'asc'], 'limit' => $limit]);
+        $list = $this->conversions->find(['sort' => ['id' => 'asc'], 'limit' => $limit]);
 
         isSame($limit, count($list));
     }
@@ -93,17 +121,11 @@ class ConversionsTest extends HasoffersPHPUnit
                 $cleanUrl = $url . '?' . http_build_query($requestParams);
             });
 
-        /** @var Conversions $conversions */
-        $conversions = $this->hoClient
-            ->setTimeout(0)
-            ->setRequestsLimit(0)
-            ->lastResponseMode(false)
-            ->get(Conversions::class)
-            ->setPageSize($pageSize);
-
         \JBDump::log('start');
 
-        $list = $conversions->find(['sort' => ['id' => 'asc'], 'limit' => $limit]);
+        $list = $this->conversions
+            ->setPageSize($pageSize)
+            ->find(['sort' => ['id' => 'asc'], 'limit' => $limit]);
 
         isSame($limit, count($list));
 
@@ -136,28 +158,24 @@ class ConversionsTest extends HasoffersPHPUnit
         $limit = 10000;
         $pageSize = 10000;
 
-        /** @var Conversions $conversions */
-        $conversions = $this->hoClient
-            ->setTimeout(0)
-            ->setRequestsLimit(0)
-            ->lastResponseMode(false)
-            ->get(Conversions::class)
-            ->setPageSize($pageSize);
+        $this->conversions->setPageSize($pageSize);
 
         $cleanUrl = '';
-        $this->eManager
-            ->on('ho.api.request.after', function ($client, $json, $response, $requestParams, $url) use (&$cleanUrl) {
+        $this->eManager->on(
+            'ho.api.request.after',
+            function ($client, $json, $response, $requestParams, $url) use (&$cleanUrl) {
                 $requestParams['NetworkToken'] = Env::get('HO_API_NETWORK_TOKEN');
                 $cleanUrl = $url . '?' . http_build_query($requestParams);
-            });
+            }
+        );
 
         $sdkResult = [];
         $cleanResult = [];
 
         // Run it!
         Benchmark::compare([
-            'sdk'   => function () use ($conversions, $limit, &$sdkResult) {
-                $sdkResult = $conversions->find(['sort' => ['id' => 'asc'], 'limit' => $limit]);
+            'sdk'   => function () use ($limit, &$sdkResult) {
+                $sdkResult = $this->conversions->find(['sort' => ['id' => 'asc'], 'limit' => $limit]);
                 isSame($limit, count($sdkResult));
             },
             'clean' => function () use (&$cleanUrl, $limit, &$cleanResult) {

@@ -15,6 +15,7 @@
 namespace Unilead\HasOffers\Entities;
 
 use JBZoo\Data\Data;
+use function JBZoo\Data\json;
 use Unilead\HasOffers\HasOffersClient;
 
 /**
@@ -63,14 +64,18 @@ abstract class AbstractEntities
     /**
      * @var array|null
      */
-    protected $forceFileds;
+    protected $defaultFields;
+
+    /**
+     * @var array|null
+     */
+    protected $defaultSort = ['id' => 'desc'];
 
     /**
      * @var array
+     * @TODO: Move hardcode to child classes
      */
-    protected $noCreateObject = [
-        'Conversion',
-    ];
+    protected $noCreateObject = ['Conversion'];
 
     /**
      * @param array $conditions
@@ -80,49 +85,33 @@ abstract class AbstractEntities
     {
         $this->hoClient->trigger("{$this->target}.find.before", [$this, &$conditions]);
 
-        $conditions = new Data($conditions);
+        $conditionData = json($conditions);
+        $apiRequest = $this->buildApiRequest($conditionData);
 
-        $currentPage = 0;
+        $this->hoClient->trigger("{$this->target}.find.request", [$this, &$apiRequest]);
 
-        $limit = $conditions->get('limit', self::DEFAULT_LIMIT, 'int');
+        /** @var Data $firstResponse */
+        $firstResponse = $this->hoClient->apiRequest($apiRequest);
+        $firstPageResponse = $firstResponse->get('data', [], 'arr');
 
-        $apiRequest = [
-            'Method'  => $this->methods['findAll'],
-            'Target'  => $this->target,
-            'fields'  => $this->forceFileds ?: $conditions->get('fields', [], 'arr'),
-            'filters' => $conditions->get('filters', [], 'arr'),
-            'sort'    => $conditions->get('sort', ['id' => 'desc'], 'arr'),
-            'limit'   => $this->pageSize > $limit ? $limit : $this->pageSize,
-            'page'    => $currentPage,
-            'contain' => $conditions->get('contain', array_keys($this->contain), 'arr'),
-        ];
+        $pageCount = $firstResponse->get('pageCount', 0, 'int');
+        //$totalItemCount = $firstResponse->get('count', 0, 'int');
 
-        $this->hoClient->trigger("{$this->target}.find.request", [$this]);
-
-        /** @var Data $response */
-        $response = $this->hoClient->apiRequest($apiRequest);
-        $firstPageResponse = $response->get('data', [], 'arr');
-        $allPages = $response->get('pageCount', 0, 'int');
-
-        if ($allPages > 1 && count($firstPageResponse) < $limit) {
-            $result = $this->prepareResults($firstPageResponse);
-
-            for ($requestedPage = 2; $requestedPage <= $allPages; $requestedPage++) {
+        $result = $this->prepareResults($firstPageResponse);
+        if ($pageCount > 1) {
+            for ($requestedPage = 2; $requestedPage <= $pageCount; $requestedPage++) {
                 $apiRequest['page'] = $requestedPage;
 
-                $response = $this->hoClient->apiRequest($apiRequest);
-                $listCurrentStep = $response->get('data', [], 'arr');
+                $curStepResponse = $this->hoClient->apiRequest($apiRequest);
 
-                $result += $this->prepareResults($listCurrentStep);
-                if (count($result) >= $limit) {
-                    break;
-                }
+                $result += $this->prepareResults($curStepResponse->get('data', [], 'arr'));
+                unset($curStepResponse);
             }
-        } else {
-            $result = $this->prepareResults($firstPageResponse);
         }
 
-        $result = array_slice($result, 0, $limit, true); // Force limit
+        if ($limit = $this->getLimit($conditionData, false)) {
+            $result = array_slice($result, 0, $limit, true); // Force limit
+        }
 
         $this->hoClient->trigger("{$this->target}.find.after", [$this, &$result]);
 
@@ -161,6 +150,14 @@ abstract class AbstractEntities
     }
 
     /**
+     * @return int
+     */
+    public function getPageSize()
+    {
+        return (int)$this->pageSize;
+    }
+
+    /**
      * @param array $listResult
      * @return array
      */
@@ -178,5 +175,42 @@ abstract class AbstractEntities
         $this->hoClient->trigger("{$this->target}.find.prepare.after", [$this, &$result]);
 
         return $result;
+    }
+
+    /**
+     * @param Data $conditions
+     * @return array
+     */
+    protected function buildApiRequest(Data $conditions)
+    {
+        $apiRequest = [
+            'Method'  => $this->methods['findAll'],
+            'Target'  => $this->target,
+            'fields'  => $conditions->get('fields', $this->defaultFields, 'arr'),
+            'filters' => $conditions->get('filters', [], 'arr'),
+            'sort'    => $conditions->get('sort', $this->defaultSort, 'arr'),
+            'contain' => $conditions->get('contain', array_keys($this->contain), 'arr'),
+        ];
+
+        if ($limit = $this->getLimit($conditions, true)) {
+            $apiRequest['limit'] = $limit;
+            $apiRequest['page'] = 1;
+        }
+
+        return $apiRequest;
+    }
+
+    /**
+     * @param Data $conditions
+     * @param bool $getDefault
+     * @return int
+     */
+    protected function getLimit(Data $conditions, $getDefault)
+    {
+        if ($getDefault) {
+            return $conditions->get('limit', self::DEFAULT_LIMIT, 'int');
+        }
+
+        return $conditions->get('limit', 0, 'int');
     }
 }
