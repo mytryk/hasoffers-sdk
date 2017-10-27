@@ -58,7 +58,7 @@ class Conversions extends AbstractEntities
      * @param array $listResult
      * @return array
      */
-    protected function prepareResults(array $listResult)
+    protected function prepareResults($listResult)
     {
         $this->hoClient->trigger("{$this->target}.find.prepare.before", [$this]);
 

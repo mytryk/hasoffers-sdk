@@ -36,6 +36,7 @@ class AdvertiserInvoicesTest extends HasoffersPHPUnit
                 'id' => $this->testId,
             ],
         ];
+
         $invoice = $invoices->find($condition)[$this->testId];
 
         isSame($this->testId, $invoice->id);

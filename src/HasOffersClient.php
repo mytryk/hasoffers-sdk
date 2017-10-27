@@ -145,6 +145,11 @@ class HasOffersClient
             ];
             $requestParams = array_merge($requestParams, ['NetworkToken' => $this->networkToken]);
 
+            // Fix limits
+            if (isset($requestParams['limit']) && (int)$requestParams['limit'] === 0) {
+                unset($requestParams['limit']);
+            }
+
             $response = (new HttpClient($httpClientParams))->request($url, $requestParams, 'get', $httpClientParams);
         } catch (\Exception $httpException) {
             throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);
