@@ -28,7 +28,7 @@ use Unilead\HasOffers\Entity\AbstractEntity;
  */
 class HasOffersClient
 {
-    const HTTP_TIMEOUT    = 30;
+    const HTTP_TIMEOUT    = 180;
     const DEFAULT_API_URL = 'https://__NETWORK_ID__.api.hasoffers.com/Apiv3/json';
 
     /**
@@ -133,7 +133,7 @@ class HasOffersClient
     {
         $this->sleepBeforeRequest();
 
-        $url = str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
+        $url = $this->getApiUrl();
         $this->lastRequest = $requestParams;
         $this->trigger('api.request.before', [$this, &$requestParams, &$url]);
 
@@ -155,12 +155,9 @@ class HasOffersClient
         $json = $response->getJSON();
         $data = $json->getArrayCopy();
         $data['request']['NetworkToken'] = '*** hidden ***';
-        $json = json($data);
 
-        $this->lastResponse = null;
-        if ($this->lastResponseSave) {
-            $this->lastResponse = $json;
-        }
+        $this->saveLastResponse($data);
+        $json = json($data);
 
         $requestParams['NetworkToken'] = '*** hidden ***';
         $this->trigger('api.request.after', [$this, $json, $response, $requestParams, $url]);
@@ -286,6 +283,25 @@ class HasOffersClient
                 sleep($this->timeout);
             }
             $this->trigger('api.request.sleep.after', [$this, $isSleep]);
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiUrl()
+    {
+        return str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
+    }
+
+    /**
+     * @param array $json
+     */
+    protected function saveLastResponse($json)
+    {
+        $this->lastResponse = null;
+        if ($this->lastResponseSave) {
+            $this->lastResponse = $json;
         }
     }
 }

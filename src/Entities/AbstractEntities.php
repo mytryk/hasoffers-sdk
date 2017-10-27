@@ -86,6 +86,7 @@ abstract class AbstractEntities
         $this->hoClient->trigger("{$this->target}.find.before", [$this, &$conditions]);
 
         $conditionData = json($conditions);
+        $limit = $this->getLimit($conditionData, false);
         $apiRequest = $this->buildApiRequest($conditionData);
 
         $this->hoClient->trigger("{$this->target}.find.request", [$this, &$apiRequest]);
@@ -98,7 +99,10 @@ abstract class AbstractEntities
         //$totalItemCount = $firstResponse->get('count', 0, 'int');
 
         $result = $this->prepareResults($firstPageResponse);
-        if ($pageCount > 1) {
+        if (
+            $pageCount > 1 &&
+            ($limit > 0 && count($firstPageResponse) < $limit)
+        ) {
             for ($requestedPage = 2; $requestedPage <= $pageCount; $requestedPage++) {
                 $apiRequest['page'] = $requestedPage;
 
@@ -109,7 +113,7 @@ abstract class AbstractEntities
             }
         }
 
-        if ($limit = $this->getLimit($conditionData, false)) {
+        if ($limit) {
             $result = array_slice($result, 0, $limit, true); // Force limit
         }
 
