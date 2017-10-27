@@ -37,7 +37,7 @@ class ConversionsTest extends HasoffersPHPUnit
         $this->conversions = $this->hoClient->get(Conversions::class);
     }
 
-    public function testFindList()
+    public function testFindOneRow()
     {
         $list = $this->conversions->find([
             'sort'  => ['id' => 'asc'],
