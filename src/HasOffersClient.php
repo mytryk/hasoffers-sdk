@@ -255,7 +255,7 @@ class HasOffersClient
      */
     public function getLastResponse()
     {
-        return json($this->lastResponse);
+        return $this->lastResponse ? json($this->lastResponse) : null;
     }
 
     /**

@@ -174,16 +174,25 @@ abstract class AbstractEntities
      */
     public function setPageSize($pageSize)
     {
-        $this->pageSize = $pageSize;
+        $this->pageSize = (int)$pageSize;
         return $this;
     }
 
     /**
+     * @param int $limit
      * @return int
      */
-    public function getPageSize()
+    public function getPageSize($limit = 0)
     {
-        return (int)$this->pageSize;
+        if ($limit === 0) {
+            return $this->pageSize;
+        }
+
+        if ($limit < $this->pageSize) {
+            return $limit;
+        }
+
+        return $this->pageSize;
     }
 
     /**
