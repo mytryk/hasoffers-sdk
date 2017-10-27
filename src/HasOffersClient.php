@@ -171,16 +171,16 @@ class HasOffersClient
             $errorMessage = $json->find('response.errorMessage');
             $details = $json->find('response.errors.0.err_msg') ?: $json->find('response.errors.publicMessage');
 
-            if ($details !== $errorMessage) {
+            if ($details && $errorMessage && $details !== $errorMessage) {
                 throw new Exception('HasOffers Error (details): ' . $errorMessage . ' ' . $details);
             }
 
             if ($errorMessage) {
-                throw new Exception('HasOffers Error: ' . $errorMessage);
+                throw new Exception('HasOffers Error Message: ' . $errorMessage);
             }
 
             if ($details) {
-                throw new Exception('HasOffers Error: ' . $details);
+                throw new Exception('HasOffers Error Details: ' . $details);
             }
 
             throw new Exception('HasOffers Error. Dump of response: ' . print_r($response, true));

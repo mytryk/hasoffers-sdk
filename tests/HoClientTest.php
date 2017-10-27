@@ -141,4 +141,12 @@ class HoClientTest extends HasoffersPHPUnit
         $paymentMethod = $affiliate->getPaymentMethod();
         $paymentMethod->setType('unit-testing');
     }
+
+    /**
+     * @expectedException \Unilead\HasOffers\Exception
+     */
+    public function testUndefinedClass()
+    {
+        $this->hoClient->get('Undefined');
+    }
 }
