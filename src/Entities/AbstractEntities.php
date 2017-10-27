@@ -94,8 +94,7 @@ abstract class AbstractEntities
         $pageCount = $firstPageResponse->get('pageCount', 0, 'int');
         $result = $this->prepareResults($firstPageResponse->get('data', [], 'arr'));
 
-        if (
-            $pageCount > 1 &&
+        if ($pageCount > 1 &&
             ($realLimit > 0 && count($result) < $realLimit)
         ) {
             for ($requestedPage = 2; $requestedPage < $pageCount; $requestedPage++) {
