@@ -39,10 +39,22 @@ class ConversionsTest extends HasoffersPHPUnit
 
     public function testFindOneRow()
     {
+        $requestCounter = 0;
+
+        $this->eManager->on(
+            'ho.api.request.after',
+            function ($hoClient, $realResp, $response, $requestParams) use (&$requestCounter) {
+                isSame(1, $requestParams['limit']);
+                $requestCounter++;
+            }
+        );
+
         $list = $this->conversions->find([
             'sort'  => ['id' => 'asc'],
             'limit' => 1,
         ]);
+
+        isSame(1, $requestCounter);
 
         isSame('2', $list[2][Conversion::ID]);
         isSame('2', $list[2][Conversion::AFFILIATE_ID]);
@@ -78,9 +90,13 @@ class ConversionsTest extends HasoffersPHPUnit
         $expectedRequestCount = (int)ceil($customLimit / $customPageSize);
 
         $requestCounter = 0;
-        $this->eManager->on('ho.api.request.after', function () use (&$requestCounter) {
-            $requestCounter++;
-        });
+        $this->eManager->on(
+            'ho.api.request.after',
+            function ($hoClient, $realResp, $response, $requestParams) use (&$requestCounter, $customPageSize) {
+                isSame($customPageSize, $requestParams['limit']);
+                $requestCounter++;
+            }
+        );
 
         $list = $this->conversions
             ->setPageSize($customPageSize)
@@ -93,7 +109,7 @@ class ConversionsTest extends HasoffersPHPUnit
     public function testTryToLoadUnlimit()
     {
         $list = $this->conversions->find([
-            'fields' => ['id']
+            'fields' => ['id'],
         ]);
         isTrue(62165 >= count($list));
     }

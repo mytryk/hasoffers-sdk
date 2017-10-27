@@ -230,7 +230,7 @@ abstract class AbstractEntities
             'filters' => $conditionsData->get('filters', [], 'arr'),
             'sort'    => $conditionsData->get('sort', $this->defaultSort, 'arr'),
             'contain' => $conditionsData->get('contain', array_keys($this->contain), 'arr'),
-            'limit'   => $this->getPageSize(),
+            'limit'   => $this->getRealLimit($conditions),
         ];
 
         return $apiRequest;
