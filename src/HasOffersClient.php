@@ -137,14 +137,13 @@ class HasOffersClient
         $this->lastRequest = $requestParams;
         $this->trigger('api.request.before', [$this, &$requestParams, &$url]);
 
-        $requestParams = array_merge($requestParams, ['NetworkToken' => $this->networkToken]);
-
         try {
             $httpClientParams = [
                 'timeout'    => self::HTTP_TIMEOUT,
                 'verify'     => true,
                 'exceptions' => true,
             ];
+            $requestParams = array_merge($requestParams, ['NetworkToken' => $this->networkToken]);
 
             $response = (new HttpClient($httpClientParams))->request($url, $requestParams, 'get', $httpClientParams);
         } catch (\Exception $httpException) {

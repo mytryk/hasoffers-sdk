@@ -55,18 +55,6 @@ class Conversions extends AbstractEntities
     }
 
     /**
-     * @inheritdoc
-     */
-    public function find(array $conditions = [])
-    {
-        $this->hoClient->lastResponseMode(false);
-        $result = parent::find($conditions);
-        $this->hoClient->lastResponseMode(true);
-
-        return $result;
-    }
-
-    /**
      * @param array $listResult
      * @return array
      */
@@ -75,7 +63,6 @@ class Conversions extends AbstractEntities
         $this->hoClient->trigger("{$this->target}.find.prepare.before", [$this]);
 
         $result = [];
-
         foreach ($listResult as $itemId => $itemData) {
             $result[$itemId] = array_values($itemData[$this->target]);
             //$result[$itemId] = $itemData[$this->target]; // For debug indexes

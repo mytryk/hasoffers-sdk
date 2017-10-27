@@ -14,7 +14,6 @@
 
 namespace JBZoo\PHPUnit;
 
-use JBZoo\HttpClient\Response;
 use JBZoo\Profiler\Benchmark;
 use JBZoo\Utils\Env;
 use Unilead\HasOffers\Entities\Conversions;
@@ -35,7 +34,6 @@ class ConversionsTest extends HasoffersPHPUnit
     public function setUp()
     {
         parent::setUp();
-
         $this->conversions = $this->hoClient->get(Conversions::class);
     }
 
@@ -59,40 +57,51 @@ class ConversionsTest extends HasoffersPHPUnit
         isSame('cpa_flat', $list[2][Conversion::PAYOUT_TYPE]);
         isSame('cpa_flat', $list[2][Conversion::REVENUE_TYPE]);
         isSame('USD', $list[2][Conversion::CURRENCY]);
+
+        isNull($this->hoClient->getLastResponse());
     }
 
-    public function testLoadAllConversions()
+    public function testLoadConversionsByLimit()
     {
         $customLimit = 62160;
 
-        $this->eManager->on('ho.api.request.after', function ($client, $json, Response $response, $requestParams) {
-            $arrResp = $response->getJSON()->getArrayCopy();
-            $arrResp['response']['data']['data'] = count($arrResp['response']['data']['data']);
-            unset($arrResp['request']);
-
-            //dump($requestParams, 0);
-            dump($arrResp, 0, '$response');
-        });
-
+        isSame(100000, $this->conversions->getPageSize());
         $list = $this->conversions->find(['limit' => $customLimit]);
 
-        $count = count($list);
-
-        //isMore True($count !== 0);
-        isSame($customLimit, $count);
-        isTrue($count > 60000);
+        isSame($customLimit, count($list));
     }
 
-    public function testTryToLoad50k()
+    public function testLoadByLimitWithPageSize()
     {
-        $limit = 50000;
-        $pageSize = 50000;
+        $customLimit = 49999;
+        $customPageSize = 20000;
+        $expectedRequestCount = (int)ceil($customLimit / $customPageSize);
 
-        $this->conversions->setPageSize($pageSize);
+        $requestCounter = 0;
+        $this->eManager->on('ho.api.request.after', function () use (&$requestCounter) {
+            $requestCounter++;
+        });
 
-        $list = $this->conversions->find(['sort' => ['id' => 'asc'], 'limit' => $limit]);
+        $list = $this->conversions
+            ->setPageSize($customPageSize)
+            ->find(['limit' => $customLimit]);
 
-        isSame($limit, count($list));
+        isSame($customLimit, count($list));
+        isSame($expectedRequestCount, $requestCounter);
+    }
+
+    public function testTryToLoadUnlimit()
+    {
+        $list = $this->conversions->find([
+            'fields' => ['id']
+        ]);
+        isTrue(62165 >= count($list));
+    }
+
+    public function testCount()
+    {
+        $count = $this->conversions->count();
+        isTrue(62165 >= $count);
     }
 
     public function testProfiling()
