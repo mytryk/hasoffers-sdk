@@ -90,8 +90,8 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
     public function testCanUpdateInvoiceItem()
     {
         $billId = $this->testId;
-        $randActions = $this->faker->randomNumber();
-        $randAmount = $this->faker->randomNumber();
+        $randActions = $this->faker->randomNumber(2);
+        $randAmount = $this->faker->randomNumber(2);
         $memo = $this->faker->text(20);
         $type = 'stats';
 

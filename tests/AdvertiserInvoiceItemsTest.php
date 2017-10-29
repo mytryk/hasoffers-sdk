@@ -86,8 +86,8 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
 
     public function testCanUpdateInvoiceItem()
     {
-        $randActions = random_int(1, 500);
-        $randAmount = random_int(1, 500);
+        $randActions = $this->faker->randomNumber(2);
+        $randAmount = $this->faker->randomNumber(2);
         $memo = $this->faker->text();
         $type = 'stats';
 
