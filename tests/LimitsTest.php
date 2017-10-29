@@ -119,6 +119,44 @@ class LimitsTest extends HasoffersPHPUnit
         isTrue(62165 >= count($list));
     }
 
+    public function testTryToLoadLessPageSize()
+    {
+        $requestCounter = 0;
+        $this->eManager->on(
+            'ho.api.request.after',
+            function ($hoClient, $realResp, $response, $requestParams) use (&$requestCounter) {
+                isSame(50, $requestParams['limit']);
+                $requestCounter++;
+            }
+        );
+
+        $list = $this->conversions
+            ->setPageSize(100)
+            ->find(['limit' => 50]);
+
+        isSame(1, $requestCounter);
+        isSame(50, count($list));
+    }
+
+    public function testTryToLoadPageSizeEqLimit()
+    {
+        $requestCounter = 0;
+        $this->eManager->on(
+            'ho.api.request.after',
+            function ($hoClient, $realResp, $response, $requestParams) use (&$requestCounter) {
+                isSame(11, $requestParams['limit']);
+                $requestCounter++;
+            }
+        );
+
+        $list = $this->conversions
+            ->setPageSize(11)
+            ->find(['limit' => 11]);
+
+        isSame(1, $requestCounter);
+        isSame(11, count($list));
+    }
+
     public function testCount()
     {
         $count = $this->conversions->count();

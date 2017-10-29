@@ -45,7 +45,6 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
 
     public function testGetAffiliatePaymentMethodType()
     {
-//        skip('Too often failed');
         $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $paymentMethod = $affiliate->getPaymentMethod();
 
@@ -147,6 +146,35 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
         $paymentMethod = $affiliate->getPaymentMethod();
 
         isSame($paymentMethod->getParent(), $affiliate);
+    }
+
+    public function testUnsetProp()
+    {
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
+        $paymentMethod = $affiliate->getPaymentMethod();
+        $paymentMethod->setType(PaymentMethod::TYPE_PAYPAL);
+        $paymentMethod->save([
+            'email' => $this->faker->email,
+        ]);
+
+        unset($paymentMethod->email);
+        isNull($paymentMethod->email);
+        isSame(['email' => null], $paymentMethod->getChangedFields());
+    }
+
+    public function testBindExcludedProps()
+    {
+        $newEmail = $this->faker->email;
+
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
+        $paymentMethod = $affiliate->getPaymentMethod();
+        $paymentMethod->bindData([
+            'id'    => 123,
+            '_prop' => 123,
+            'email' => $newEmail,
+        ]);
+
+        isSame(['email' => $newEmail], $paymentMethod->getChangedFields());
     }
 
     public function testSaveByArgument()

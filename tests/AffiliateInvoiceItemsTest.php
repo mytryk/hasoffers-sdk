@@ -46,6 +46,10 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         $affInvoiceItem->payout_type = AffiliateInvoiceItem::PAYOUT_TYPE_CPA_FLAT;
         $affInvoiceItem->save();
 
+        $affInvoiceItemsResultSet->findById($affInvoiceItem->id);
+
+        $affInvoiceItemsResultSet->reload();
+
         $item = $affInvoiceItemsResultSet->findById($affInvoiceItem->id);
 
         isNotSame(false, $item);
@@ -53,7 +57,7 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         isSame($memo, $item->memo);
         isSame($type, $item->type);
 
-        //$affInvoiceItem->delete(); // Clean up after test
+        $affInvoiceItem->delete(); // Clean up after test
     }
 
     public function testCanGetItemsByInvoiceId()

@@ -45,6 +45,9 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $invoiceItem->revenue_type = AdvertiserInvoiceItem::REVENUE_TYPE_CPA_FLAT;
         $invoiceItem->save();
 
+        $invoice->getItemsList()->findById($invoiceItem->id);
+
+        $invoiceItem->reload();
         $item = $invoice->getItemsList()->findById($invoiceItem->id);
 
         isNotSame(false, $item);
@@ -52,7 +55,7 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         isSame($memo, $item->memo);
         isSame($type, $item->type);
 
-        //$invoiceItem->delete(); // Clean up after test
+        $invoiceItem->delete(); // Clean up after test
     }
 
     public function testCanGetItemsByInvoiceId()

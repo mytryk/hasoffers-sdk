@@ -312,7 +312,8 @@ class PaymentMethod extends AbstractContain
     {
         $generalKeys = array_intersect_key($data, array_flip($this->fieldMap['all_types']));
 
-        $customeKeys = array_intersect_key($data,
+        $customeKeys = array_intersect_key(
+            $data,
             array_flip($this->fieldMap[$this->parentEntity->payment_method])
         );
 
