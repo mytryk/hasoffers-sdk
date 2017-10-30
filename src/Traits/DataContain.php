@@ -64,9 +64,8 @@ trait DataContain
     public function bindData(array $newData)
     {
         $this->hoClient->trigger("{$this->target}.bind.before", [$this, &$newData, &$this->changedData]);
-dump($newData, 0);
+
         foreach (array_keys($newData) as $key) {
-            dump($key);
             if ('id' === $key && 0 === strpos($key, '_')) {
                 unset($newData[$key]);
             }
