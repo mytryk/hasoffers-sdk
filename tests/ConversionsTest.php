@@ -39,13 +39,10 @@ class ConversionsTest extends HasoffersPHPUnit
 
     public function testFindOneRow()
     {
-        $requestCounter = 0;
-
         $this->eManager->on(
             'ho.api.request.after',
-            function ($hoClient, $realResp, $response, $requestParams) use (&$requestCounter) {
+            function ($hoClient, $realResp, $response, $requestParams) {
                 isSame(1, $requestParams['limit']);
-                $requestCounter++;
             }
         );
 
@@ -54,7 +51,7 @@ class ConversionsTest extends HasoffersPHPUnit
             'limit' => 1,
         ]);
 
-        isSame(1, $requestCounter);
+        isSame(1, $this->hoClient->getRequestCounter());
 
         isSame('2', $list[2][Conversion::ID]);
         isSame('2', $list[2][Conversion::AFFILIATE_ID]);

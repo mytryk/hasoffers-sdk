@@ -85,7 +85,7 @@ trait DataContain
      */
     public function mergeData(array $data)
     {
-        $this->bindData(array_merge($this->origData, (array)$data));
+        $this->bindData(array_merge($this->origData, $data));
 
         return $this;
     }

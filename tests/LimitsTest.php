@@ -39,13 +39,10 @@ class LimitsTest extends HasoffersPHPUnit
 
     public function testFindOneRow()
     {
-        $requestCounter = 0;
-
         $this->eManager->on(
             'ho.api.request.after',
-            function ($hoClient, $realResp, $response, $requestParams) use (&$requestCounter) {
+            function ($hoClient, $realResp, $response, $requestParams) {
                 isSame(1, $requestParams['limit']);
-                $requestCounter++;
             }
         );
 
@@ -54,26 +51,23 @@ class LimitsTest extends HasoffersPHPUnit
             'limit' => 1,
         ]);
 
-        isSame(1, $requestCounter);
+        isSame(1, $this->hoClient->getRequestCounter());
         isSame('2', $list[2][Conversion::ID]);
         isNull($this->hoClient->getLastResponse());
     }
 
     public function testFindOneRowById()
     {
-        $requestCounter = 0;
-
         $this->eManager->on(
             'ho.api.request.after',
-            function ($hoClient, $realResp, $response, $requestParams) use (&$requestCounter) {
+            function ($hoClient, $realResp, $response, $requestParams) {
                 isSame(100000, $requestParams['limit']);
-                $requestCounter++;
             }
         );
 
         $list = $this->conversions->find(['filters' => ['id' => 2]]);
 
-        isSame(1, $requestCounter);
+        isSame(1, $this->hoClient->getRequestCounter());
         isSame('2', $list[2][Conversion::ID]);
         isSame(1, count($list));
     }
@@ -94,12 +88,10 @@ class LimitsTest extends HasoffersPHPUnit
         $customPageSize = 20000;
         $expectedRequestCount = (int)ceil($customLimit / $customPageSize);
 
-        $requestCounter = 0;
         $this->eManager->on(
             'ho.api.request.after',
-            function ($hoClient, $realResp, $response, $requestParams) use (&$requestCounter, $customPageSize) {
+            function ($hoClient, $realResp, $response, $requestParams) use ($customPageSize) {
                 isSame($customPageSize, $requestParams['limit']);
-                $requestCounter++;
             }
         );
 
@@ -107,7 +99,7 @@ class LimitsTest extends HasoffersPHPUnit
             ->setPageSize($customPageSize)
             ->find(['limit' => $customLimit]);
 
-        isSame($expectedRequestCount, $requestCounter);
+        isSame($expectedRequestCount, $this->hoClient->getRequestCounter());
         isSame($customLimit, count($list));
     }
 
@@ -121,12 +113,10 @@ class LimitsTest extends HasoffersPHPUnit
 
     public function testTryToLoadLessPageSize()
     {
-        $requestCounter = 0;
         $this->eManager->on(
             'ho.api.request.after',
-            function ($hoClient, $realResp, $response, $requestParams) use (&$requestCounter) {
+            function ($hoClient, $realResp, $response, $requestParams) {
                 isSame(50, $requestParams['limit']);
-                $requestCounter++;
             }
         );
 
@@ -134,18 +124,16 @@ class LimitsTest extends HasoffersPHPUnit
             ->setPageSize(100)
             ->find(['limit' => 50]);
 
-        isSame(1, $requestCounter);
+        isSame(1, $this->hoClient->getRequestCounter());
         isSame(50, count($list));
     }
 
     public function testTryToLoadPageSizeEqLimit()
     {
-        $requestCounter = 0;
         $this->eManager->on(
             'ho.api.request.after',
-            function ($hoClient, $realResp, $response, $requestParams) use (&$requestCounter) {
+            function ($hoClient, $realResp, $response, $requestParams) {
                 isSame(11, $requestParams['limit']);
-                $requestCounter++;
             }
         );
 
@@ -153,7 +141,7 @@ class LimitsTest extends HasoffersPHPUnit
             ->setPageSize(11)
             ->find(['limit' => 11]);
 
-        isSame(1, $requestCounter);
+        isSame(1, $this->hoClient->getRequestCounter());
         isSame(11, count($list));
     }
 
