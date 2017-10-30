@@ -157,6 +157,7 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
             'email' => $this->faker->email,
         ]);
 
+        isTrue(isset($paymentMethod->email));
         unset($paymentMethod->email);
         isNull($paymentMethod->email);
         isSame(['email' => null], $paymentMethod->getChangedFields());
