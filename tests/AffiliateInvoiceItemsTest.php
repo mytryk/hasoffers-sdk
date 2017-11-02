@@ -15,6 +15,7 @@
 namespace JBZoo\PHPUnit;
 
 use Unilead\HasOffers\Contain\AffiliateInvoiceItem;
+use Unilead\HasOffers\Entity\Affiliate;
 use Unilead\HasOffers\Entity\AffiliateInvoice;
 
 /**
