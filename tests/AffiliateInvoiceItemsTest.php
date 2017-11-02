@@ -28,8 +28,8 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
 
     public function testCanCreateInvoiceItem()
     {
-        $randActions = $this->faker->randomNumber();
-        $randAmount = $this->faker->randomNumber();
+        $randActions = $this->faker->randomNumber(2);
+        $randAmount = $this->faker->randomNumber(2);
         $memo = $this->faker->text();
         $type = 'stats';
 
@@ -129,5 +129,20 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
 
         // Delete item
         $invoiceItem->delete();
+    }
+
+    public function testBindExcludedProps()
+    {
+        $newEmail = $this->faker->email;
+
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
+        $paymentMethod = $affiliate->getPaymentMethod();
+        $paymentMethod->bindData([
+            'id'    => 123,
+            '_prop' => 123,
+            'email' => $newEmail,
+        ]);
+
+        isSame(['email' => $newEmail], $paymentMethod->getChangedFields());
     }
 }
