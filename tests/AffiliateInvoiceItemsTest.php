@@ -134,17 +134,17 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
 
     public function testBindExcludedProps()
     {
-        skip('Bind excluded props don\'t support in Affiliate Payament method');
-        $newEmail = $this->faker->email;
+        skip('Fix code for test');
+        $text = $this->faker->text(30);
 
         $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
-        $paymentMethod = $affiliate->getPaymentMethod();
-        $paymentMethod->bindData([
-            'id'    => 123,
-            '_prop' => 123,
-            'email' => $newEmail,
+        $affiliate->reload();
+        $affiliate->bindData([
+            'address1' => $text,
+            '_id'      => 123,
+            'id'       => 123,
         ]);
 
-        isSame(['email' => $newEmail], $paymentMethod->getChangedFields());
+        isSame(['address1' => $text], $affiliate->getChangedFields());
     }
 }
