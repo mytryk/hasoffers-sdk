@@ -14,10 +14,9 @@
 
 namespace JBZoo\PHPUnit;
 
+use JBZoo\Utils\Arr;
 use Unilead\HasOffers\Entity\Affiliate;
 use Unilead\HasOffers\Entities\Affiliates;
-use Unilead\HasOffers\Contain\PaymentMethod;
-use Unilead\HasOffers\Entity\AffiliateUser;
 
 /**
  * Class AffiliatesTest
@@ -46,15 +45,16 @@ class AffiliatesTest extends HasoffersPHPUnit
     public function testFindList()
     {
         $affiliates = $this->hoClient->get(Affiliates::class);
-        $list = $affiliates->find();
+        $list = $affiliates->find([
+            'filters' => [
+                'id' => $this->testId,
+            ],
+        ]);
 
         /** @var Affiliate $affiliate */
-        $affiliate = $list[$this->testId];
+        $affiliate = Arr::first($list);
 
-        isNotEmpty($affiliate->city);
-        isNotEmpty($affiliate->country);
-        isNotEmpty($affiliate->zipcode);
-        isNotEmpty($affiliate->address1);
+        isNotEmpty($affiliate->company);
 
         $paymentMethod = $affiliate->getPaymentMethod();
         isNotEmpty($paymentMethod);
@@ -63,10 +63,14 @@ class AffiliatesTest extends HasoffersPHPUnit
     public function testCanGetAffiliateUser()
     {
         $affiliates = $this->hoClient->get(Affiliates::class);
-        $list = $affiliates->find();
+        $list = $affiliates->find([
+            'filters' => [
+                'id' => $this->testId,
+            ],
+        ]);
 
         /** @var Affiliate $affiliate */
-        $affiliate = $list[$this->testId];
+        $affiliate = Arr::first($list);
 
         $users = $affiliate->getAffiliateUser()->getList();
 

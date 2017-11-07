@@ -18,6 +18,7 @@ use Faker\Factory;
 use Faker\Generator;
 use Faker\Provider\pt_BR\PhoneNumber;
 use function JBZoo\Data\json;
+use JBZoo\Data\PHPArray;
 use JBZoo\Event\EventManager;
 use JBZoo\HttpClient\HttpClient;
 use JBZoo\HttpClient\Response;
@@ -88,6 +89,9 @@ abstract class HasoffersPHPUnit extends PHPUnit
                 'ho.api.request.after',
                 function ($client, $jsonResult, Response $response, $data) use ($isLearning, $fakeServerUrl) {
                     if ($isLearning) {
+
+                        PHPArray::
+
                         $learnData = [
                             'key'      => Helper::hash($data),
                             'request'  => '' . json($data),
