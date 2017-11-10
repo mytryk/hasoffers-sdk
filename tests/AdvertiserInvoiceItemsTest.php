@@ -89,8 +89,8 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
 
     public function testCanUpdateInvoiceItem()
     {
-        $randActions = $this->faker->randomNumber(2);
-        $randAmount = $this->faker->randomNumber(2);
+        $randActions = $this->faker->randomNumber(2) + 1;
+        $randAmount = $this->faker->randomNumber(2) + 1;
         $memo = $this->faker->text();
         $type = 'stats';
 
@@ -106,7 +106,7 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
                 'actions'      => $randActions,
                 'amount'       => $randAmount,
                 'type'         => $type,
-                'revenue_type' => AdvertiserInvoiceItem::REVENUE_TYPE_CPA_FLAT
+                'revenue_type' => AdvertiserInvoiceItem::REVENUE_TYPE_CPA_FLAT,
             ])->save();
         $itemIdBeforeUpdate = $invoiceItem->id;
 

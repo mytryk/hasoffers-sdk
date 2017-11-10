@@ -29,8 +29,8 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
 
     public function testCanCreateInvoiceItem()
     {
-        $randActions = $this->faker->randomNumber(2);
-        $randAmount = $this->faker->randomNumber(2);
+        $randActions = $this->faker->randomNumber(2) + 1;
+        $randAmount = $this->faker->randomNumber(2) + 1;
         $memo = $this->faker->text();
         $type = 'stats';
 
@@ -95,8 +95,8 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
     public function testCanUpdateInvoiceItem()
     {
         $billId = $this->testId;
-        $randActions = $this->faker->randomNumber(2);
-        $randAmount = $this->faker->randomNumber(2);
+        $randActions = $this->faker->randomNumber(2) + 1;
+        $randAmount = $this->faker->randomNumber(2) + 1;
         $memo = $this->faker->text(20);
         $type = 'stats';
 
