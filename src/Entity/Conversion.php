@@ -14,8 +14,6 @@
 
 namespace Unilead\HasOffers\Entity;
 
-use Unilead\HasOffers\Traits\ArrayTrait;
-
 /**
  * Class Conversion
  *
