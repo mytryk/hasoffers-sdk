@@ -49,12 +49,12 @@ class OfferPixel
     const TYPE_IMAGE = 'image';
 
     // ATTENTION! See dump of findAll results to set this indexes
-    CONST ID           = 0;
-    CONST AFFILIATE_ID = 1;
-    CONST OFFER_ID     = 2;
-    CONST STATUS       = 3;
-    CONST CODE         = 4;
-    CONST TYPE         = 5;
-    CONST MODIFIED     = 6;
-    CONST GOAL_ID      = 7;
+    const ID           = 0;
+    const AFFILIATE_ID = 1;
+    const OFFER_ID     = 2;
+    const STATUS       = 3;
+    const CODE         = 4;
+    const TYPE         = 5;
+    const MODIFIED     = 6;
+    const GOAL_ID      = 7;
 }
