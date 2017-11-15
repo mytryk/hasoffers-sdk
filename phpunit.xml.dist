@@ -27,14 +27,13 @@
 >
 
     <php>
-        <!--<env name="HO_API_URL" value=""/>-->
+        <!--<env name="HO_API_HTTP_USER" value="admin﻿"/>-->
+        <!--<env name="HO_API_HTTP_PASS" value="﻿"/>-->
+        <!--<env name="HO_API_URL" value="http://unilead.item8.io/tools/ho-proxy/index.php"/>-->
         <env name="HO_API_NETWORK_ID" value=""/>
         <env name="HO_API_NETWORK_TOKEN" value=""/>
         <env name="HO_API_REQUEST_LIMIT" value="1"/>
         <env name="HO_API_REQUEST_TIMEOUT" value="1"/>
-
-        <env name="HO_FAKE_SERVER_URL" value="http://fake-server.ci.item8.io"/>
-        <env name="HO_FAKE_SERVER_LEARNING" value="0"/>
     </php>
 
     <testsuites>
