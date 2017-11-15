@@ -56,16 +56,18 @@ abstract class HasoffersPHPUnit extends PHPUnit
         $this->faker = Factory::create();
         $this->faker->addProvider(new PhoneNumber($this->faker));
 
-        $apiUrl = Env::get('HO_API_URL') ?: HasOffersClient::DEFAULT_API_URL;
-        $isLearning = Env::get('HO_FAKE_SERVER_LEARNING', false, Env::VAR_BOOL);
-        $fakeServerUrl = Env::get('HO_FAKE_SERVER_URL');
-        $isFakeServer = $apiUrl !== HasOffersClient::DEFAULT_API_URL;
-
         $this->hoClient = new HasOffersClient(
             Env::get('HO_API_NETWORK_ID'),
             Env::get('HO_API_NETWORK_TOKEN'),
-            $apiUrl
+            Env::get('HO_API_URL') ?: HasOffersClient::DEFAULT_API_URL
         );
+
+        $httpUser = Env::get('HO_API_HTTP_USER');
+        $httpPass = Env::get('HO_API_HTTP_PASS');
+        if ($httpUser && $httpPass) {
+            $this->hoClient->setHttpAuth($httpUser, $httpPass);
+        }
+
         $this->hoClient->setRequestsLimit(Env::get('HO_API_REQUEST_LIMIT', 1, Env::VAR_INT));
         $this->hoClient->setTimeout(Env::get('HO_API_REQUEST_TIMEOUT', 1, Env::VAR_INT));
 
@@ -76,40 +78,15 @@ abstract class HasoffersPHPUnit extends PHPUnit
         $this->eManager
             ->on(
                 'ho.api.request.before',
-                function ($client, &$requestParams, &$url) use ($isFakeServer) {
-                    if ($isFakeServer) {
-                        $url = rtrim($url, '/') . '/get/' . Helper::hash($requestParams);
-                    }
-
+                function ($client, &$requestParams, &$url) {
                     $dumpFile = $this->getDumpFilename('request');
+                    $requestParams['_ho_url'] = $url;
                     file_put_contents($dumpFile . '.json', '' . json($requestParams));
                 }
             )
             ->on(
                 'ho.api.request.after',
-                function ($client, $jsonResult, Response $response, $data) use ($isLearning, $fakeServerUrl) {
-                    if ($isLearning) {
-
-                        PHPArray::
-
-                        $learnData = [
-                            'key'      => Helper::hash($data),
-                            'request'  => '' . json($data),
-                            'response' => '' . $response->getJSON(),
-                            'comment'  => 'HO Tests: ' . $this->getTestName(),
-                        ];
-
-                        $httpClient = new HttpClient();
-                        $response = $httpClient->request($fakeServerUrl . '/learn', $learnData, 'post');
-
-                        if (!$response->getJSON()->is('status', 'ok')) {
-                            throw new Exception(
-                                'Fake server cannot save fixture: ' . print_r($learnData, true) .
-                                'Response: ' . print_r($response, true)
-                            );
-                        }
-                    }
-
+                function ($client, $jsonResult, Response $response) {
                     $dumpFile = $this->getDumpFilename('response');
                     file_put_contents($dumpFile . '.json', $response->getJSON());
                 }
@@ -154,9 +131,6 @@ abstract class HasoffersPHPUnit extends PHPUnit
      */
     protected function skipIfFakeServer()
     {
-        $apiUrl = Env::get('HO_API_URL') ?: HasOffersClient::DEFAULT_API_URL;
-        if ($apiUrl !== HasOffersClient::DEFAULT_API_URL) {
-            skip('Skip test for fake server: ' . $this->getTestName());
-        }
+        //skip('Skip test for fake server: ' . $this->getTestName());
     }
 }

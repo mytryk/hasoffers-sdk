@@ -62,6 +62,11 @@ class HasOffersClient
     protected $networkToken;
 
     /**
+     * @var array
+     */
+    protected $httpAuth = false;
+
+    /**
      * @var EventManager|null
      */
     protected $eManager;
@@ -142,15 +147,19 @@ class HasOffersClient
                 'timeout'    => self::HTTP_TIMEOUT,
                 'verify'     => true,
                 'exceptions' => true,
+                'auth'       => $this->httpAuth,
             ];
-            $requestParams = array_merge($requestParams, ['NetworkToken' => $this->networkToken]);
+            $requestParams = array_merge($requestParams, [
+                'NetworkToken' => $this->networkToken,
+                'NetworkId'    => $this->networkId,
+            ]);
 
             // Fix limits
             if (isset($requestParams['limit']) && (int)$requestParams['limit'] === 0) {
                 unset($requestParams['limit']);
             }
 
-            $response = (new HttpClient($httpClientParams))->request($url, $requestParams, 'get', $httpClientParams);
+            $response = (new HttpClient($httpClientParams))->request($url, $requestParams, 'GET', $httpClientParams);
         } catch (\Exception $httpException) {
             throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);
         }
@@ -159,11 +168,13 @@ class HasOffersClient
         $json = $response->getJSON();
         $data = $json->getArrayCopy();
         $data['request']['NetworkToken'] = '*** hidden ***';
+        $data['request']['NetworkId'] = '*** hidden ***';
 
         $this->saveLastResponse($data);
         $json = json($data);
 
         $requestParams['NetworkToken'] = '*** hidden ***';
+        $requestParams['NetworkId'] = '*** hidden ***';
         $this->trigger('api.request.after', [$this, $json, $response, $requestParams, $url]);
 
         $apiStatus = $json->find('response.status', null, 'int');
@@ -307,5 +318,14 @@ class HasOffersClient
         if ($this->lastResponseSave) {
             $this->lastResponse = $json;
         }
+    }
+
+    /**
+     * @param string $login
+     * @param string $password
+     */
+    public function setHttpAuth($login, $password)
+    {
+        $this->httpAuth = [$login, $password];
     }
 }
