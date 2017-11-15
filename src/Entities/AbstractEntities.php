@@ -230,7 +230,7 @@ abstract class AbstractEntities
             'sort'            => $conditionsData->get('sort', $this->defaultSort, 'arr'),
             'contain'         => $conditionsData->get('contain', array_keys($this->contain), 'arr'),
             'limit'           => $pageSize,
-            'ho_fixture_name' => $conditionsData->get('fixture_name'),
+            'ho_fixture_name' => $conditionsData->get('ho_fixture_name'),
         ];
 
         if ($realLimit === 0) {
