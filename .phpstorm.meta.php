@@ -25,6 +25,7 @@ namespace PHPSTORM_META {
     use Unilead\HasOffers\Entities\AdvertiserUsers;
     use Unilead\HasOffers\Entities\AffiliateUsers;
     use Unilead\HasOffers\Entities\Offers;
+    use Unilead\HasOffers\Entities\OfferPixels;
     use Unilead\HasOffers\Entities\Conversions;
 
     use Unilead\HasOffers\Entity\Advertiser;
@@ -34,8 +35,10 @@ namespace PHPSTORM_META {
     use Unilead\HasOffers\Entity\AffiliateInvoice;
     use Unilead\HasOffers\Entity\AffiliateReceipt;
     use Unilead\HasOffers\Entity\AffiliateUser;
+    use Unilead\HasOffers\Entity\Conversion;
     use Unilead\HasOffers\Entity\Employee;
     use Unilead\HasOffers\Entity\Offer;
+    use Unilead\HasOffers\Entity\OfferPixel;
 
     use Unilead\HasOffers\HasOffersClient;
 
@@ -51,6 +54,8 @@ namespace PHPSTORM_META {
             AffiliateUser::class      => AffiliateUser::class,
             Employee::class           => Employee::class,
             Offer::class              => Offer::class,
+            Conversion::class         => Conversion::class,
+            OfferPixel::class         => OfferPixel::class,
             // list
             Advertisers::class        => Advertisers::class,
             AdvertiserInvoices::class => AdvertiserInvoices::class,
@@ -59,6 +64,7 @@ namespace PHPSTORM_META {
             Affiliates::class         => Affiliates::class,
             Employees::class          => Employees::class,
             Offers::class             => Offers::class,
+            OfferPixels::class        => OfferPixels::class,
             Conversions::class        => Conversions::class,
         ]));
 }
