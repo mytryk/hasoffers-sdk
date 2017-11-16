@@ -223,13 +223,14 @@ abstract class AbstractEntities
         $realLimit = $this->getRealLimit($conditions);
 
         $apiRequest = [
-            'Method'  => $this->methods['findAll'],
-            'Target'  => $this->target,
-            'fields'  => $conditionsData->get('fields', $this->defaultFields, 'arr'),
-            'filters' => $conditionsData->get('filters', [], 'arr'),
-            'sort'    => $conditionsData->get('sort', $this->defaultSort, 'arr'),
-            'contain' => $conditionsData->get('contain', array_keys($this->contain), 'arr'),
-            'limit'   => $pageSize,
+            'Method'          => $this->methods['findAll'],
+            'Target'          => $this->target,
+            'fields'          => $conditionsData->get('fields', $this->defaultFields, 'arr'),
+            'filters'         => $conditionsData->get('filters', [], 'arr'),
+            'sort'            => $conditionsData->get('sort', $this->defaultSort, 'arr'),
+            'contain'         => $conditionsData->get('contain', array_keys($this->contain), 'arr'),
+            'limit'           => $pageSize,
+            'ho_fixture_name' => $conditionsData->get('ho_fixture_name'),
         ];
 
         if ($realLimit === 0) {
