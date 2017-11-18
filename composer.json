@@ -1,5 +1,5 @@
 {
-    "name"              : "unilead/hasoffers",
+    "name"              : "item8/hasoffers",
     "type"              : "library",
     "description"       : "",
     "license"           : "proprietary",
@@ -25,7 +25,7 @@
     "repositories"      : {
         "unilead/codestyle" : {
             "type" : "git",
-            "url"  : "http://code.unilead.net/unilead/codestyle.git"
+            "url"  : "http://code.unilead.net/item8/codestyle.git"
         }
     },
     "autoload"          : {
