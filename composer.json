@@ -23,9 +23,9 @@
         "jbzoo/profiler"    : "^1.0"
     },
     "repositories"      : {
-        "unilead/codestyle" : {
+        "item8/codestyle" : {
             "type" : "git",
-            "url"  : "http://code.unilead.net/item8/codestyle.git"
+            "url"  : "http://code.unilead.net/unilead/codestyle.git"
         }
     },
     "autoload"          : {
