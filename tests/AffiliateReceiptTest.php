@@ -14,8 +14,8 @@
 
 namespace JBZoo\PHPUnit;
 
-use Unilead\HasOffers\Entity\AffiliateReceipt;
-use Unilead\HasOffers\Entity\Affiliate;
+use Item8\HasOffers\Entity\AffiliateReceipt;
+use Item8\HasOffers\Entity\Affiliate;
 
 /**
  * Class AffiliateReceiptTest
@@ -30,7 +30,7 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
     {
         $affiliate1 = $this->hoClient->get(AffiliateReceipt::class); // recommended!
         $affiliate2 = $this->hoClient->get('AffiliateReceipt');
-        $affiliate3 = $this->hoClient->get('Unilead\\HasOffers\\Entity\\AffiliateReceipt');
+        $affiliate3 = $this->hoClient->get('Item8\\HasOffers\\Entity\\AffiliateReceipt');
         $affiliate4 = new AffiliateReceipt();
         $affiliate4->setClient($this->hoClient);
 
@@ -89,8 +89,8 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage    No data to create new object "Unilead\HasOffers\Entity\AffiliateReceipt" in HasOffers
-     * @expectedException           \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage    No data to create new object "Item8\HasOffers\Entity\AffiliateReceipt" in HasOffers
+     * @expectedException           \Item8\HasOffers\Exception
      */
     public function testCannotSaveUndefinedId()
     {
@@ -99,8 +99,8 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage Undefined property "undefined_property" in Unilead\HasOffers\Entity\AffiliateReceipt
-     * @expectedException \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage Undefined property "undefined_property" in Item8\HasOffers\Entity\AffiliateReceipt
+     * @expectedException \Item8\HasOffers\Exception
      */
     public function testCannotGetUndefinedProperty()
     {
@@ -125,8 +125,8 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
 
     /**
      * @expectedExceptionMessage Undefined method "getFakeContainObject" or related object "FakeContainObject" in
-     *                           Unilead\HasOffers\Entity\AffiliateReceipt for objectId=2
-     * @expectedException \Unilead\HasOffers\Exception
+     *                           Item8\HasOffers\Entity\AffiliateReceipt for objectId=2
+     * @expectedException \Item8\HasOffers\Exception
      */
     public function testCannotGetUndefinedContain()
     {

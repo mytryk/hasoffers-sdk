@@ -14,8 +14,8 @@
 
 namespace JBZoo\PHPUnit;
 
-use Unilead\HasOffers\Entity\AdvertiserUser;
-use Unilead\HasOffers\Entities\AdvertiserUsers;
+use Item8\HasOffers\Entity\AdvertiserUser;
+use Item8\HasOffers\Entities\AdvertiserUsers;
 
 /**
  * Class AdvertiserUsersTest

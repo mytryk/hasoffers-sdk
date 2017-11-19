@@ -14,9 +14,9 @@
 
 namespace JBZoo\PHPUnit;
 
-use Unilead\HasOffers\Entities\Affiliates;
-use Unilead\HasOffers\Entities\Employees;
-use Unilead\HasOffers\Entity\Employee;
+use Item8\HasOffers\Entities\Affiliates;
+use Item8\HasOffers\Entities\Employees;
+use Item8\HasOffers\Entity\Employee;
 
 /**
  * Class EntitiesTest

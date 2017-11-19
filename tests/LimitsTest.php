@@ -16,8 +16,8 @@ namespace JBZoo\PHPUnit;
 
 use JBZoo\Profiler\Benchmark;
 use JBZoo\Utils\Env;
-use Unilead\HasOffers\Entities\Conversions;
-use Unilead\HasOffers\Entity\Conversion;
+use Item8\HasOffers\Entities\Conversions;
+use Item8\HasOffers\Entity\Conversion;
 
 /**
  * Class LimitsTest

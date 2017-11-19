@@ -14,7 +14,7 @@
 
 namespace JBZoo\PHPUnit;
 
-use Unilead\HasOffers\Entity\AdvertiserInvoice;
+use Item8\HasOffers\Entity\AdvertiserInvoice;
 
 /**
  * Class AdvertiserInvoiceTest
@@ -29,7 +29,7 @@ class AdvertiserInvoiceTest extends HasoffersPHPUnit
     {
         $invoice1 = $this->hoClient->get(AdvertiserInvoice::class); // recommended!
         $invoice2 = $this->hoClient->get('AdvertiserInvoice');
-        $invoice3 = $this->hoClient->get('Unilead\\HasOffers\\Entity\\AdvertiserInvoice');
+        $invoice3 = $this->hoClient->get('Item8\\HasOffers\\Entity\\AdvertiserInvoice');
         $invoice4 = new AdvertiserInvoice();
         $invoice4->setClient($this->hoClient);
 
@@ -43,8 +43,8 @@ class AdvertiserInvoiceTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage No data to create new object "Unilead\HasOffers\Entity\AdvertiserInvoice" in HasOffers
-     * @expectedException \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage No data to create new object "Item8\HasOffers\Entity\AdvertiserInvoice" in HasOffers
+     * @expectedException \Item8\HasOffers\Exception
      */
     public function testCannotSaveUndefinedId()
     {
@@ -53,8 +53,8 @@ class AdvertiserInvoiceTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage Undefined property "undefined_property" in Unilead\HasOffers\Entity\AdvertiserInvoice
-     * @expectedException \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage Undefined property "undefined_property" in Item8\HasOffers\Entity\AdvertiserInvoice
+     * @expectedException \Item8\HasOffers\Exception
      */
     public function testCannotGetUndefinedProperty()
     {

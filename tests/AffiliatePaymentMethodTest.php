@@ -15,8 +15,8 @@
 namespace JBZoo\PHPUnit;
 
 use JBZoo\Data\Data;
-use Unilead\HasOffers\Entity\Affiliate;
-use Unilead\HasOffers\Contain\PaymentMethod;
+use Item8\HasOffers\Entity\Affiliate;
+use Item8\HasOffers\Contain\PaymentMethod;
 
 /**
  * Class AffiliatePaymentMethodTest

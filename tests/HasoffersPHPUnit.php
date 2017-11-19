@@ -24,8 +24,8 @@ use JBZoo\HttpClient\HttpClient;
 use JBZoo\HttpClient\Response;
 use JBZoo\Utils\Env;
 use JBZoo\Utils\Str;
-use Unilead\HasOffers\HasOffersClient;
-use Unilead\HasOffers\Helper;
+use Item8\HasOffers\HasOffersClient;
+use Item8\HasOffers\Helper;
 
 /**
  * Class HasoffersPHPUnit

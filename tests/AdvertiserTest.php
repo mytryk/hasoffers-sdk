@@ -14,8 +14,8 @@
 
 namespace JBZoo\PHPUnit;
 
-use Unilead\HasOffers\Entity\Advertiser;
-use Unilead\HasOffers\Entity\AdvertiserUser;
+use Item8\HasOffers\Entity\Advertiser;
+use Item8\HasOffers\Entity\AdvertiserUser;
 
 /**
  * Class AdvertiserTest
@@ -30,7 +30,7 @@ class AdvertiserTest extends HasoffersPHPUnit
     {
         $advertiser1 = $this->hoClient->get(Advertiser::class); // recommended!
         $advertiser2 = $this->hoClient->get('Advertiser');
-        $advertiser3 = $this->hoClient->get('Unilead\\HasOffers\\Entity\\Advertiser');
+        $advertiser3 = $this->hoClient->get('Item8\\HasOffers\\Entity\\Advertiser');
         $advertiser4 = new Advertiser();
         $advertiser4->setClient($this->hoClient);
 
@@ -44,8 +44,8 @@ class AdvertiserTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedException           \Unilead\HasOffers\Exception
-     * @expectedExceptionMessage    Property "id" read only in Unilead\HasOffers\Entity\Advertiser
+     * @expectedException           \Item8\HasOffers\Exception
+     * @expectedExceptionMessage    Property "id" read only in Item8\HasOffers\Entity\Advertiser
      */
     public function testIdReadOnly()
     {
@@ -63,8 +63,8 @@ class AdvertiserTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage    No data to create new object "Unilead\HasOffers\Entity\Advertiser" in HasOffers
-     * @expectedException           \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage    No data to create new object "Item8\HasOffers\Entity\Advertiser" in HasOffers
+     * @expectedException           \Item8\HasOffers\Exception
      */
     public function testCannotSaveUndefinedId()
     {
@@ -73,8 +73,8 @@ class AdvertiserTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage Undefined property "undefined_property" in Unilead\HasOffers\Entity\Advertiser
-     * @expectedException \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage Undefined property "undefined_property" in Item8\HasOffers\Entity\Advertiser
+     * @expectedException \Item8\HasOffers\Exception
      */
     public function testCannotGetUndefinedProperty()
     {

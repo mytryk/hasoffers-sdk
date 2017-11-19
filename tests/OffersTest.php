@@ -14,8 +14,8 @@
 
 namespace JBZoo\PHPUnit;
 
-use Unilead\HasOffers\Entities\Offers;
-use Unilead\HasOffers\Entity\Offer;
+use Item8\HasOffers\Entities\Offers;
+use Item8\HasOffers\Entity\Offer;
 
 /**
  * Class OffersTest

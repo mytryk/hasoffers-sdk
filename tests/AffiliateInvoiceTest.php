@@ -14,7 +14,7 @@
 
 namespace JBZoo\PHPUnit;
 
-use Unilead\HasOffers\Entity\AffiliateInvoice;
+use Item8\HasOffers\Entity\AffiliateInvoice;
 
 /**
  * Class AffiliateInvoiceTest
@@ -29,7 +29,7 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
     {
         $bill1 = $this->hoClient->get(AffiliateInvoice::class); // recommended!
         $bill2 = $this->hoClient->get('AffiliateInvoice');
-        $bill3 = $this->hoClient->get('Unilead\\HasOffers\\Entity\\AffiliateInvoice');
+        $bill3 = $this->hoClient->get('Item8\\HasOffers\\Entity\\AffiliateInvoice');
         $bill4 = new AffiliateInvoice();
         $bill4->setClient($this->hoClient);
 
@@ -43,8 +43,8 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage No data to create new object "Unilead\HasOffers\Entity\AffiliateInvoice" in HasOffers
-     * @expectedException        \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage No data to create new object "Item8\HasOffers\Entity\AffiliateInvoice" in HasOffers
+     * @expectedException        \Item8\HasOffers\Exception
      */
     public function testCannotSaveUndefinedId()
     {
@@ -53,8 +53,8 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage Undefined property "undefined_property" in Unilead\HasOffers\Entity\AffiliateInvoice
-     * @expectedException \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage Undefined property "undefined_property" in Item8\HasOffers\Entity\AffiliateInvoice
+     * @expectedException \Item8\HasOffers\Exception
      */
     public function testCannotGetUndefinedProperty()
     {

@@ -18,9 +18,9 @@ use JBZoo\Data\Data;
 use JBZoo\Event\EventManager;
 use JBZoo\Utils\Email;
 use JBZoo\Utils\Str;
-use Unilead\HasOffers\Entity\Affiliate;
-use Unilead\HasOffers\Contain\PaymentMethod;
-use Unilead\HasOffers\Entity\AffiliateUser;
+use Item8\HasOffers\Entity\Affiliate;
+use Item8\HasOffers\Contain\PaymentMethod;
+use Item8\HasOffers\Entity\AffiliateUser;
 
 /**
  * Class HoClientTest
@@ -59,7 +59,7 @@ class HoClientTest extends HasoffersPHPUnit
             // noop
         }
 
-        isSame('No data to create new object "Unilead\HasOffers\Entity\Affiliate" in HasOffers', $checkedMessage);
+        isSame('No data to create new object "Item8\HasOffers\Entity\Affiliate" in HasOffers', $checkedMessage);
     }
 
     public function testLimitOption()
@@ -110,7 +110,7 @@ class HoClientTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedException \Unilead\HasOffers\Exception
+     * @expectedException \Item8\HasOffers\Exception
      */
     public function testUndefinedTarget()
     {
@@ -121,7 +121,7 @@ class HoClientTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedException \Unilead\HasOffers\Exception
+     * @expectedException \Item8\HasOffers\Exception
      */
     public function testUndefinedMethod()
     {
@@ -132,7 +132,7 @@ class HoClientTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedException \Unilead\HasOffers\Exception
+     * @expectedException \Item8\HasOffers\Exception
      */
     public function testHasOffersError()
     {
@@ -143,7 +143,7 @@ class HoClientTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedException \Unilead\HasOffers\Exception
+     * @expectedException \Item8\HasOffers\Exception
      */
     public function testUndefinedClass()
     {

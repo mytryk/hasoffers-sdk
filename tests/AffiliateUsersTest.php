@@ -14,8 +14,8 @@
 
 namespace JBZoo\PHPUnit;
 
-use Unilead\HasOffers\Entity\AffiliateUser;
-use Unilead\HasOffers\Entities\AffiliateUsers;
+use Item8\HasOffers\Entity\AffiliateUser;
+use Item8\HasOffers\Entities\AffiliateUsers;
 
 /**
  * Class AffiliateUsersTest

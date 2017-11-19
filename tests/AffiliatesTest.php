@@ -15,8 +15,8 @@
 namespace JBZoo\PHPUnit;
 
 use JBZoo\Utils\Arr;
-use Unilead\HasOffers\Entity\Affiliate;
-use Unilead\HasOffers\Entities\Affiliates;
+use Item8\HasOffers\Entity\Affiliate;
+use Item8\HasOffers\Entities\Affiliates;
 
 /**
  * Class AffiliatesTest
@@ -31,8 +31,8 @@ class AffiliatesTest extends HasoffersPHPUnit
     {
         $affiliates1 = $this->hoClient->get(Affiliates::class);
         $affiliates2 = $this->hoClient->get('Affiliates');
-        $affiliates3 = $this->hoClient->get('Unilead\HasOffers\Entities\Affiliates');
-        $affiliates4 = $this->hoClient->get('\Unilead\HasOffers\Entities\Affiliates');
+        $affiliates3 = $this->hoClient->get('Item8\HasOffers\Entities\Affiliates');
+        $affiliates4 = $this->hoClient->get('\Item8\HasOffers\Entities\Affiliates');
         $affiliates5 = new Affiliates();
 
         isClass(Affiliates::class, $affiliates1);

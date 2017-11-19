@@ -16,7 +16,7 @@ namespace JBZoo\PHPUnit;
 
 use JBZoo\Utils\Str;
 use JBZoo\Data\Data;
-use Unilead\HasOffers\Entity\Employee;
+use Item8\HasOffers\Entity\Employee;
 
 /**
  * Class EmployeeTest
@@ -31,7 +31,7 @@ class EmployeeTest extends HasoffersPHPUnit
     {
         $employee1 = $this->hoClient->get(Employee::class); // recommended!
         $employee2 = $this->hoClient->get('Employee');
-        $employee3 = $this->hoClient->get('Unilead\\HasOffers\\Entity\\Employee');
+        $employee3 = $this->hoClient->get('Item8\\HasOffers\\Entity\\Employee');
         $employee4 = new Employee();
         $employee4->setClient($this->hoClient);
 
@@ -53,8 +53,8 @@ class EmployeeTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage    No data to create new object "Unilead\HasOffers\Entity\Employee" in HasOffers
-     * @expectedException           \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage    No data to create new object "Item8\HasOffers\Entity\Employee" in HasOffers
+     * @expectedException           \Item8\HasOffers\Exception
      */
     public function testCannotSaveUndefinedId()
     {
@@ -63,8 +63,8 @@ class EmployeeTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage Undefined property "undefined_property" in Unilead\HasOffers\Entity\Employee
-     * @expectedException \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage Undefined property "undefined_property" in Item8\HasOffers\Entity\Employee
+     * @expectedException \Item8\HasOffers\Exception
      */
     public function testCannotGetUndefinedProperty()
     {

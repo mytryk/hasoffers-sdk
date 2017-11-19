@@ -14,7 +14,7 @@
 
 namespace JBZoo\PHPUnit;
 
-use Unilead\HasOffers\Entities\OfferPixels;
+use Item8\HasOffers\Entities\OfferPixels;
 
 /**
  * Class OfferPixelsTest
