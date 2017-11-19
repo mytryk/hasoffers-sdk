@@ -1,18 +1,18 @@
 <?php
 /**
- * Unilead | HasOffers
+ * Item8 | HasOffers
  *
- * This file is part of the Unilead Service Package.
+ * This file is part of the Item8 Service Package.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @package     HasOffers
  * @license     Proprietary
- * @copyright   Copyright (C) Unilead Network, All rights reserved.
- * @link        https://www.unileadnetwork.com
+ * @copyright   Copyright (C) Item8, All rights reserved.
+ * @link        https://item8.io
  */
 
-namespace Unilead\HasOffers\Contain;
+namespace Item8\HasOffers\Contain;
 
 /**
  * Class AdvertiserInvoiceItem
@@ -47,7 +47,7 @@ namespace Unilead\HasOffers\Contain;
  * @property string vat_rate        Nullable Decimal    The VAT rate being used to calculate tax, as a percentage (e.g.
  *                                  15.00). Only applicable if "type" is "vat".
  *
- * @package Unilead\HasOffers
+ * @package Item8\HasOffers
  */
 class AdvertiserInvoiceItem extends AbstractItemContain
 {
