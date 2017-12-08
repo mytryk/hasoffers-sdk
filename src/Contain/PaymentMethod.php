@@ -281,6 +281,10 @@ class PaymentMethod extends AbstractContain
             $this->filterData($this->data()->getArrayCopy())
         );
 
+        if (empty($savedData)) {
+            return false;
+        }
+
         $this->hoClient->trigger("{$this->target}.save.before", [$this, &$savedData]);
 
         $result = $this->hoClient->apiRequest([
