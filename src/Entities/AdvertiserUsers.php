@@ -32,4 +32,9 @@ class AdvertiserUsers extends AbstractEntities
      * @var string
      */
     protected $className = AdvertiserUser::class;
+
+    /**
+     * @var int
+     */
+    protected $pageSize = 1000;
 }

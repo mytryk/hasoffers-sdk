@@ -36,10 +36,15 @@ class Offers extends AbstractEntities
     protected $className = Offer::class;
 
     /**
+     * @var int
+     */
+    protected $pageSize = 1000;
+
+    /**
      * @var array
      */
     protected $contain = [
-        'Goal' => Goal::class,
+        'Goal'    => Goal::class,
         'Country' => Country::class
     ];
 }

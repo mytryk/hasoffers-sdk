@@ -32,4 +32,9 @@ class AffiliateUsers extends AbstractEntities
      * @var string
      */
     protected $className = AffiliateUser::class;
+
+    /**
+     * @var int
+     */
+    protected $pageSize = 1000;
 }
