@@ -14,6 +14,7 @@
 
 namespace JBZoo\PHPUnit;
 
+use Item8\HasOffers\Entities\Affiliates;
 use JBZoo\Profiler\Benchmark;
 use JBZoo\Utils\Env;
 use Item8\HasOffers\Entities\Conversions;
@@ -149,6 +150,20 @@ class LimitsTest extends HasoffersPHPUnit
     {
         $count = $this->conversions->count();
         isTrue(62165 >= $count);
+    }
+
+    public function testCountVsFind()
+    {
+        /** @var Affiliates $affiliates */
+        $affiliates = $this->hoClient->get(Affiliates::class);
+        $clearCount = $affiliates->count();
+        $countFind = count($affiliates->find());
+        isTrue(1500 < $clearCount);
+        isSame($countFind, $clearCount);
+
+        $clearCount = $this->conversions->count();
+        $countFind = count($this->conversions->find());
+        isSame($countFind, $clearCount);
     }
 
     public function testProfiling()

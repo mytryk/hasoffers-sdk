@@ -92,6 +92,7 @@ abstract class AbstractEntities
         /** @var Data $firstResponse */
         $firstPageResponse = $this->hoClient->apiRequest($apiRequest);
         $pageCount = $firstPageResponse->get('pageCount', 0, 'int');
+        $realCount = $firstPageResponse->get('count', 0, 'int');
         $result = $this->prepareResults($firstPageResponse->get('data', [], 'arr'));
 
         if ($pageCount > 1 &&
@@ -109,10 +110,23 @@ abstract class AbstractEntities
                     break;
                 }
             }
+        } elseif ($realLimit <= 0) {
+            for ($requestedPage = 2; $requestedPage <= $pageCount; $requestedPage++) {
+                $apiRequest['page'] = $requestedPage;
+
+                $curStepResponse = $this->hoClient->apiRequest($apiRequest);
+
+                $result += $this->prepareResults($curStepResponse->get('data', [], 'arr'));
+                unset($curStepResponse);
+
+                if (count($result) >= $realCount) {
+                    break;
+                }
+            }
         }
 
-        if ($realLimit) {
-            $result = array_slice($result, 0, $realLimit, true); // Force limit
+        if ($realLimit > 0) {
+            $result = \array_slice($result, 0, $realLimit, true); // Force limit
         }
 
         $this->hoClient->trigger("{$this->target}.find.after", [$this, &$result]);
