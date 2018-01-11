@@ -40,11 +40,6 @@ class AffiliateInvoices extends AbstractEntities
     protected $className = AffiliateInvoice::class;
 
     /**
-     * @var int
-     */
-    protected $pageSize = 1000;
-
-    /**
      * @var array
      */
     protected $contain = [

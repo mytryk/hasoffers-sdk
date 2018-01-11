@@ -35,11 +35,6 @@ class Advertisers extends AbstractEntities
     protected $className = Advertiser::class;
 
     /**
-     * @var int
-     */
-    protected $pageSize = 1000;
-
-    /**
      * @var array
      */
     protected $contain = [

@@ -40,11 +40,6 @@ class AdvertiserInvoices extends AbstractEntities
     protected $className = AdvertiserInvoice::class;
 
     /**
-     * @var int
-     */
-    protected $pageSize = 1000;
-
-    /**
      * @var array
      */
     protected $contain = [

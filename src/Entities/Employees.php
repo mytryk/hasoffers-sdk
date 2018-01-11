@@ -32,9 +32,4 @@ class Employees extends AbstractEntities
      * @var string
      */
     protected $className = Employee::class;
-
-    /**
-     * @var int
-     */
-    protected $pageSize = 1000;
 }

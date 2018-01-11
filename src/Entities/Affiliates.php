@@ -36,11 +36,6 @@ class Affiliates extends AbstractEntities
     protected $className = Affiliate::class;
 
     /**
-     * @var int
-     */
-    protected $pageSize = 1000;
-
-    /**
      * @var array
      */
     protected $contain = [
