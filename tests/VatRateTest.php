@@ -31,8 +31,6 @@ class VatRateTest extends HasoffersPHPUnit
      */
     public function testCreatingWays(): void
     {
-        $this->markTestSkipped('Write me');
-
         $vatRate1 = $this->hoClient->get(VatRate::class); // recommended!
         $vatRate2 = $this->hoClient->get('VatRate');
         $vatRate3 = $this->hoClient->get('Unilead\\HasOffers\\Entity\\VatRate');
@@ -53,8 +51,6 @@ class VatRateTest extends HasoffersPHPUnit
      */
     public function testCanGetById(): void
     {
-        $this->markTestSkipped('Write me');
-
         /** @var VatRate $vatRate */
         $vatRate = $this->hoClient->get(VatRate::class, self::EXISTED_VAT_RATE_ID);
 
@@ -67,8 +63,7 @@ class VatRateTest extends HasoffersPHPUnit
      */
     public function testCannotSaveUndefinedId(): void
     {
-        $this->markTestSkipped('Write me');
-
+        /** @var VatRate $vatRate */
         $vatRate = $this->hoClient->get(VatRate::class);
         $vatRate->save();
     }
@@ -79,8 +74,6 @@ class VatRateTest extends HasoffersPHPUnit
      */
     public function testCannotGetUndefinedProperty(): void
     {
-        $this->markTestSkipped('Write me');
-
         /** @var VatRate $vatRate */
         $vatRate = $this->hoClient->get(VatRate::class, self::EXISTED_VAT_RATE_ID);
         is(self::EXISTED_VAT_RATE_ID, $vatRate->id);
@@ -95,8 +88,6 @@ class VatRateTest extends HasoffersPHPUnit
      */
     public function testCanCreate(): void
     {
-        $this->markTestSkipped('Write me');
-
         /** @var VatRate $vatRate */
         $vatRate = $this->hoClient->get(VatRate::class);
         $vatRate->name = Str::random(10);
@@ -121,8 +112,6 @@ class VatRateTest extends HasoffersPHPUnit
      */
     public function testCanUpdate(): void
     {
-        $this->markTestSkipped('Write me');
-
         /** @var VatRate $vatRateBeforeSave */
         $vatRateBeforeSave = $this->hoClient->get(VatRate::class, self::EXISTED_VAT_RATE_ID);
 
@@ -137,14 +126,11 @@ class VatRateTest extends HasoffersPHPUnit
     }
 
     /**
-     * @throws \Unilead\HasOffers\Entity\Exception
-     * @throws \Unilead\HasOffers\Exception
-     * @throws \Exception
+     * @expectedException \Unilead\HasOffers\Entity\Exception
+     * @expectedExceptionMessageRegExp /.*VatRate.* not found in HO data.* /
      */
     public function testCanDelete(): void
     {
-        $this->markTestSkipped('Write me');
-
         /** @var VatRate $vatRate */
         $vatRate = $this->hoClient->get(VatRate::class);
         $vatRate->name = Str::random(10);
@@ -159,6 +145,6 @@ class VatRateTest extends HasoffersPHPUnit
 
         /** @var VatRate $vatRateAfterDelete */
         $vatRateAfterDelete = $this->hoClient->get(VatRate::class, $createdId);
-        isNull($vatRateAfterDelete->id);
+        $vatRateAfterDelete->id;
     }
 }

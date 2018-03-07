@@ -42,6 +42,7 @@ class VatRate extends AbstractEntity
         'get'    => 'findById',
         'create' => 'create',
         'update' => 'update',
+        'delete' => 'delete',
     ];
 
     /**
