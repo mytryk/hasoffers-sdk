@@ -14,26 +14,22 @@
 
 namespace Unilead\HasOffers\Entity;
 
-use Unilead\HasOffers\Traits\Deleted;
-
 /* @noinspection ClassOverridesFieldOfSuperClassInspection */
 
 /**
  * Class VatRate
  *
- * @property string $id                 A unique, auto-generated ID for the VatRate
- * @property string $code               The code for this VAT Rate
- * @property \Datetime $created         The date this VAT Rate was created
- * @property \Datetime $modified        The last time this VAT Rate was modified
- * @property string $name               The name given to this VAT Rate
- * @property float $rate                The percentage of the VAT
+ * @property string    $id                  A unique, auto-generated ID for the VatRate
+ * @property string    $code                The code for this VAT Rate
+ * @property \Datetime $created             The date this VAT Rate was created
+ * @property \Datetime $modified            The last time this VAT Rate was modified
+ * @property string    $name                The name given to this VAT Rate
+ * @property float     $rate                The percentage of the VAT
  *
  * @package Unilead\HasOffers\Entity
  */
 class VatRate extends AbstractEntity
 {
-    use Deleted;
-
     /**
      * @var string
      */
@@ -43,8 +39,27 @@ class VatRate extends AbstractEntity
      * @var array
      */
     protected $methods = [
-        'get' => 'findById',
+        'get'    => 'findById',
         'create' => 'create',
         'update' => 'update',
     ];
+
+    /**
+     * @return mixed
+     * @throws \Unilead\HasOffers\Exception
+     */
+    public function delete()
+    {
+        $this->hoClient->trigger("{$this->target}.delete.before", [$this, &$this->changedData]);
+
+        $data = $this->hoClient->apiRequest([
+            'Method' => $this->methods['delete'],
+            'Target' => $this->target,
+            'id'     => $this->id,
+        ]);
+
+        $this->hoClient->trigger("{$this->target}.delete.after", [$this, &$this->changedData]);
+
+        return $data;
+    }
 }
