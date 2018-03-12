@@ -19,7 +19,7 @@
     },
     "require-dev"       : {
         "jbzoo/phpunit"   : "^2.0",
-        "item8/codestyle" : "^1.0",
+        "item8/codestyle" : "^2.0",
         "jbzoo/profiler"  : "^1.0"
     },
     "repositories"      : {
