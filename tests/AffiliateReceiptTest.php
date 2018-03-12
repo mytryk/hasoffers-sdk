@@ -1,23 +1,21 @@
 <?php
 /**
- * Unilead | HasOffers
+ * Item8 | HasOffers
  *
- * This file is part of the Unilead Service Package.
+ * This file is part of the Item8 Service Package.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @package     HasOffers
  * @license     Proprietary
- * @copyright   Copyright (C) Unilead Network, All rights reserved.
- * @link        https://www.unileadnetwork.com
+ * @copyright   Copyright (C) Item8, All rights reserved.
+ * @link        https://item8.io
  */
 
 namespace JBZoo\PHPUnit;
 
-use JBZoo\Utils\Str;
-use Unilead\HasOffers\Contain\PaymentMethod;
-use Unilead\HasOffers\Entity\AffiliateReceipt;
-use Unilead\HasOffers\Entity\Affiliate;
+use Item8\HasOffers\Entity\AffiliateReceipt;
+use Item8\HasOffers\Entity\Affiliate;
 
 /**
  * Class AffiliateReceiptTest
@@ -26,11 +24,13 @@ use Unilead\HasOffers\Entity\Affiliate;
  */
 class AffiliateReceiptTest extends HasoffersPHPUnit
 {
+    protected $testId = '2';
+
     public function testCreatingAffiliateReceiptWays()
     {
         $affiliate1 = $this->hoClient->get(AffiliateReceipt::class); // recommended!
         $affiliate2 = $this->hoClient->get('AffiliateReceipt');
-        $affiliate3 = $this->hoClient->get('Unilead\\HasOffers\\Entity\\AffiliateReceipt');
+        $affiliate3 = $this->hoClient->get('Item8\\HasOffers\\Entity\\AffiliateReceipt');
         $affiliate4 = new AffiliateReceipt();
         $affiliate4->setClient($this->hoClient);
 
@@ -45,10 +45,9 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
 
     public function testCanGetAffiliateReceiptById()
     {
-        $someId = '2';
-        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $someId);
+        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
 
-        is($someId, $affReceipt->id);
+        is($this->testId, $affReceipt->id);
     }
 
     public function testIsExist()
@@ -64,13 +63,13 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
         // $affReceipt = $this->hoClient->get(AffiliateReceipt::class, '10000000');
         // isFalse($affReceipt->isExist());
 
-        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, '2');
+        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
         isTrue($affReceipt->isExist());
     }
 
     public function testUnset()
     {
-        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, '2');
+        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
         isTrue($affReceipt->currency);
         unset($affReceipt->currency);
         isFalse($affReceipt->currency);
@@ -80,7 +79,7 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
 
     public function testBindData()
     {
-        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, '2');
+        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
         $oldNotes = $affReceipt->notes;
         $newNotes = 'New notes';
         $affReceipt->mergeData(['notes' => $newNotes]);
@@ -90,8 +89,8 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage    No data to create new object "Unilead\HasOffers\Entity\AffiliateReceipt" in HasOffers
-     * @expectedException           \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage    No data to create new object "Item8\HasOffers\Entity\AffiliateReceipt" in HasOffers
+     * @expectedException           \Item8\HasOffers\Exception
      */
     public function testCannotSaveUndefinedId()
     {
@@ -100,42 +99,38 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage Undefined property "undefined_property" in Unilead\HasOffers\Entity\AffiliateReceipt
-     * @expectedException \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage Undefined property "undefined_property" in Item8\HasOffers\Entity\AffiliateReceipt
+     * @expectedException \Item8\HasOffers\Exception
      */
     public function testCannotGetUndefinedProperty()
     {
-        $someId = '2';
-        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $someId);
-        is($someId, $affReceipt->id);
+        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
+        is($this->testId, $affReceipt->id);
 
         $affReceipt->undefined_property;
     }
 
     public function testData()
     {
-        $someId = '2';
-        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $someId);
+        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
         isNotEmpty($affReceipt->data());
     }
 
     public function testIsset()
     {
-        $someId = '2';
-        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $someId);
+        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
         isTrue(isset($affReceipt->status));
         isFalse(isset($affReceipt->undefined));
     }
 
     /**
      * @expectedExceptionMessage Undefined method "getFakeContainObject" or related object "FakeContainObject" in
-     *                           Unilead\HasOffers\Entity\AffiliateReceipt for objectId=2
-     * @expectedException \Unilead\HasOffers\Exception
+     *                           Item8\HasOffers\Entity\AffiliateReceipt for objectId=2
+     * @expectedException \Item8\HasOffers\Exception
      */
     public function testCannotGetUndefinedContain()
     {
-        $someId = '2';
-        $affiliate = $this->hoClient->get(AffiliateReceipt::class, $someId);
+        $affiliate = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
 
         $affiliate->getFakeContainObject();
     }
@@ -143,8 +138,7 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
     public function testGetAffiliateInvoice()
     {
         $this->markTestSkipped('Contain not ready yet');
-        $someId = '2';
-        $affiliate = $this->hoClient->get(AffiliateReceipt::class, $someId);
+        $affiliate = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
         $affInvoices = $affiliate->getAffiliateInvoice();
 
         isSame(1, count($affInvoices));
@@ -153,9 +147,8 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
 
     public function testGetAffiliate()
     {
-        $this->markTestSkipped('Contain not ready yet');
-        $someId = '2';
-        $affiliate = $this->hoClient->get(AffiliateReceipt::class, $someId);
+        skip('Contain not ready yet (Nik)');
+        $affiliate = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
         $affiliate = $affiliate->getAffiliate();
 
         isSame('1000', $affiliate->id);
@@ -167,9 +160,9 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
     {
         /** @var AffiliateReceipt $affReceipt */
         $affReceipt = $this->hoClient->get(AffiliateReceipt::class);
-        $affReceipt->affiliate_id = '1000';
+        $affReceipt->affiliate_id = '2';
         $affReceipt->date = date('Y-m-d');
-        $affReceipt->currency = 'EUR';
+        $affReceipt->currency = $this->faker->currencyCode;
         $affReceipt->amount = 20.0;
         $affReceipt->status = AffiliateReceipt::STATUS_SUCCESS;
         $affReceipt->method = AffiliateReceipt::PAYMENT_METHOD_WIRE;
@@ -183,20 +176,21 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
         isSame($affReceipt->id, $affReceiptCheck->id); // Check is new id bind to object
         isSame($affReceipt->currency, $affReceiptCheck->currency);
         isSame($affReceipt->amount, $affReceiptCheck->amount);
+
+        $affReceipt->delete(); // Clean up after test
     }
 
     public function testCanUpdate()
     {
         $this->skipIfFakeServer();
 
-        $affReceiptId = 2;
-        $affReceiptBeforeSave = $this->hoClient->get(AffiliateReceipt::class, $affReceiptId);
+        $affReceiptBeforeSave = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
 
         $beforeMemo = $affReceiptBeforeSave->memo;
-        $affReceiptBeforeSave->memo = Str::random();
+        $affReceiptBeforeSave->memo = $this->faker->text();
         $affReceiptBeforeSave->save();
 
-        $affReceiptAfterSave = $this->hoClient->get(AffiliateReceipt::class, $affReceiptId);
+        $affReceiptAfterSave = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
         isNotSame($beforeMemo, $affReceiptAfterSave->memo);
     }
 
@@ -204,11 +198,10 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
     {
         $this->skipIfFakeServer();
 
-        $affReceiptId = 2;
-        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $affReceiptId);
+        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
         $affReceipt->delete();
 
-        $affReceiptAfterSave = $this->hoClient->get(AffiliateReceipt::class, $affReceiptId);
+        $affReceiptAfterSave = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
 
         isSame(AffiliateReceipt::STATUS_DELETED, $affReceiptAfterSave->status);
     }
@@ -218,9 +211,9 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
 
     public function testUpdateOnlyChangedFields()
     {
-        $randomValue = Str::random();
+        $randomValue = $this->faker->email;
 
-        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, 2);
+        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
         $affReceipt->notes = $randomValue;
         $affReceipt->memo = $randomValue;
 
@@ -236,11 +229,11 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
 
     public function testNoDataToUpdateIsNotError()
     {
-        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, 2);
+        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
         $affReceipt->save();
 
         isSame([], $affReceipt->getChangedFields());
-        is(2, $affReceipt->id);
+        is($this->testId, $affReceipt->id);
     }
 
     public function testNoRequestOnEmptyDataSave()
@@ -251,7 +244,7 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
             $eventChecker[] = end($args);
         });
 
-        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, 2);
+        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
         $affReceipt->save();
 
         isSame([], $affReceipt->getChangedFields());
@@ -267,7 +260,7 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
             $eventChecker[] = end($args);
         });
 
-        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, 2);
+        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
         $affReceipt->reload();
 
         isSame([], $affReceipt->getChangedFields());
@@ -285,7 +278,7 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
             $eventChecker[] = end($args);
         });
 
-        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, 2);
+        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
         $memo = $affReceipt->memo;
         $affReceipt->memo = $memo;
         isSame([], $affReceipt->getChangedFields());
@@ -303,8 +296,8 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
             $eventChecker[] = end($args);
         });
 
-        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, 2);
-        $affReceipt->save(['memo' => Str::random()]);
+        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
+        $affReceipt->save(['memo' => $this->faker->text()]);
 
         // TODO: change to affiliatereceipt
         isSame([
@@ -326,7 +319,7 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
                 $eventChecker[] = end($args);
             });
 
-        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, 2);
+        $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
         $affReceipt->save(['memo' => $affReceipt->memo]);
 
         // TODO: change to affiliatereceipt

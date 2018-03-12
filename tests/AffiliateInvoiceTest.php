@@ -1,20 +1,20 @@
 <?php
 /**
- * Unilead | HasOffers
+ * Item8 | HasOffers
  *
- * This file is part of the Unilead Service Package.
+ * This file is part of the Item8 Service Package.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @package     HasOffers
  * @license     Proprietary
- * @copyright   Copyright (C) Unilead Network, All rights reserved.
- * @link        https://www.unileadnetwork.com
+ * @copyright   Copyright (C) Item8, All rights reserved.
+ * @link        https://item8.io
  */
 
 namespace JBZoo\PHPUnit;
 
-use Unilead\HasOffers\Entity\AffiliateInvoice;
+use Item8\HasOffers\Entity\AffiliateInvoice;
 
 /**
  * Class AffiliateInvoiceTest
@@ -23,11 +23,13 @@ use Unilead\HasOffers\Entity\AffiliateInvoice;
  */
 class AffiliateInvoiceTest extends HasoffersPHPUnit
 {
+    protected $testId = '4';
+
     public function testCreatingAffiliateInvoiceWays()
     {
         $bill1 = $this->hoClient->get(AffiliateInvoice::class); // recommended!
         $bill2 = $this->hoClient->get('AffiliateInvoice');
-        $bill3 = $this->hoClient->get('Unilead\\HasOffers\\Entity\\AffiliateInvoice');
+        $bill3 = $this->hoClient->get('Item8\\HasOffers\\Entity\\AffiliateInvoice');
         $bill4 = new AffiliateInvoice();
         $bill4->setClient($this->hoClient);
 
@@ -41,8 +43,8 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage No data to create new object "Unilead\HasOffers\Entity\AffiliateInvoice" in HasOffers
-     * @expectedException        \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage No data to create new object "Item8\HasOffers\Entity\AffiliateInvoice" in HasOffers
+     * @expectedException        \Item8\HasOffers\Exception
      */
     public function testCannotSaveUndefinedId()
     {
@@ -51,26 +53,24 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage Undefined property "undefined_property" in Unilead\HasOffers\Entity\AffiliateInvoice
-     * @expectedException \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage Undefined property "undefined_property" in Item8\HasOffers\Entity\AffiliateInvoice
+     * @expectedException \Item8\HasOffers\Exception
      */
     public function testCannotGetUndefinedProperty()
     {
-        $someId = '24';
         /** @var AffiliateInvoice $bill */
-        $bill = $this->hoClient->get(AffiliateInvoice::class, $someId);
-        is($someId, $bill->id);
+        $bill = $this->hoClient->get(AffiliateInvoice::class, $this->testId);
+        is($this->testId, $bill->id);
 
         $bill->undefined_property;
     }
 
     public function testCanGetAffiliateInvoiceById()
     {
-        $someId = '24';
         /** @var AffiliateInvoice $bill */
-        $bill = $this->hoClient->get(AffiliateInvoice::class, $someId);
+        $bill = $this->hoClient->get(AffiliateInvoice::class, $this->testId);
 
-        is($someId, $bill->id);
+        is($this->testId, $bill->id);
     }
 
     public function testCanCreateAffiliateInvoice()
@@ -90,14 +90,16 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
         isSame($bill->id, $invoiceCheck->id);
         isSame($bill->start_date, $invoiceCheck->start_date);
         isSame($bill->end_date, $invoiceCheck->end_date);
+
+        $bill->delete(); // Clean up after test
     }
 
     public function testCanUpdateAffiliateInvoice()
     {
         /** @var AffiliateInvoice $bill */
-        $bill = $this->hoClient->get(AffiliateInvoice::class, 24);
-        $bill->currency = 'EUR';
-        $bill->memo = 'test';
+        $bill = $this->hoClient->get(AffiliateInvoice::class, $this->testId);
+        $bill->currency = $this->faker->currencyCode;
+        $bill->memo = $this->faker->sentence();
         $bill->status = AffiliateInvoice::STATUS_ACTIVE;
         $bill->save();
 
@@ -111,14 +113,13 @@ class AffiliateInvoiceTest extends HasoffersPHPUnit
 
     public function testCanDeleteAffiliateInvoice()
     {
-        $billId = 24;
         /** @var AffiliateInvoice $billReset */
-        $billReset = $this->hoClient->get(AffiliateInvoice::class, $billId);
+        $billReset = $this->hoClient->get(AffiliateInvoice::class, $this->testId);
         $billReset->status = AffiliateInvoice::STATUS_ACTIVE;
         $billReset->save();
 
         /** @var AffiliateInvoice $bill */
-        $bill = $this->hoClient->get(AffiliateInvoice::class, $billId);
+        $bill = $this->hoClient->get(AffiliateInvoice::class, $this->testId);
         $bill->delete();
 
         isSame(AffiliateInvoice::STATUS_DELETED, $bill->status);

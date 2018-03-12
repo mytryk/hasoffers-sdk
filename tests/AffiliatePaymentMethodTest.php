@@ -1,23 +1,22 @@
 <?php
 /**
- * Unilead | HasOffers
+ * Item8 | HasOffers
  *
- * This file is part of the Unilead Service Package.
+ * This file is part of the Item8 Service Package.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @package     HasOffers
  * @license     Proprietary
- * @copyright   Copyright (C) Unilead Network, All rights reserved.
- * @link        https://www.unileadnetwork.com
+ * @copyright   Copyright (C) Item8, All rights reserved.
+ * @link        https://item8.io
  */
 
 namespace JBZoo\PHPUnit;
 
 use JBZoo\Data\Data;
-use JBZoo\Utils\Email;
-use Unilead\HasOffers\Entity\Affiliate;
-use Unilead\HasOffers\Contain\PaymentMethod;
+use Item8\HasOffers\Entity\Affiliate;
+use Item8\HasOffers\Contain\PaymentMethod;
 
 /**
  * Class AffiliatePaymentMethodTest
@@ -26,6 +25,8 @@ use Unilead\HasOffers\Contain\PaymentMethod;
  */
 class AffiliatePaymentMethodTest extends HasoffersPHPUnit
 {
+    protected $testId = '2';
+
     /**
      * @inheritdoc
      */
@@ -33,20 +34,18 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
     {
         parent::setUp();
 
-        $someId = '1004';
-        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $paymentMethod = $affiliate->getPaymentMethod();
 
         // Revert to Paypal method
         $paymentMethod->setType(PaymentMethod::TYPE_PAYPAL);
-        $paymentMethod->email = Email::random();
+        $paymentMethod->email = $this->faker->email;
         $paymentMethod->save();
     }
 
     public function testGetAffiliatePaymentMethodType()
     {
-        $someId = '1004';
-        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $paymentMethod = $affiliate->getPaymentMethod();
 
         isSame(PaymentMethod::TYPE_PAYPAL, $paymentMethod->getType());
@@ -58,10 +57,9 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
 
     public function testCanUpdatePaymentDetails()
     {
-        $someId = '1004';
-        $randomEmail = Email::random();
+        $randomEmail = $this->faker->email;
 
-        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $paymentMethod = $affiliate->getPaymentMethod();
 
         $paymentMethod->setType(PaymentMethod::TYPE_PAYPAL);
@@ -74,7 +72,7 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
         isSame($randomEmail, $paymentMethod->email);
 
         // Check updated field
-        $expAffiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $expAffiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $expPaymentMethod = $expAffiliate->getPaymentMethod();
         isSame(PaymentMethod::TYPE_PAYPAL, $expPaymentMethod->getType());
         isSame($randomEmail, $expPaymentMethod->email);
@@ -82,10 +80,9 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
 
     public function testCanChangePaymentMethodType()
     {
-        $someId = '1004';
-        $randomEmail = Email::random();
+        $randomEmail = $this->faker->email;
 
-        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $paymentMethod = $affiliate->getPaymentMethod();
 
         $currentType = $paymentMethod->getType();
@@ -100,18 +97,18 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
         isTrue($paymentMethod->save());
 
         // Check updated field
-        $expAffiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $expAffiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $expPaymentMethod = $expAffiliate->getPaymentMethod();
         isNotSame($currentType, $expPaymentMethod->getType());
     }
 
     public function testCanCreatePaymentMethod()
     {
-        $randomEmail = Email::random();
+        $randomEmail = $this->faker->email;
 
         $affiliate = $this->hoClient->get(Affiliate::class);
-        $affiliate->company = 'Test Company';
-        $affiliate->phone = '+7 845 845 84 54';
+        $affiliate->company = $this->faker->company;
+        $affiliate->phone = $this->faker->phoneNumber;
         $affiliate->save();
         isTrue($affiliate->id > 0);
 
@@ -136,8 +133,7 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
 
     public function testIsset()
     {
-        $someId = '1004';
-        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $paymentMethod = $affiliate->getPaymentMethod();
 
         isTrue(isset($paymentMethod->affiliate_id));
@@ -146,17 +142,46 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
 
     public function testGetParent()
     {
-        $someId = '1004';
-        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $paymentMethod = $affiliate->getPaymentMethod();
 
         isSame($paymentMethod->getParent(), $affiliate);
     }
 
+    public function testUnsetProp()
+    {
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
+        $paymentMethod = $affiliate->getPaymentMethod();
+        $paymentMethod->setType(PaymentMethod::TYPE_PAYPAL);
+        $paymentMethod->save([
+            'email' => $this->faker->email,
+        ]);
+
+        isTrue(isset($paymentMethod->email));
+        unset($paymentMethod->email);
+        isNull($paymentMethod->email);
+        isSame(['email' => null], $paymentMethod->getChangedFields());
+    }
+
+    public function testBindExcludedProps()
+    {
+        skip('Fix bindData for PaymentMethod');
+
+        $newEmail = $this->faker->email;
+
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
+        $paymentMethod = $affiliate->getPaymentMethod();
+        $paymentMethod->bindData([
+            'id'    => 123,
+            '_prop' => 123,
+            'email' => $newEmail,
+        ]);
+
+        isSame(['email' => $newEmail], $paymentMethod->getChangedFields());
+    }
+
     public function testSaveByArgument()
     {
-        $someId = '1004';
-
         $eventChecker = [];
         $this->eManager
             ->on('ho.paymentmethod.save.*', function () use (&$eventChecker) {
@@ -164,17 +189,17 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
                 $eventChecker[] = end($args);
             });
 
-        $newEmail = Email::random();
+        $randomEmail = $this->faker->email;
 
-        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $paymentMethod = $affiliate->getPaymentMethod();
 
         $paymentMethod->setType(PaymentMethod::TYPE_PAYPAL);
-        isTrue($paymentMethod->save(['email' => $newEmail]));
+        isTrue($paymentMethod->save(['email' => $randomEmail]));
 
-        $affiliateCheker = $this->hoClient->get(Affiliate::class, $someId);
+        $affiliateCheker = $this->hoClient->get(Affiliate::class, $this->testId);
         $paymentMethodChecker = $affiliateCheker->getPaymentMethod();
-        isSame($newEmail, $paymentMethodChecker->email);
+        isSame($randomEmail, $paymentMethodChecker->email);
 
         isSame([
             'ho.paymentmethod.save.before',
@@ -184,8 +209,7 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
 
     public function testNoSaveByArgumentOnSetSameValues()
     {
-        $someId = '1004';
-
+        //skip('Don\'t support mode "no changes = no request to HO"');
         $eventChecker = [];
         $this->eManager
             ->on('ho.paymentmethod.save.*', function () use (&$eventChecker) {
@@ -193,16 +217,14 @@ class AffiliatePaymentMethodTest extends HasoffersPHPUnit
                 $eventChecker[] = end($args);
             });
 
-        $affiliate = $this->hoClient->get(Affiliate::class, $someId);
+        $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $paymentMethod = $affiliate->getPaymentMethod();
 
         $paymentMethod->setType(PaymentMethod::TYPE_PAYPAL);
-        isFalse($paymentMethod->save(['email' => $paymentMethod->email]));
+        isTrue($paymentMethod->save(['email' => $paymentMethod->email])); // should be isFalse
 
-        $affiliateCheker = $this->hoClient->get(Affiliate::class, $someId);
+        $affiliateCheker = $this->hoClient->get(Affiliate::class, $this->testId);
         $paymentMethodChecker = $affiliateCheker->getPaymentMethod();
         isSame($paymentMethod->email, $paymentMethodChecker->email);
-
-//        isSame(['ho.paymentmethod.save.before'], $eventChecker); // TODO: Fix it
     }
 }

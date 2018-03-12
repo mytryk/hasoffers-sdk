@@ -1,22 +1,21 @@
 <?php
 /**
- * Unilead | HasOffers
+ * Item8 | HasOffers
  *
- * This file is part of the Unilead Service Package.
+ * This file is part of the Item8 Service Package.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @package     HasOffers
  * @license     Proprietary
- * @copyright   Copyright (C) Unilead Network, All rights reserved.
- * @link        https://www.unileadnetwork.com
+ * @copyright   Copyright (C) Item8, All rights reserved.
+ * @link        https://item8.io
  */
 
 namespace JBZoo\PHPUnit;
 
-use JBZoo\Utils\Str;
-use Unilead\HasOffers\Entity\Advertiser;
-use Unilead\HasOffers\Entity\AdvertiserUser;
+use Item8\HasOffers\Entity\Advertiser;
+use Item8\HasOffers\Entity\AdvertiserUser;
 
 /**
  * Class AdvertiserTest
@@ -25,11 +24,13 @@ use Unilead\HasOffers\Entity\AdvertiserUser;
  */
 class AdvertiserTest extends HasoffersPHPUnit
 {
+    protected $testId = '2';
+
     public function testCreatingAdvertiserWays()
     {
         $advertiser1 = $this->hoClient->get(Advertiser::class); // recommended!
         $advertiser2 = $this->hoClient->get('Advertiser');
-        $advertiser3 = $this->hoClient->get('Unilead\\HasOffers\\Entity\\Advertiser');
+        $advertiser3 = $this->hoClient->get('Item8\\HasOffers\\Entity\\Advertiser');
         $advertiser4 = new Advertiser();
         $advertiser4->setClient($this->hoClient);
 
@@ -43,8 +44,8 @@ class AdvertiserTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedException           \Unilead\HasOffers\Exception
-     * @expectedExceptionMessage    Property "id" read only in Unilead\HasOffers\Entity\Advertiser
+     * @expectedException           \Item8\HasOffers\Exception
+     * @expectedExceptionMessage    Property "id" read only in Item8\HasOffers\Entity\Advertiser
      */
     public function testIdReadOnly()
     {
@@ -54,7 +55,7 @@ class AdvertiserTest extends HasoffersPHPUnit
 
     public function testCanGetAdvertiserById()
     {
-        $someId = '504';
+        $someId = $this->testId;
         /** @var Advertiser $advertiser */
         $advertiser = $this->hoClient->get(Advertiser::class, $someId);
 
@@ -62,8 +63,8 @@ class AdvertiserTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage    No data to create new object "Unilead\HasOffers\Entity\Advertiser" in HasOffers
-     * @expectedException           \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage    No data to create new object "Item8\HasOffers\Entity\Advertiser" in HasOffers
+     * @expectedException           \Item8\HasOffers\Exception
      */
     public function testCannotSaveUndefinedId()
     {
@@ -72,12 +73,12 @@ class AdvertiserTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage Undefined property "undefined_property" in Unilead\HasOffers\Entity\Advertiser
-     * @expectedException \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage Undefined property "undefined_property" in Item8\HasOffers\Entity\Advertiser
+     * @expectedException \Item8\HasOffers\Exception
      */
     public function testCannotGetUndefinedProperty()
     {
-        $someId = '504';
+        $someId = $this->testId;
         /** @var Advertiser $advertiser */
         $advertiser = $this->hoClient->get(Advertiser::class, $someId);
         is($someId, $advertiser->id);
@@ -87,25 +88,23 @@ class AdvertiserTest extends HasoffersPHPUnit
 
     public function testGetAdvertiserSignUpAnswers()
     {
-        $someId = '504';
         /** @var Advertiser $advertiser */
-        $advertiser = $this->hoClient->get(Advertiser::class, $someId);
+        $advertiser = $this->hoClient->get(Advertiser::class, $this->testId);
         $answers = $advertiser->getAnswers();
 
-        isSame(2, count($answers));
-        isSame('What language do you speak?', $answers[1]['question']);
-        isSame('English', $answers[1]['answer']);
+        isSame(1, count($answers));
+        isSame('What language do you speak?', $answers[0]['question']);
+        isSame('English', $answers[0]['answer']);
     }
 
     public function testGetAdvertiserUser()
     {
-        $someId = '504';
-        /** @var Advertiser $affiliate */
-        $affiliate = $this->hoClient->get(Advertiser::class, $someId);
-        $users = $affiliate->getAdvertiserUser()->getList();
+        /** @var Advertiser $advertiser */
+        $advertiser = $this->hoClient->get(Advertiser::class, $this->testId);
+        $users = $advertiser->getAdvertiserUser()->getList();
 
-        isSame('10', $users[0]['id']);
-        isSame('ivan@test.com', $users[0]['email']);
+        isSame('2', $users[0]['id']);
+        isNotEmpty($users[0]['email']);
         isSame(AdvertiserUser::STATUS_ACTIVE, $users[0]['status']);
     }
 
@@ -113,9 +112,9 @@ class AdvertiserTest extends HasoffersPHPUnit
     {
         /** @var Advertiser $advertiser */
         $advertiser = $this->hoClient->get(Advertiser::class);
-        $advertiser->company = 'Test Company';
-        $advertiser->phone = '+7 845 845 84 54';
-        $advertiser->zipcode = '432543';
+        $advertiser->company = $this->faker->company;
+        $advertiser->phone = $this->faker->cellphoneNumber;
+        $advertiser->zipcode = $this->faker->postcode;
         $advertiser->save();
 
         /** @var Advertiser $advertiserCheck */
@@ -125,27 +124,29 @@ class AdvertiserTest extends HasoffersPHPUnit
         isSame($advertiser->company, $advertiserCheck->company);
         isSame($advertiser->phone, $advertiserCheck->phone);
         isSame($advertiser->zipcode, $advertiserCheck->zipcode);
+
+        $advertiser->delete(); // Clean up after test
     }
 
     public function testCanUpdateAdvertiser()
     {
         $this->skipIfFakeServer();
         /** @var Advertiser $advertiserBeforeSave */
-        $advertiserBeforeSave = $this->hoClient->get(Advertiser::class, 504);
+        $advertiserBeforeSave = $this->hoClient->get(Advertiser::class, $this->testId);
 
         $beforeCompany = $advertiserBeforeSave->company;
-        $advertiserBeforeSave->company = Str::random();
+        $advertiserBeforeSave->company = $this->faker->company;
         $advertiserBeforeSave->save();
 
         /** @var Advertiser $advertiserAfterSave */
-        $advertiserAfterSave = $this->hoClient->get(Advertiser::class, 504);
+        $advertiserAfterSave = $this->hoClient->get(Advertiser::class, $this->testId);
         isNotSame($beforeCompany, $advertiserAfterSave->company);
     }
 
     public function testCanDeleteAdvertiser()
     {
         /** @var Advertiser $advertiser */
-        $advertiser = $this->hoClient->get(Advertiser::class, 504);
+        $advertiser = $this->hoClient->get(Advertiser::class, $this->testId);
 
         $advertiser->delete();
 
@@ -155,7 +156,7 @@ class AdvertiserTest extends HasoffersPHPUnit
     public function testCanRestoreAdvertiser()
     {
         /** @var Advertiser $advertiser */
-        $advertiser = $this->hoClient->get(Advertiser::class, 504);
+        $advertiser = $this->hoClient->get(Advertiser::class, $this->testId);
         $advertiser->activate();
 
         isSame(Advertiser::STATUS_ACTIVE, $advertiser->status);

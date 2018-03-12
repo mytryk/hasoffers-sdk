@@ -1,21 +1,21 @@
 <?php
 /**
- * Unilead | HasOffers
+ * Item8 | HasOffers
  *
- * This file is part of the Unilead Service Package.
+ * This file is part of the Item8 Service Package.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @package     HasOffers
  * @license     Proprietary
- * @copyright   Copyright (C) Unilead Network, All rights reserved.
- * @link        https://www.unileadnetwork.com
+ * @copyright   Copyright (C) Item8, All rights reserved.
+ * @link        https://item8.io
  */
 
 namespace JBZoo\PHPUnit;
 
 use JBZoo\Utils\Str;
-use Unilead\HasOffers\Entity\AdvertiserUser;
+use Item8\HasOffers\Entity\AdvertiserUser;
 
 /**
  * Class AdvertiserUserTest
@@ -24,11 +24,13 @@ use Unilead\HasOffers\Entity\AdvertiserUser;
  */
 class AdvertiserUserTest extends HasoffersPHPUnit
 {
+    protected $testId = '12';
+
     public function testCreatingAdvertiserUserWays()
     {
         $advertiserUser1 = $this->hoClient->get(AdvertiserUser::class); // recommended!
         $advertiserUser2 = $this->hoClient->get('AdvertiserUser');
-        $advertiserUser3 = $this->hoClient->get('Unilead\\HasOffers\\Entity\\AdvertiserUser');
+        $advertiserUser3 = $this->hoClient->get('Item8\\HasOffers\\Entity\\AdvertiserUser');
         $advertiserUser4 = new AdvertiserUser();
         $advertiserUser4->setClient($this->hoClient);
 
@@ -42,8 +44,8 @@ class AdvertiserUserTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedException           \Unilead\HasOffers\Exception
-     * @expectedExceptionMessage    Property "id" read only in Unilead\HasOffers\Entity\AdvertiserUser
+     * @expectedException           \Item8\HasOffers\Exception
+     * @expectedExceptionMessage    Property "id" read only in Item8\HasOffers\Entity\AdvertiserUser
      */
     public function testIdReadOnly()
     {
@@ -53,16 +55,15 @@ class AdvertiserUserTest extends HasoffersPHPUnit
 
     public function testCanGetAdvertiserUserById()
     {
-        $someId = '12';
         /** @var AdvertiserUser $advertiserUser */
-        $advertiserUser = $this->hoClient->get(AdvertiserUser::class, $someId);
+        $advertiserUser = $this->hoClient->get(AdvertiserUser::class, $this->testId);
 
-        is($someId, $advertiserUser->id);
+        is($this->testId, $advertiserUser->id);
     }
 
     /**
-     * @expectedExceptionMessage    No data to create new object "Unilead\HasOffers\Entity\AdvertiserUser" in HasOffers
-     * @expectedException           \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage    No data to create new object "Item8\HasOffers\Entity\AdvertiserUser" in HasOffers
+     * @expectedException           \Item8\HasOffers\Exception
      */
     public function testCannotSaveUndefinedId()
     {
@@ -71,15 +72,14 @@ class AdvertiserUserTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage Undefined property "undefined_property" in Unilead\HasOffers\Entity\AdvertiserUser
-     * @expectedException \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage Undefined property "undefined_property" in Item8\HasOffers\Entity\AdvertiserUser
+     * @expectedException \Item8\HasOffers\Exception
      */
     public function testCannotGetUndefinedProperty()
     {
-        $someId = '12';
         /** @var AdvertiserUser $advertiserUser */
-        $advertiserUser = $this->hoClient->get(AdvertiserUser::class, $someId);
-        is($someId, $advertiserUser->id);
+        $advertiserUser = $this->hoClient->get(AdvertiserUser::class, $this->testId);
+        is($this->testId, $advertiserUser->id);
 
         $advertiserUser->undefined_property;
     }
@@ -88,13 +88,13 @@ class AdvertiserUserTest extends HasoffersPHPUnit
     {
         $this->skipIfFakeServer();
 
-        $password = Str::random(13);
-        $email = Str::random(10) . '@' . Str::random(5) . '.com';
+        $password = Str::random();
+        $email = $this->faker->companyEmail;
         /** @var AdvertiserUser $advertiserUser */
         $advertiserUser = $this->hoClient->get(AdvertiserUser::class);
-        $advertiserUser->advertiser_id = '524';
-        $advertiserUser->first_name = 'Test Company';
-        $advertiserUser->phone = '+7 845 845 84 54';
+        $advertiserUser->advertiser_id = '500';
+        $advertiserUser->first_name = $this->faker->company;
+        $advertiserUser->phone = $this->faker->phoneNumber;
         $advertiserUser->email = $email;
         $advertiserUser->password = $password;
         $advertiserUser->password_confirmation = $password;
@@ -107,6 +107,8 @@ class AdvertiserUserTest extends HasoffersPHPUnit
         isSame($advertiserUser->first_name, $advertiserCheck->first_name);
         isSame($advertiserUser->phone, $advertiserCheck->phone);
         isSame($advertiserUser->email, $advertiserCheck->email);
+
+        $advertiserUser->delete(); // Clean up after test
     }
 
     public function testCanUpdateAdvertiserUser()
@@ -114,21 +116,21 @@ class AdvertiserUserTest extends HasoffersPHPUnit
         $this->skipIfFakeServer();
 
         /** @var AdvertiserUser $advertiserUserBeforeSave */
-        $advertiserUserBeforeSave = $this->hoClient->get(AdvertiserUser::class, 12);
+        $advertiserUserBeforeSave = $this->hoClient->get(AdvertiserUser::class, $this->testId);
 
         $beforeFirstName = $advertiserUserBeforeSave->first_name;
-        $advertiserUserBeforeSave->first_name = Str::random();
+        $advertiserUserBeforeSave->first_name = $this->faker->firstName();
         $advertiserUserBeforeSave->save();
 
         /** @var AdvertiserUser $advertiserAfterSave */
-        $advertiserAfterSave = $this->hoClient->get(AdvertiserUser::class, 12);
+        $advertiserAfterSave = $this->hoClient->get(AdvertiserUser::class, $this->testId);
         isNotSame($beforeFirstName, $advertiserAfterSave->first_name);
     }
 
     public function testCanDeleteAdvertiserUser()
     {
         /** @var AdvertiserUser $advertiserUser */
-        $advertiserUser = $this->hoClient->get(AdvertiserUser::class, 12);
+        $advertiserUser = $this->hoClient->get(AdvertiserUser::class, $this->testId);
 
         $advertiserUser->delete();
 

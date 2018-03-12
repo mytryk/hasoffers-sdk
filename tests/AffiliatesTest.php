@@ -1,23 +1,22 @@
 <?php
 /**
- * Unilead | HasOffers
+ * Item8 | HasOffers
  *
- * This file is part of the Unilead Service Package.
+ * This file is part of the Item8 Service Package.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @package     HasOffers
  * @license     Proprietary
- * @copyright   Copyright (C) Unilead Network, All rights reserved.
- * @link        https://www.unileadnetwork.com
+ * @copyright   Copyright (C) Item8, All rights reserved.
+ * @link        https://item8.io
  */
 
 namespace JBZoo\PHPUnit;
 
-use Unilead\HasOffers\Entity\Affiliate;
-use Unilead\HasOffers\Entities\Affiliates;
-use Unilead\HasOffers\Contain\PaymentMethod;
-use Unilead\HasOffers\Entity\AffiliateUser;
+use JBZoo\Utils\Arr;
+use Item8\HasOffers\Entity\Affiliate;
+use Item8\HasOffers\Entities\Affiliates;
 
 /**
  * Class AffiliatesTest
@@ -26,12 +25,14 @@ use Unilead\HasOffers\Entity\AffiliateUser;
  */
 class AffiliatesTest extends HasoffersPHPUnit
 {
+    protected $testId = '2';
+
     public function testCreateList()
     {
         $affiliates1 = $this->hoClient->get(Affiliates::class);
         $affiliates2 = $this->hoClient->get('Affiliates');
-        $affiliates3 = $this->hoClient->get('Unilead\HasOffers\Entities\Affiliates');
-        $affiliates4 = $this->hoClient->get('\Unilead\HasOffers\Entities\Affiliates');
+        $affiliates3 = $this->hoClient->get('Item8\HasOffers\Entities\Affiliates');
+        $affiliates4 = $this->hoClient->get('\Item8\HasOffers\Entities\Affiliates');
         $affiliates5 = new Affiliates();
 
         isClass(Affiliates::class, $affiliates1);
@@ -44,32 +45,35 @@ class AffiliatesTest extends HasoffersPHPUnit
     public function testFindList()
     {
         $affiliates = $this->hoClient->get(Affiliates::class);
-        $list = $affiliates->find();
+        $list = $affiliates->find([
+            'filters' => [
+                'id' => $this->testId,
+            ],
+        ]);
 
         /** @var Affiliate $affiliate */
-        $affiliate = $list[1004];
+        $affiliate = Arr::first($list);
 
-        isNotEmpty($affiliate->city);
-        isNotEmpty($affiliate->country);
-        isNotEmpty($affiliate->zipcode);
-        isNotEmpty($affiliate->address1);
+        isNotEmpty($affiliate->company);
 
         $paymentMethod = $affiliate->getPaymentMethod();
-        isSame(PaymentMethod::TYPE_PAYPAL, $paymentMethod->getType());
+        isNotEmpty($paymentMethod);
     }
 
     public function testCanGetAffiliateUser()
     {
         $affiliates = $this->hoClient->get(Affiliates::class);
-        $list = $affiliates->find();
+        $list = $affiliates->find([
+            'filters' => [
+                'id' => $this->testId,
+            ],
+        ]);
 
         /** @var Affiliate $affiliate */
-        $affiliate = $list[1004];
+        $affiliate = Arr::first($list);
 
         $users = $affiliate->getAffiliateUser()->getList();
 
-        isSame('10', $users->find('0.id'));
-        isSame('anbelov83@belov.ru', $users->find('0.email'));
-        isSame(AffiliateUser::STATUS_DELETED, $users->find('0.status'));
+        isSame('2', $users->find('0.id'));
     }
 }

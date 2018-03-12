@@ -1,21 +1,21 @@
 <?php
 /**
- * Unilead | HasOffers
+ * Item8 | HasOffers
  *
- * This file is part of the Unilead Service Package.
+ * This file is part of the Item8 Service Package.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @package     HasOffers
  * @license     Proprietary
- * @copyright   Copyright (C) Unilead Network, All rights reserved.
- * @link        https://www.unileadnetwork.com
+ * @copyright   Copyright (C) Item8, All rights reserved.
+ * @link        https://item8.io
  */
 
 namespace JBZoo\PHPUnit;
 
 use JBZoo\Utils\Str;
-use Unilead\HasOffers\Entity\Offer;
+use Item8\HasOffers\Entity\Offer;
 
 /**
  * Class OfferTest
@@ -24,11 +24,13 @@ use Unilead\HasOffers\Entity\Offer;
  */
 class OfferTest extends HasoffersPHPUnit
 {
+    protected $testId = '2';
+
     public function testCreatingOfferWays()
     {
         $offer1 = $this->hoClient->get(Offer::class); // recommended!
         $offer2 = $this->hoClient->get('Offer');
-        $offer3 = $this->hoClient->get('Unilead\\HasOffers\\Entity\\Offer');
+        $offer3 = $this->hoClient->get('Item8\\HasOffers\\Entity\\Offer');
         $offer4 = new Offer();
         $offer4->setClient($this->hoClient);
 
@@ -48,22 +50,24 @@ class OfferTest extends HasoffersPHPUnit
         $offer = $this->hoClient->get(Offer::class, $someId);
 
         is($someId, $offer->id);
-        is('Beasts of Dungeons (Android)', $offer->name);
+        is('Beasts of Dungeons (iOS)', $offer->name);
         is('active', $offer->status);
 
-        isSame('Android', $offer->getRuleTargeting()[0]['Name']);
-        isSame('Android operating system', $offer->getRuleTargeting()[0]['Description']);
-        isSame('Android', $offer->getRuleTargeting()[0]['Platform']);
+        isSame('iOS', $offer->getRuleTargeting()[0]['Name']);
+        isSame('iOS operating system', $offer->getRuleTargeting()[0]['Description']);
+        isSame('iOS', $offer->getRuleTargeting()[0]['Platform']);
+        isSame('Tutorial', $offer->getDefaultGoal());
+        isSame('Other', $offer->getTrackingSystem());
 
         isTrue($offer->getGoal()->data()->getArrayCopy());
         $goals = $offer->getGoal()->data()->getArrayCopy();
         isSame(1, count($goals));
         isSame('2', $goals[0]['id']);
-        isSame('Tutorial', $goals[0]['name']);
-        isSame('0.70000', $goals[0]['default_payout']);
-        isSame('1.00000', $goals[0]['max_payout']);
+        isSame('Install', $goals[0]['name']);
+        isSame('1.00000', $goals[0]['default_payout']);
+        isSame('2.00000', $goals[0]['max_payout']);
 
-        isSame('US;RU', $offer->getCountriesCodes());
+        isSame('RU;US', $offer->getCountriesCodes());
     }
 
     public function testIsExist()
@@ -73,13 +77,13 @@ class OfferTest extends HasoffersPHPUnit
         isFalse($offer->isExist());
 
         /** @var Offer $offer */
-        $offer = $this->hoClient->get(Offer::class, '2');
+        $offer = $this->hoClient->get(Offer::class, $this->testId);
         isTrue($offer->isExist());
     }
 
     /**
-     * @expectedExceptionMessage    No data to create new object "Unilead\HasOffers\Entity\Offer" in HasOffers
-     * @expectedException           \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage    No data to create new object "Item8\HasOffers\Entity\Offer" in HasOffers
+     * @expectedException           \Item8\HasOffers\Exception
      */
     public function testCannotSaveUndefinedId()
     {
@@ -88,15 +92,14 @@ class OfferTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedExceptionMessage Undefined property "undefined_property" in Unilead\HasOffers\Entity\Offer
-     * @expectedException \Unilead\HasOffers\Exception
+     * @expectedExceptionMessage Undefined property "undefined_property" in Item8\HasOffers\Entity\Offer
+     * @expectedException \Item8\HasOffers\Exception
      */
     public function testCannotGetUndefinedProperty()
     {
-        $someId = '2';
         /** @var Offer $offer */
-        $offer = $this->hoClient->get(Offer::class, $someId);
-        is($someId, $offer->id);
+        $offer = $this->hoClient->get(Offer::class, $this->testId);
+        is($this->testId, $offer->id);
 
         $offer->undefined_property;
     }
@@ -105,9 +108,9 @@ class OfferTest extends HasoffersPHPUnit
     {
         /** @var Offer $offer */
         $offer = $this->hoClient->get(Offer::class);
-        $offer->name = Str::random();
-        $offer->preview_url = 'http://' . Str::random() . '.com/' . Str::random();
-        $offer->offer_url = 'http://' . Str::random() . '.com/' . Str::random();
+        $offer->name = $this->faker->company;
+        $offer->preview_url = $this->faker->url;
+        $offer->offer_url = $this->faker->url;
         $offer->expiration_date = date('Y-m-d H:i:s');
         $offer->save();
 
@@ -120,6 +123,8 @@ class OfferTest extends HasoffersPHPUnit
         isSame($offer->offer_url, $offerCheck->offer_url);
         isSame($offer->expiration_date, $offerCheck->expiration_date);
         isSame($offer->status, Offer::STATUS_PENDING);
+
+        $offer->delete(); // Clean up after test
     }
 
     public function testCanUpdateOffer()
@@ -127,14 +132,14 @@ class OfferTest extends HasoffersPHPUnit
         $this->skipIfFakeServer();
 
         /** @var Offer $offerBeforeSave */
-        $offerBeforeSave = $this->hoClient->get(Offer::class, 2);
+        $offerBeforeSave = $this->hoClient->get(Offer::class, $this->testId);
 
         $beforeCompany = $offerBeforeSave->name;
-        $offerBeforeSave->name = Str::random();
+        $offerBeforeSave->name = $this->faker->name;
         $offerBeforeSave->save();
 
         /** @var Offer $offerAfterSave */
-        $offerAfterSave = $this->hoClient->get(Offer::class, 2);
+        $offerAfterSave = $this->hoClient->get(Offer::class, $this->testId);
         isNotSame($beforeCompany, $offerAfterSave->name);
     }
 
@@ -143,26 +148,27 @@ class OfferTest extends HasoffersPHPUnit
         $this->skipIfFakeServer();
 
         /** @var Offer $offer */
-        $offer = $this->hoClient->get(Offer::class, 2);
+        $offer = $this->hoClient->get(Offer::class, $this->testId);
         $offer->delete();
 
         /** @var Offer $offerAfterSave */
-        $offerAfterSave = $this->hoClient->get(Offer::class, 2);
+        $offerAfterSave = $this->hoClient->get(Offer::class, $this->testId);
 
         isSame(Offer::STATUS_DELETED, $offerAfterSave->status);
     }
 
     public function testUpdateOnlyChangedFields()
     {
-        $randomValue = Str::random();
+        $name = $this->faker->name();
+        $description = $this->faker->name();
 
-        $offer = $this->hoClient->get(Offer::class, 2);
-        $offer->name = $randomValue;
-        $offer->description = $randomValue;
+        $offer = $this->hoClient->get(Offer::class, $this->testId);
+        $offer->name = $name;
+        $offer->description = $description;
 
         isSame([
-            'name'        => $randomValue,
-            'description' => $randomValue,
+            'name'        => $name,
+            'description' => $description,
         ], $offer->getChangedFields());
 
         $offer->save();
@@ -173,9 +179,9 @@ class OfferTest extends HasoffersPHPUnit
     public function testNoDataToUpdateIsNotError()
     {
         /** @var Offer $offer */
-        $offer = $this->hoClient->get(Offer::class, 2);
+        $offer = $this->hoClient->get(Offer::class, $this->testId);
         $offer->save();
 
-        is(2, $offer->id);
+        is($this->testId, $offer->id);
     }
 }

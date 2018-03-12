@@ -1,5 +1,5 @@
 {
-    "name"              : "unilead/hasoffers",
+    "name"              : "item8/hasoffers",
     "type"              : "library",
     "description"       : "",
     "license"           : "proprietary",
@@ -12,14 +12,15 @@
     ],
     "require"           : {
         "php"               : ">=7.0",
-        "jbzoo/http-client" : "^1.1",
-        "jbzoo/utils"       : "^1.0",
+        "jbzoo/http-client" : "^1.2",
+        "jbzoo/utils"       : "^2.0",
         "jbzoo/event"       : "^1.4",
-        "jbzoo/data"        : "^1.6.1"
+        "jbzoo/data"        : "^1.6.1|^2.0"
     },
     "require-dev"       : {
-        "jbzoo/phpunit"     : "^2.0",
-        "item8/codestyle" : "^1.0"
+        "jbzoo/phpunit"   : "^2.0",
+        "item8/codestyle" : "^1.0",
+        "jbzoo/profiler"  : "^1.0"
     },
     "repositories"      : {
         "item8/codestyle" : {
@@ -29,7 +30,7 @@
     },
     "autoload"          : {
         "psr-4" : {
-            "Unilead\\HasOffers\\" : "src"
+            "Item8\\HasOffers\\" : "src"
         }
     },
     "autoload-dev"      : {

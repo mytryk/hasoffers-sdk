@@ -1,21 +1,21 @@
 <?php
 /**
- * Unilead | HasOffers
+ * Item8 | HasOffers
  *
- * This file is part of the Unilead Service Package.
+ * This file is part of the Item8 Service Package.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @package     HasOffers
  * @license     Proprietary
- * @copyright   Copyright (C) Unilead Network, All rights reserved.
- * @link        https://www.unileadnetwork.com
+ * @copyright   Copyright (C) Item8, All rights reserved.
+ * @link        https://item8.io
  */
 
 namespace JBZoo\PHPUnit;
 
-use Unilead\HasOffers\Entity\AdvertiserUser;
-use Unilead\HasOffers\Entities\AdvertiserUsers;
+use Item8\HasOffers\Entity\AdvertiserUser;
+use Item8\HasOffers\Entities\AdvertiserUsers;
 
 /**
  * Class AdvertiserUsersTest
@@ -24,6 +24,8 @@ use Unilead\HasOffers\Entities\AdvertiserUsers;
  */
 class AdvertiserUsersTest extends HasoffersPHPUnit
 {
+    protected $testId = '4';
+
     public function testFindList()
     {
         /** @var AdvertiserUsers $users */
@@ -31,11 +33,8 @@ class AdvertiserUsersTest extends HasoffersPHPUnit
         $list = $users->find();
 
         /** @var AdvertiserUser $user */
-        $user = $list[4];
+        $user = $list[$this->testId];
 
-        isSame('John', $user->first_name);
-        isSame('Silver', $user->last_name);
-        isSame('john@acme.com', $user->email);
-        isSame('Marketing Manager', $user->title);
+        isNotEmpty($user->first_name);
     }
 }

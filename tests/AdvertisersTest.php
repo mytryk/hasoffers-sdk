@@ -1,22 +1,22 @@
 <?php
 /**
- * Unilead | HasOffers
+ * Item8 | HasOffers
  *
- * This file is part of the Unilead Service Package.
+ * This file is part of the Item8 Service Package.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @package     HasOffers
  * @license     Proprietary
- * @copyright   Copyright (C) Unilead Network, All rights reserved.
- * @link        https://www.unileadnetwork.com
+ * @copyright   Copyright (C) Item8, All rights reserved.
+ * @link        https://item8.io
  */
 
 namespace JBZoo\PHPUnit;
 
-use Unilead\HasOffers\Entity\Advertiser;
-use Unilead\HasOffers\Entities\Advertisers;
-use Unilead\HasOffers\Entity\AdvertiserUser;
+use Item8\HasOffers\Entity\Advertiser;
+use Item8\HasOffers\Entities\Advertisers;
+use Item8\HasOffers\Entity\AdvertiserUser;
 
 /**
  * Class AdvertisersTest
@@ -25,6 +25,8 @@ use Unilead\HasOffers\Entity\AdvertiserUser;
  */
 class AdvertisersTest extends HasoffersPHPUnit
 {
+    protected $testId = '2';
+
     public function testFindList()
     {
         /** @var Advertisers $advertisers */
@@ -32,12 +34,9 @@ class AdvertisersTest extends HasoffersPHPUnit
         $list = $advertisers->find();
 
         /** @var Advertiser $advertiser */
-        $advertiser = $list[504];
+        $advertiser = $list[$this->testId];
 
         isNotEmpty($advertiser->city);
-        isNotEmpty($advertiser->country);
-        isNotEmpty($advertiser->zipcode);
-        isNotEmpty($advertiser->address1);
     }
 
     public function testCanGetAdvertiserUser()
@@ -47,12 +46,10 @@ class AdvertisersTest extends HasoffersPHPUnit
         $list = $advertisers->find();
 
         /** @var Advertiser $advertiser */
-        $advertiser = $list[504];
+        $advertiser = $list[$this->testId];
 
         $users = $advertiser->getAdvertiserUser()->getList();
 
-        isSame("10", $users[0]['id']);
-        isSame('ivan@test.com', $users[0]['email']);
-        isSame(AdvertiserUser::STATUS_ACTIVE, $users[0]['status']);
+        isSame('2', $users[0]['id']);
     }
 }

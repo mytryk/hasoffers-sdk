@@ -1,14 +1,14 @@
 #
-# Unilead | HasOffers
+# Item8 | HasOffers
 #
-# This file is part of the Unilead Service Package.
+# This file is part of the Item8 Service Package.
 # For the full copyright and license information, please view the LICENSE
 # file that was distributed with this source code.
 #
 # @package      HasOffers
 # @license      Proprietary
-# @copyright    Copyright (C) Unilead Network, All rights reserved.
-# @link         https://www.unileadnetwork.com
+# @copyright    Copyright (C) Item8, All rights reserved.
+# @link         https://item8.io
 #
 
 .PHONY: build update test-all validate autoload test phpmd phpcs phpcpd phploc reset
@@ -37,13 +37,13 @@ test:
 phpmd:
 	@echo "\033[0;33m>>> >>> >>> >>> >>> >>> >>> >>> \033[0;30;46m Check PHPmd \033[0m"
 	@php ./vendor/phpmd/phpmd/src/bin/phpmd ./src text                  \
-         ./vendor/unilead/codestyle/src/phpmd/unilead.xml --verbose
+         ./vendor/item8/codestyle/src/phpmd/item8.xml --verbose
 
 phpcs:
 	@echo "\033[0;33m>>> >>> >>> >>> >>> >>> >>> >>> \033[0;30;46m Check Code Style \033[0m"
-	@php ./vendor/squizlabs/php_codesniffer/scripts/phpcs ./src                 \
-        --extensions=php                                                        \
-        --standard=./vendor/unilead/codestyle/src/phpcs/Unilead/ruleset.xml     \
+	@php ./vendor/squizlabs/php_codesniffer/bin/phpcs ./src             \
+        --extensions=php                                                \
+        --standard=./vendor/item8/codestyle/src/phpcs/item8/ruleset.xml \
         --report=full
 	@echo ""
 

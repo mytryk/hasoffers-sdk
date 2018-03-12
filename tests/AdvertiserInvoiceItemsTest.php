@@ -1,20 +1,21 @@
 <?php
 /**
- * Unilead | HasOffers
+ * Item8 | HasOffers
  *
- * This file is part of the Unilead Service Package.
+ * This file is part of the Item8 Service Package.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @package     HasOffers
  * @license     Proprietary
- * @copyright   Copyright (C) Unilead Network, All rights reserved.
- * @link        https://www.unileadnetwork.com
+ * @copyright   Copyright (C) Item8, All rights reserved.
+ * @link        https://item8.io
  */
 
 namespace JBZoo\PHPUnit;
 
-use Unilead\HasOffers\Entity\AdvertiserInvoice;
+use Item8\HasOffers\Contain\AdvertiserInvoiceItem;
+use Item8\HasOffers\Entity\AdvertiserInvoice;
 
 /**
  * Class AdvertiserInvoiceItemsTest
@@ -23,53 +24,58 @@ use Unilead\HasOffers\Entity\AdvertiserInvoice;
  */
 class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
 {
-    public function testCanGetItemsByInvoiceId()
-    {
-        $someId = '36';
-        /** @var AdvertiserInvoice $invoice */
-        $invoice = $this->hoClient->get(AdvertiserInvoice::class, $someId);
-
-        $items = $invoice->getItemsResultSet()->findAll();
-
-        foreach ($items as $item) {
-            is($someId, $item->invoice_id);
-        }
-    }
+    protected $testId = '22';
 
     public function testCanCreateInvoiceItem()
     {
-        $invoiceId = 36;
-        $rand = random_int(1, 500);
-        $memo = 'Test Invoice Item';
+        $randActions = random_int(1, 500);
+        $randAmount = random_int(1, 500);
+        $memo = $this->faker->text();
         $type = 'stats';
 
         /** @var AdvertiserInvoice $invoice */
-        $invoice = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
-        $invoiceItem = $invoice->getItemsResultSet()->addItem();
-        $invoiceItem->invoice_id = $invoiceId;
+        $invoice = $this->hoClient->get(AdvertiserInvoice::class, $this->testId);
+        $invoiceItem = $invoice->getItemsList()->addItem();
+        $invoiceItem->invoice_id = $this->testId;
         $invoiceItem->offer_id = 8;
         $invoiceItem->memo = $memo;
-        $invoiceItem->actions = $rand;
-        $invoiceItem->amount = $rand;
+        $invoiceItem->actions = $randActions;
+        $invoiceItem->amount = $randAmount;
         $invoiceItem->type = $type;
-        $invoiceItem->revenue_type = 'cpa_flat';
+        $invoiceItem->revenue_type = AdvertiserInvoiceItem::REVENUE_TYPE_CPA_FLAT;
         $invoiceItem->save();
 
-        $item = $invoice->getItemsResultSet()->findById($invoiceItem->id);
+        $invoice->getItemsList()->findById($invoiceItem->id);
+
+        $invoiceItem->reload();
+        $item = $invoice->getItemsList()->findById($invoiceItem->id);
 
         isNotSame(false, $item);
-        isSame((string)$rand, $item->actions);
+        isSame((string)$randActions, $item->actions);
         isSame($memo, $item->memo);
         isSame($type, $item->type);
+
+        //$invoiceItem->delete(); // Clean up after test, but delete leter in tests
+    }
+
+    public function testCanGetItemsByInvoiceId()
+    {
+        /** @var AdvertiserInvoice $invoice */
+        $invoice = $this->hoClient->get(AdvertiserInvoice::class, $this->testId);
+
+        $items = $invoice->getItemsList()->findAll();
+
+        foreach ($items as $item) {
+            is($this->testId, $item->invoice_id);
+        }
     }
 
     public function testCanDeleteInvoiceItem()
     {
-        $invoiceId = 36;
         //get invoice items
         /** @var AdvertiserInvoice $invoice */
-        $invoice = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
-        $items = $invoice->getItemsResultSet()->findAll();
+        $invoice = $this->hoClient->get(AdvertiserInvoice::class, $this->testId);
+        $items = $invoice->getItemsList()->findAll();
 
         // find last added and delete it
         $lastAddedItem = end($items);
@@ -77,35 +83,35 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $lastAddedItem->delete();
 
         //check item is not among them
-        $notExistingItem = $invoice->getItemsResultSet()->findById($lastAddedId);
+        $notExistingItem = $invoice->getItemsList()->findById($lastAddedId);
         isSame(false, $notExistingItem);
     }
 
     public function testCanUpdateInvoiceItem()
     {
-        $invoiceId = 36;
-        $rand = random_int(1, 500);
-        $memo = 'Test Invoice Item';
+        $randActions = $this->faker->randomNumber(2) + 1;
+        $randAmount = $this->faker->randomNumber(2) + 1;
+        $memo = $this->faker->text();
         $type = 'stats';
 
         /** @var AdvertiserInvoice $invoice */
-        $invoice = $this->hoClient->get(AdvertiserInvoice::class, $invoiceId);
+        $invoice = $this->hoClient->get(AdvertiserInvoice::class, $this->testId);
         // Add item
         $invoiceItem = $invoice
-            ->getItemsResultSet()
+            ->getItemsList()
             ->addItem([
-                'invoice_id'   => $invoiceId,
+                'invoice_id'   => $this->testId,
                 'offer_id'     => 8,
                 'memo'         => $memo,
-                'actions'      => $rand,
-                'amount'       => $rand,
+                'actions'      => $randActions,
+                'amount'       => $randAmount,
                 'type'         => $type,
-                'revenue_type' => 'cpa_flat'
+                'revenue_type' => AdvertiserInvoiceItem::REVENUE_TYPE_CPA_FLAT,
             ])->save();
         $itemIdBeforeUpdate = $invoiceItem->id;
 
         // Update item
-        $updatedMemo = "{$memo}: {$rand}";
+        $updatedMemo = "{$memo}: {$randActions}";
         $invoiceItem->memo = $updatedMemo;
         $invoiceItem->save();
         $itemIdAfterUpdate = $invoiceItem->id;
@@ -113,6 +119,8 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         // Check fields
         isNotSame($itemIdBeforeUpdate, $itemIdAfterUpdate);
         isSame($updatedMemo, $invoiceItem->memo);
+        isSame($type, $invoiceItem->type);
+        isSame($randActions, $invoiceItem->actions);
 
         // Delete item
         $invoiceItem->delete();

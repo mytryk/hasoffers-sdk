@@ -14,32 +14,42 @@
 
 namespace Item8\HasOffers\Entities;
 
-use Item8\HasOffers\Entity\Affiliate;
-use Item8\HasOffers\Contain\PaymentMethod;
-use Item8\HasOffers\Contain\AffiliateUser;
+use Item8\HasOffers\Contain\AffiliateInvoiceItem;
+use Item8\HasOffers\Entity\AffiliateInvoice;
 
 /**
- * Class Affiliates
+ * Class AffiliateInvoices
  *
  * @package Item8\HasOffers\Entities
  */
-class Affiliates extends AbstractEntities
+class AffiliateInvoices extends AbstractEntities
 {
     /**
      * @var string
      */
-    protected $target = 'Affiliate';
+    protected $target = 'AffiliateBilling';
 
     /**
      * @var string
      */
-    protected $className = Affiliate::class;
+    protected $targetAlias = 'AffiliateInvoice';
+
+    /**
+     * @var string
+     */
+    protected $className = AffiliateInvoice::class;
 
     /**
      * @var array
      */
     protected $contain = [
-        'PaymentMethod' => PaymentMethod::class,
-        'AffiliateUser' => AffiliateUser::class,
+        'AffiliateInvoiceItem' => AffiliateInvoiceItem::class,
+    ];
+
+    /**
+     * @var array
+     */
+    protected $methods = [
+        'findAll' => 'findAllInvoices',
     ];
 }

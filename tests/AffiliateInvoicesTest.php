@@ -14,32 +14,35 @@
 
 namespace JBZoo\PHPUnit;
 
-use Item8\HasOffers\Entities\AdvertiserInvoices;
-use Item8\HasOffers\Entity\AdvertiserUser;
+use Item8\HasOffers\Entities\AffiliateInvoices;
+use Item8\HasOffers\Entity\AffiliateInvoice;
+use Item8\HasOffers\Entity\AffiliateUser;
 
 /**
- * Class AdvertiserInvoicesTest
+ * Class AffiliateInvoicesTest
  *
  * @package JBZoo\PHPUnit
  */
-class AdvertiserInvoicesTest extends HasoffersPHPUnit
+class AffiliateInvoicesTest extends HasoffersPHPUnit
 {
-    protected $testId = '2';
+    protected $testId      = 4;
+    protected $affiliateId = 2;
 
     public function testFindList()
     {
-        /** @var AdvertiserInvoices $users */
-        $invoices = $this->hoClient->get(AdvertiserInvoices::class);
-        /** @var AdvertiserUser $user */
+        /** @var AffiliateInvoices $users */
+        $invoices = $this->hoClient->get(AffiliateInvoices::class);
+        /** @var AffiliateUser $user */
         $condition = [
             'filters' => [
                 'id' => $this->testId,
             ],
         ];
 
+        /** @var AffiliateInvoice $invoice */
         $invoice = $invoices->find($condition)[$this->testId];
 
-        isSame($this->testId, $invoice->id);
-        isSame('500', $invoice->advertiser_id);
+        isSame($this->testId, (int)$invoice->id);
+        isSame(2, (int)$invoice->affiliate_id);
     }
 }

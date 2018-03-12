@@ -1,34 +1,38 @@
 <?php
 /**
- * Unilead | HasOffers
+ * Item8 | HasOffers
  *
- * This file is part of the Unilead Service Package.
+ * This file is part of the Item8 Service Package.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @package     HasOffers
  * @license     Proprietary
- * @copyright   Copyright (C) Unilead Network, All rights reserved.
- * @link        https://www.unileadnetwork.com
+ * @copyright   Copyright (C) Item8, All rights reserved.
+ * @link        https://item8.io
  */
 
 namespace JBZoo\PHPUnit;
 
+use Faker\Factory;
+use Faker\Generator;
+use Faker\Provider\pt_BR\PhoneNumber;
 use function JBZoo\Data\json;
+use JBZoo\Data\PHPArray;
 use JBZoo\Event\EventManager;
 use JBZoo\HttpClient\HttpClient;
 use JBZoo\HttpClient\Response;
 use JBZoo\Utils\Env;
 use JBZoo\Utils\Str;
-use Unilead\HasOffers\HasOffersClient;
-use Unilead\HasOffers\Helper;
+use Item8\HasOffers\HasOffersClient;
+use Item8\HasOffers\Helper;
 
 /**
  * Class HasoffersPHPUnit
  *
  * @package JBZoo\PHPUnit
  */
-class HasoffersPHPUnit extends PHPUnit
+abstract class HasoffersPHPUnit extends PHPUnit
 {
     /**
      * @var HasOffersClient
@@ -40,20 +44,30 @@ class HasoffersPHPUnit extends PHPUnit
      */
     protected $eManager;
 
+    /**
+     * @var Generator
+     */
+    protected $faker;
+
     public function setUp()
     {
         parent::setUp();
 
-        $apiUrl = Env::get('HO_API_URL') ?: HasOffersClient::DEFAULT_API_URL;
-        $isLearning = Env::get('HO_FAKE_SERVER_LEARNING', false, Env::VAR_BOOL);
-        $fakeServerUrl = Env::get('HO_FAKE_SERVER_URL');
-        $isFakeServer = $apiUrl !== HasOffersClient::DEFAULT_API_URL;
+        $this->faker = Factory::create();
+        $this->faker->addProvider(new PhoneNumber($this->faker));
 
         $this->hoClient = new HasOffersClient(
             Env::get('HO_API_NETWORK_ID'),
             Env::get('HO_API_NETWORK_TOKEN'),
-            $apiUrl
+            Env::get('HO_API_URL') ?: HasOffersClient::DEFAULT_API_URL
         );
+
+        $httpUser = Env::get('HO_API_HTTP_USER');
+        $httpPass = Env::get('HO_API_HTTP_PASS');
+        if ($httpUser && $httpPass) {
+            $this->hoClient->setHttpAuth($httpUser, $httpPass);
+        }
+
         $this->hoClient->setRequestsLimit(Env::get('HO_API_REQUEST_LIMIT', 1, Env::VAR_INT));
         $this->hoClient->setTimeout(Env::get('HO_API_REQUEST_TIMEOUT', 1, Env::VAR_INT));
 
@@ -64,37 +78,15 @@ class HasoffersPHPUnit extends PHPUnit
         $this->eManager
             ->on(
                 'ho.api.request.before',
-                function ($client, &$requestParams, &$url) use ($isFakeServer) {
-                    if ($isFakeServer) {
-                        $url = rtrim($url, '/') . '/get/' . Helper::hash($requestParams);
-                    }
-
+                function ($client, &$requestParams, &$url) {
                     $dumpFile = $this->getDumpFilename('request');
+                    $requestParams['_ho_url'] = $url;
                     file_put_contents($dumpFile . '.json', '' . json($requestParams));
                 }
             )
             ->on(
                 'ho.api.request.after',
-                function ($client, $jsonResult, Response $response, $data) use ($isLearning, $fakeServerUrl) {
-                    if ($isLearning) {
-                        $learnData = [
-                            'key'      => Helper::hash($data),
-                            'request'  => '' . json($data),
-                            'response' => '' . $response->getJSON(),
-                            'comment'  => 'HO Tests: ' . $this->getTestName(),
-                        ];
-
-                        $httpClient = new HttpClient();
-                        $response = $httpClient->request($fakeServerUrl . '/learn', $learnData, 'post');
-
-                        if (!$response->getJSON()->is('status', 'ok')) {
-                            throw new Exception(
-                                'Fake server cannot save fixture: ' . print_r($learnData, true) .
-                                'Response: ' . print_r($response, true)
-                            );
-                        }
-                    }
-
+                function ($client, $jsonResult, Response $response) {
                     $dumpFile = $this->getDumpFilename('response');
                     file_put_contents($dumpFile . '.json', $response->getJSON());
                 }
@@ -139,9 +131,6 @@ class HasoffersPHPUnit extends PHPUnit
      */
     protected function skipIfFakeServer()
     {
-        $apiUrl = Env::get('HO_API_URL') ?: HasOffersClient::DEFAULT_API_URL;
-        if ($apiUrl !== HasOffersClient::DEFAULT_API_URL) {
-            skip('Skip test for fake server: ' . $this->getTestName());
-        }
+        //skip('Skip test for fake server: ' . $this->getTestName());
     }
 }

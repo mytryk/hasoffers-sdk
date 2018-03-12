@@ -1,4 +1,4 @@
-# Unilead HasOffers     [![build status](http://code.unilead.net/unilead/hasoffers/badges/master/build.svg)](http://code.unilead.net/unilead/hasoffers/pipelines)    [![coverage report](http://code.unilead.net/unilead/hasoffers/badges/master/coverage.svg)](http://code.unilead.net/unilead/hasoffers/pipelines)
+# Item8 HasOffers
 
 #### ORM/SDK for HasOffers API
 
@@ -7,13 +7,13 @@
 ```php
 <?php
 // Get needed classes
-use Unilead\HasOffers\Exception;
-use Unilead\HasOffers\Entity\AbstractEntity;
-use Unilead\HasOffers\Entity\Affiliate;
-use Unilead\HasOffers\Entity\AffiliateInvoice;
-use Unilead\HasOffers\HasOffersClient;
-use Unilead\HasOffers\Contain\PaymentMethod;
-use Unilead\HasOffers\Contain\AffiliateInvoiceItem;
+use Item8\HasOffers\Exception;
+use Item8\HasOffers\Entity\AbstractEntity;
+use Item8\HasOffers\Entity\Affiliate;
+use Item8\HasOffers\Entity\AffiliateInvoice;
+use Item8\HasOffers\HasOffersClient;
+use Item8\HasOffers\Contain\PaymentMethod;
+use Item8\HasOffers\Contain\AffiliateInvoiceItem;
 use JBZoo\Event\EventManager;
 use JBZoo\Event\ExceptionStop;
 
@@ -64,7 +64,7 @@ try {
     // Work with contain items
     $billId = 56;
     $affInvoice = $hoClient->get(AffiliateInvoice::class, $billId);
-    $affInvoiceItemsResultSet = $affInvoice->getItemsResultSet();
+    $affInvoiceItemsResultSet = $affInvoice->getItemsList();
     
     // Find all: iterable
     $affInvoiceItems = $affInvoiceItemsResultSet->findAll();
@@ -80,13 +80,13 @@ try {
     
     // Add item
     $invoiceItem = $affInvoice
-        ->getItemsResultSet()
+        ->getItemsList()
         ->addItem([
             'invoice_id'  => $billId,
             'offer_id'    => 8,
             'memo'        => 'memo',
             'amount'      => 0.0,
-            'payout_type' => 'cpa_flat'
+            'payout_type' => AffiliateInvoiceItem::PAYOUT_TYPE_CPA_FLAT
         ])->save();
     
     // Or

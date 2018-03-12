@@ -1,22 +1,22 @@
 <?php
 /**
- * Unilead | HasOffers
+ * Item8 | HasOffers
  *
- * This file is part of the Unilead Service Package.
+ * This file is part of the Item8 Service Package.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @package     HasOffers
  * @license     Proprietary
- * @copyright   Copyright (C) Unilead Network, All rights reserved.
- * @link        https://www.unileadnetwork.com
+ * @copyright   Copyright (C) Item8, All rights reserved.
+ * @link        https://item8.io
  */
 
-namespace Unilead\HasOffers\Contain;
+namespace Item8\HasOffers\Contain;
 
 use JBZoo\Data\Data;
-use Unilead\HasOffers\Entity\AbstractEntity;
-use Unilead\HasOffers\Entity\Affiliate;
+use Item8\HasOffers\Entity\AbstractEntity;
+use Item8\HasOffers\Entity\Affiliate;
 
 /**
  * Class PaymentMethod
@@ -97,7 +97,7 @@ use Unilead\HasOffers\Entity\Affiliate;
  * @property string zipcode                                 Check
  * @property string is_individual                           Check
  *
- * @package Unilead\HasOffers
+ * @package Item8\HasOffers
  */
 class PaymentMethod extends AbstractContain
 {
@@ -110,6 +110,101 @@ class PaymentMethod extends AbstractContain
     const TYPE_WIRE          = 'Wire';
     const TYPE_PAYABILITY    = 'Payability';
     const TYPE_UNDEFINED     = 'Undefined';
+
+    /**
+     * @var array
+     */
+    protected $fieldMap = [
+        'all_types'     => [
+            'affiliate_id',
+        ],
+        'check'         => [
+            'address1',
+            'address2',
+            'city',
+            'country',
+            'payable_to',
+            'region',
+            'zipcode',
+            'is_individual',
+        ],
+        'directdeposit' => [
+            'account_holder',
+            'account_number',
+            'bank_name',
+            'other_details',
+            'routing_number',
+        ],
+        'other'         => [
+            'details',
+        ],
+        'payoneer'      => [
+            'status',
+        ],
+        'paypal'        => [
+            'email',
+            'modified',
+        ],
+        'payquicker'    => [
+            'advanced_accounting_id',
+            'advanced_email',
+            'advanced_security_id',
+            'advanced_security_id_hint',
+            'm2eft_account_name',
+            'm2eft_account_number',
+            'm2eft_account_tax_number',
+            'm2eft_account_type',
+            'm2eft_account_type_code',
+            'm2eft_bank_address',
+            'm2eft_bank_name',
+            'm2eft_bank_number',
+            'm2eft_bic',
+            'm2eft_city',
+            'm2eft_description',
+            'm2eft_destination_country_code',
+            'm2eft_iban',
+            'm2eft_postal_code',
+            'm2eft_routing_number',
+            'm2m_accounting_id',
+            'm2m_security_id',
+            'm2m_security_id_hint',
+            'm2papercheck_address1',
+            'm2papercheck_address2',
+            'm2papercheck_address3',
+            'm2papercheck_address4',
+            'm2papercheck_check_memo',
+            'm2papercheck_city',
+            'm2papercheck_destination_country_code',
+            'm2papercheck_postal_code',
+            'm2papercheck_recipient_name',
+            'm2papercheck_region',
+            'm2papercheck_return_address1',
+            'm2papercheck_return_address2',
+            'm2papercheck_return_address3',
+            'm2papercheck_return_city',
+            'm2papercheck_return_country_code',
+            'm2papercheck_return_postal_code',
+            'm2papercheck_return_region',
+            'method',
+            'usach_account_number',
+            'usach_account_type',
+            'usach_first_name',
+            'usach_last_name',
+            'usach_routing_number',
+        ],
+        'wire'          => [
+            'account_number',
+            'bank_name',
+            'other_details',
+            'routing_number',
+            'beneficiary_name',
+        ],
+        'payability'    => [
+            'payability_affiliate_status',
+            'payability_deferred_payment_method',
+            'payability_network_status',
+        ],
+    ];
 
     /** @var string */
     protected $target = 'PaymentMethod';
@@ -155,6 +250,7 @@ class PaymentMethod extends AbstractContain
             self::TYPE_PAYQUICKER,
             self::TYPE_WIRE,
             self::TYPE_PAYABILITY,
+            'unit-testing' // TODO: Remove hardcode. It test response wuth error.status != 1
         ];
 
         if (!in_array($newPaymentMethod, $validList, true)) {
@@ -171,6 +267,7 @@ class PaymentMethod extends AbstractContain
      *
      * @param array $properties
      * @return bool
+     * @throws \Item8\HasOffers\Exception
      */
     public function save(array $properties = [])
     {
@@ -178,24 +275,27 @@ class PaymentMethod extends AbstractContain
             return $this->mergeData($properties)->save();
         }
 
-        $changedData = $this->getChangedFields();
-        if (count($changedData) !== 0) {
-            $changedData = array_intersect_assoc($changedData, $this->data()->getArrayCopy());
-        } else {
+        // TODO: Add suuport test testNoSaveByArgumentOnSetSameValues (Den)
+        $savedData = array_merge(
+            $this->filterData($this->getChangedFields()),
+            $this->filterData($this->data()->getArrayCopy())
+        );
+
+        if (empty($savedData)) {
             return false;
         }
 
-        $this->hoClient->trigger("{$this->target}.save.before", [$this, &$changedData]);
+        $this->hoClient->trigger("{$this->target}.save.before", [$this, &$savedData]);
 
         $result = $this->hoClient->apiRequest([
             'Target'       => $this->parentEntity->getTarget(),
             'Method'       => 'updatePaymentMethod' . $this->getType(),
             'affiliate_id' => $this->parentEntity->id,
-            'data'         => $changedData,
+            'data'         => $savedData,
         ]);
 
         if ($result->get('0', null, 'bool')) {
-            $newData = array_merge($this->data()->getArrayCopy(), $changedData);
+            $newData = array_merge($this->data()->getArrayCopy(), $savedData);
             $this->bindData($newData);
             $this->origData = $newData;
             $this->changedData = [];
@@ -206,5 +306,21 @@ class PaymentMethod extends AbstractContain
         }
 
         return false;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    protected function filterData($data)
+    {
+        $generalKeys = array_intersect_key($data, array_flip($this->fieldMap['all_types']));
+
+        $customeKeys = array_intersect_key(
+            $data,
+            array_flip($this->fieldMap[$this->parentEntity->payment_method])
+        );
+
+        return array_merge($customeKeys, $generalKeys);
     }
 }

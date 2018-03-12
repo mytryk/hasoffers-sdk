@@ -1,21 +1,21 @@
 <?php
 /**
- * Unilead | HasOffers
+ * Item8 | HasOffers
  *
- * This file is part of the Unilead Service Package.
+ * This file is part of the Item8 Service Package.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @package     HasOffers
  * @license     Proprietary
- * @copyright   Copyright (C) Unilead Network, All rights reserved.
- * @link        https://www.unileadnetwork.com
+ * @copyright   Copyright (C) Item8, All rights reserved.
+ * @link        https://item8.io
  */
 
-namespace Unilead\HasOffers\Contain;
+namespace Item8\HasOffers\Contain;
 
-use Unilead\HasOffers\Entity\AbstractEntity;
-use Unilead\HasOffers\Entity\Offer;
+use Item8\HasOffers\Entity\AbstractEntity;
+use Item8\HasOffers\Entity\Offer;
 
 /**
  * Class Goal
@@ -87,7 +87,7 @@ use Unilead\HasOffers\Entity\Offer;
  *                                                      "tiered_revenue". For more information, see:
  *                                                      http://support.hasoffers.com/hc/en-us/articles/202305336-Payout-Revenue-Groups.
  *
- * @package Unilead\HasOffers
+ * @package Item8\HasOffers
  */
 class Goal extends AbstractContain
 {

@@ -1,34 +1,34 @@
 <?php
 /**
- * Unilead | HasOffers
+ * Item8 | HasOffers
  *
- * This file is part of the Unilead Service Package.
+ * This file is part of the Item8 Service Package.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @package     HasOffers
  * @license     Proprietary
- * @copyright   Copyright (C) Unilead Network, All rights reserved.
- * @link        https://www.unileadnetwork.com
+ * @copyright   Copyright (C) Item8, All rights reserved.
+ * @link        https://item8.io
  */
 
-namespace Unilead\HasOffers;
+namespace Item8\HasOffers;
 
 use JBZoo\Event\EventManager;
 use JBZoo\HttpClient\HttpClient;
 use function JBZoo\Data\json;
 use JBZoo\Data\Data;
-use Unilead\HasOffers\Entities\AbstractEntities;
-use Unilead\HasOffers\Entity\AbstractEntity;
+use Item8\HasOffers\Entities\AbstractEntities;
+use Item8\HasOffers\Entity\AbstractEntity;
 
 /**
  * Class Request
  *
- * @package Unilead\HasOffers
+ * @package Item8\HasOffers
  */
 class HasOffersClient
 {
-    const HTTP_TIMEOUT    = 30;
+    const HTTP_TIMEOUT    = 180;
     const DEFAULT_API_URL = 'https://__NETWORK_ID__.api.hasoffers.com/Apiv3/json';
 
     /**
@@ -62,6 +62,11 @@ class HasOffersClient
     protected $networkToken;
 
     /**
+     * @var array
+     */
+    protected $httpAuth = false;
+
+    /**
      * @var EventManager|null
      */
     protected $eManager;
@@ -75,6 +80,11 @@ class HasOffersClient
      * @var Data
      */
     protected $lastResponse;
+
+    /**
+     * @var bool
+     */
+    protected $lastResponseSave = true;
 
     /**
      * HasOffersClient constructor.
@@ -126,65 +136,65 @@ class HasOffersClient
      */
     public function apiRequest(array $requestParams, $returnOnlyData = true)
     {
+        $this->sleepBeforeRequest();
+
+        $url = $this->getApiUrl();
+        $this->lastRequest = $requestParams;
+        $this->trigger('api.request.before', [$this, &$requestParams, &$url]);
+
         try {
-            $this->requestCounter++;
-
-            if ($this->limitCounter > 0 &&
-                $this->timeout > 0 &&
-                $this->requestCounter % $this->limitCounter === 0
-            ) {
-                $isSleep = true;
-                $this->trigger('api.request.sleep.before', [$this, &$isSleep]);
-                if ($isSleep) {
-                    sleep($this->timeout);
-                }
-                $this->trigger('api.request.sleep.after', [$this, $isSleep]);
-            }
-
             $httpClientParams = [
                 'timeout'    => self::HTTP_TIMEOUT,
                 'verify'     => true,
                 'exceptions' => true,
+                'auth'       => $this->httpAuth,
             ];
+            $requestParams = array_merge($requestParams, [
+                'NetworkToken' => $this->networkToken,
+                'NetworkId'    => $this->networkId,
+            ]);
 
-            $httpClient = new HttpClient($httpClientParams);
-
-            $url = str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
-            $this->lastRequest = $requestParams;
-            $this->trigger('api.request.before', [$this, &$requestParams, &$url]);
-
-            $requestParams = array_merge($requestParams, ['NetworkToken' => $this->networkToken]);
-
-            $response = $httpClient->request($url, $requestParams, 'get', $httpClientParams);
-
-            // Prepare response
-            $json = $response->getJSON();
-            $data = $json->getArrayCopy();
-            $data['request']['NetworkToken'] = '*** hidden ***';
-            $json = json($data);
-
-            $this->lastResponse = $json;
-
-            $this->trigger('api.request.after', [$this, $json, $response, $requestParams]);
-
-            $apiStatus = $json->find('response.status', null, 'int');
-            if ($apiStatus !== 1) {
-                $errorMessage = $json->find('response.errorMessage');
-                $details = $json->find('response.errors.0.err_msg')
-                    ?: $json->find('response.errors.0.publicMessage');
-
-                if ($details !== $errorMessage) {
-                    throw new Exception('HasOffers Error (details): ' . $errorMessage . ' ' . $details);
-                }
-
-                if ($errorMessage) {
-                    throw new Exception('HasOffers Error: ' . $errorMessage);
-                }
-
-                throw new Exception('HasOffers Error. Dump of response: ' . print_r($response, true));
+            // Fix limits
+            if (isset($requestParams['limit']) && (int)$requestParams['limit'] === 0) {
+                unset($requestParams['limit']);
             }
+
+            $response = (new HttpClient($httpClientParams))->request($url, $requestParams, 'GET', $httpClientParams);
         } catch (\Exception $httpException) {
             throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);
+        }
+
+        // Prepare response
+        $json = $response->getJSON();
+        $data = $json->getArrayCopy();
+        $data['request']['NetworkToken'] = '*** hidden ***';
+        $data['request']['NetworkId'] = '*** hidden ***';
+
+        $this->saveLastResponse($data);
+        $json = json($data);
+
+        $requestParams['NetworkToken'] = '*** hidden ***';
+        $requestParams['NetworkId'] = '*** hidden ***';
+        $this->trigger('api.request.after', [$this, $json, $response, $requestParams, $url]);
+
+        $apiStatus = $json->find('response.status', null, 'int');
+        if ($apiStatus !== 1) {
+            $errorMessage = $json->find('response.errorMessage');
+            $details = $json->find('response.errors.0.err_msg') ?: $json->find('response.errors.publicMessage');
+
+            if ($details && $errorMessage && $details !== $errorMessage) {
+                throw new Exception('HasOffers Error (details): ' . $errorMessage . ' ' . $details);
+            }
+
+            if ($errorMessage) {
+                throw new Exception('HasOffers Error Message: ' . $errorMessage);
+            }
+
+            if ($details) {
+                throw new Exception('HasOffers Error Details: ' . $details);
+            }
+
+            throw new Exception('HasOffers Error. Dump of response: ' . print_r($response, true));
         }
 
         return $returnOnlyData ? json($json->find('response.data')) : json($json);
@@ -222,18 +232,22 @@ class HasOffersClient
 
     /**
      * @param int $limitCounter
+     * @return $this
      */
     public function setRequestsLimit($limitCounter)
     {
         $this->limitCounter = (int)$limitCounter;
+        return $this;
     }
 
     /**
      * @param int $seconds
+     * @return $this
      */
     public function setTimeout($seconds)
     {
         $this->timeout = (int)$seconds;
+        return $this;
     }
 
     /**
@@ -257,6 +271,61 @@ class HasOffersClient
      */
     public function getLastResponse()
     {
-        return json($this->lastResponse);
+        return $this->lastResponse ? json($this->lastResponse) : null;
+    }
+
+    /**
+     * @param bool $mode
+     * @return $this
+     */
+    public function lastResponseMode($mode)
+    {
+        $this->lastResponseSave = (bool)$mode;
+        return $this;
+    }
+
+    protected function sleepBeforeRequest()
+    {
+        $this->requestCounter++;
+
+        if ($this->limitCounter > 0 &&
+            $this->timeout > 0 &&
+            $this->requestCounter % $this->limitCounter === 0
+        ) {
+            $isSleep = true;
+            $this->trigger('api.request.sleep.before', [$this, &$isSleep]);
+            if ($isSleep) {
+                sleep($this->timeout);
+            }
+            $this->trigger('api.request.sleep.after', [$this, $isSleep]);
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiUrl()
+    {
+        return str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
+    }
+
+    /**
+     * @param array $json
+     */
+    protected function saveLastResponse($json)
+    {
+        $this->lastResponse = null;
+        if ($this->lastResponseSave) {
+            $this->lastResponse = $json;
+        }
+    }
+
+    /**
+     * @param string $login
+     * @param string $password
+     */
+    public function setHttpAuth($login, $password)
+    {
+        $this->httpAuth = [$login, $password];
     }
 }
