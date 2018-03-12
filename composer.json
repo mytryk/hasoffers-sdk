@@ -18,7 +18,7 @@
         "jbzoo/data"        : "^1.6.1|^2.0"
     },
     "require-dev"       : {
-        "jbzoo/phpunit"     : "^2.0",
+        "jbzoo/phpunit"   : "^2.0",
         "item8/codestyle" : "^1.0",
         "jbzoo/profiler"  : "^1.0"
     },
