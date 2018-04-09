@@ -14,6 +14,7 @@
 
 namespace Item8\HasOffers\Entity;
 
+use Item8\HasOffers\Contain\AdvertiserMeta;
 use Item8\HasOffers\Contain\AdvertiserUser;
 use Item8\HasOffers\Traits\Deleted;
 
@@ -59,6 +60,7 @@ use Item8\HasOffers\Traits\Deleted;
  * @property string $zipcode                        The zipcode / postal code of the account's physical address
  *
  * @method AdvertiserUser getAdvertiserUser()
+ * @method AdvertiserMeta getAdvertiserMeta()
  *
  * @package Item8\HasOffers\Entity
  */
@@ -92,6 +94,7 @@ class Advertiser extends AbstractEntity
      */
     protected $contain = [
         'AdvertiserUser' => AdvertiserUser::class,
+        'AdvertiserMeta' => AdvertiserMeta::class,
     ];
 
     /**
