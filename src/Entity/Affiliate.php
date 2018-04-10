@@ -14,6 +14,7 @@
 
 namespace Item8\HasOffers\Entity;
 
+use Item8\HasOffers\Contain\AffiliateMeta;
 use Item8\HasOffers\Contain\PaymentMethod;
 use Item8\HasOffers\Contain\AffiliateUser;
 use Item8\HasOffers\Traits\Blocked;
@@ -95,6 +96,7 @@ use Item8\HasOffers\Traits\Deleted;
  *
  * @method PaymentMethod getPaymentMethod()
  * @method AffiliateUser getAffiliateUser()
+ * @method AffiliateMeta getAffiliateMeta()
  *
  * @package Item8\HasOffers\Entity
  */
@@ -130,6 +132,7 @@ class Affiliate extends AbstractEntity
     protected $contain = [
         'PaymentMethod' => PaymentMethod::class,
         'AffiliateUser' => AffiliateUser::class,
+        'AffiliateMeta' => AffiliateMeta::class,
     ];
 
     /**
