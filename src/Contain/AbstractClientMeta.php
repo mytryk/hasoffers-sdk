@@ -52,8 +52,6 @@ abstract class AbstractClientMeta extends AbstractContain
 {
     protected $billingName = '';
 
-    protected $clientFieldName = '';
-
     /**
      * Save changed client meta
      *
@@ -68,8 +66,8 @@ abstract class AbstractClientMeta extends AbstractContain
         }
 
         $savedData = array_merge(
-            $this->filterData($this->getChangedFields()),
-            $this->filterData($this->data()->getArrayCopy())
+            $this->getChangedFields(),
+            $this->data()->getArrayCopy()
         );
 
         if (empty($savedData)) {
@@ -81,7 +79,7 @@ abstract class AbstractClientMeta extends AbstractContain
         $result = $this->hoClient->apiRequest([
             'Target'               => $this->billingName,
             'Method'               => 'updateTaxInfo',
-            $this->clientFieldName => $this->parentEntity->id,
+            'id'                   => $this->parentEntity->id,
             'data'                 => $savedData,
         ]);
 

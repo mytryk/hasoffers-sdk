@@ -19,7 +19,7 @@ use Item8\HasOffers\Entity\Advertiser;
 /**
  * Class AdvertiserMeta
  *
- * @property string advertiser_id   Integer             The ID of the Advertiser
+ * @property int    advertiser_id   Integer             The ID of the Advertiser
  * @property string default_vat_id  Nullable Integer    The ID of the default VAT Rate to apply to invoices
  * @property string ssn_tax         Nullable String     ID of SSN/VAT object/Fiscal Code or other tax ID
  *
@@ -27,6 +27,8 @@ use Item8\HasOffers\Entity\Advertiser;
  */
 class AdvertiserMeta extends AbstractClientMeta
 {
+    public const DEFAULT_VAT_ID = '0';
+
     /**
      * @var Advertiser
      */
@@ -38,6 +40,4 @@ class AdvertiserMeta extends AbstractClientMeta
     protected $target = 'AdvertiserMeta';
 
     protected $billingName = 'AdvertiserBilling';
-
-    protected $clientFieldName = 'advertiser_id';
 }

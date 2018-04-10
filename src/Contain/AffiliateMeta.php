@@ -39,6 +39,4 @@ class AffiliateMeta extends AbstractClientMeta
     protected $target = 'AffiliateMeta';
 
     protected $billingName = 'AffiliateBilling';
-
-    protected $clientFieldName = 'affiliate_id';
 }
