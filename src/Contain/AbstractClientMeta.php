@@ -69,22 +69,23 @@ abstract class AbstractClientMeta extends AbstractContain
             $this->getChangedFields(),
             $this->data()->getArrayCopy()
         );
+        $dataForUpdate = $this->removeExcludedKeys($savedData);
 
-        if (empty($savedData)) {
+        if (empty($dataForUpdate)) {
             return false;
         }
 
-        $this->hoClient->trigger("{$this->target}.save.before", [$this, &$savedData]);
+        $this->hoClient->trigger("{$this->target}.save.before", [$this, &$dataForUpdate]);
 
         $result = $this->hoClient->apiRequest([
-            'Target'               => $this->billingName,
-            'Method'               => 'updateTaxInfo',
-            'id'                   => $this->parentEntity->id,
-            'data'                 => $savedData,
+            'Target' => $this->billingName,
+            'Method' => 'updateTaxInfo',
+            'id'     => $this->parentEntity->id,
+            'data'   => $dataForUpdate,
         ]);
 
         if ($result->get('0', null, 'bool')) {
-            $newData = array_merge($this->data()->getArrayCopy(), $savedData);
+            $newData = array_merge($this->data()->getArrayCopy(), $dataForUpdate);
             $this->bindData($newData);
             $this->origData = $newData;
             $this->changedData = [];

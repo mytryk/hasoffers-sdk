@@ -30,6 +30,13 @@ class AdvertiserMeta extends AbstractClientMeta
     public const DEFAULT_VAT_ID = '0';
 
     /**
+     * @var array
+     */
+    protected $excludedKeys = [
+        'advertiser_id'
+    ];
+
+    /**
      * @var Advertiser
      */
     protected $parentEntity;

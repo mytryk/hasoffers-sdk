@@ -34,6 +34,13 @@ class AffiliateMeta extends AbstractClientMeta
     protected $parentEntity;
 
     /**
+     * @var array
+     */
+    protected $excludedKeys = [
+        'affiliate_id'
+    ];
+
+    /**
      * @var Affiliate
      */
     protected $target = 'AffiliateMeta';
