@@ -42,20 +42,17 @@ class AffiliateMetaTest extends HasoffersPHPUnit
      */
     public function testCanUpdateMeta(): void
     {
-        $this->markTestSkipped('Please resole this issue: There was a database error with the trackable id [SE-5acd12063996d].  Contact support for more assistance.');
-
         /** @var Affiliate $affiliate */
         $affiliate = $this->hoClient->get(Affiliate::class, self::AFFILIATE_ID_FOR_UPDATE);
 
         $affiliateMeta = $affiliate->getAffiliateMeta();
-        $affiliateMeta->affiliate_id = $affiliate->id;
-        $ssnTax = '' . random_int(1, 50);
+        $newSsnTax = '' . random_int(1, 50);
 
-        isNotSame($ssnTax, $affiliateMeta->ssn_tax);
-        $affiliateMeta->ssn_tax = $ssnTax;
+        isNotSame($newSsnTax, $affiliateMeta->ssn_tax);
+        $affiliateMeta->ssn_tax = $newSsnTax;
         $affiliateMeta->save();
 
-        isSame($ssnTax, $affiliateMeta->ssn_tax);
+        isSame($newSsnTax, $affiliateMeta->ssn_tax);
     }
 
     /**

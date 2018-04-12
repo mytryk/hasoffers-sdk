@@ -38,27 +38,20 @@ class AdvertiserMetaTest extends HasoffersPHPUnit
         isSame(AdvertiserMeta::DEFAULT_VAT_ID, $advertiserMeta->default_vat_id);
     }
 
-    /**
-     * @expectedException           \Item8\HasOffers\Exception
-     * @expectedExceptionMessage    Property "id" read only in Item8\HasOffers\Entity\Advertiser
-     */
     public function testCanUpdateMeta(): void
     {
-        $this->markTestSkipped('Please resole this issue: There was a database error with the trackable id [SE-5acd12063996d].  Contact support for more assistance.');
-
         /** @var Advertiser $advertiser */
         $advertiser = $this->hoClient->get(Advertiser::class, self::ADVERTISER_ID_FOR_UPDATE);
 
         $advertiserMeta = $advertiser->getAdvertiserMeta();
-        $advertiserMeta->advertiser_id = $advertiser->id;
         $advertiserMeta->default_vat_id = AdvertiserMeta::DEFAULT_VAT_ID;
-        $ssnTax = '' . random_int(1, 50);
+        $newSsnTax = '' . random_int(1, 50);
 
-        isNotSame($ssnTax, $advertiserMeta->ssn_tax);
-        $advertiserMeta->ssn_tax = $ssnTax;
+        isNotSame($newSsnTax, $advertiserMeta->ssn_tax);
+        $advertiserMeta->ssn_tax = $newSsnTax;
         $advertiserMeta->save();
 
-        isSame($ssnTax, $advertiserMeta->ssn_tax);
+        isSame($newSsnTax, $advertiserMeta->ssn_tax);
     }
 
     /**
