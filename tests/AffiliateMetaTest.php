@@ -36,10 +36,6 @@ class AffiliateMetaTest extends HasoffersPHPUnit
         isNull($affiliateMeta->ssn_tax);
     }
 
-    /**
-     * @expectedException           \Item8\HasOffers\Exception
-     * @expectedExceptionMessage    Property "id" read only in Item8\HasOffers\Entity\Affiliate
-     */
     public function testCanUpdateMeta(): void
     {
         /** @var Affiliate $affiliate */
