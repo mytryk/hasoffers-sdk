@@ -14,6 +14,7 @@
 
 namespace Item8\HasOffers\Entities;
 
+use Item8\HasOffers\Contain\AdvertiserMeta;
 use Item8\HasOffers\Entity\Advertiser;
 use Item8\HasOffers\Contain\AdvertiserUser;
 
@@ -39,5 +40,6 @@ class Advertisers extends AbstractEntities
      */
     protected $contain = [
         'AdvertiserUser' => AdvertiserUser::class,
+        'AdvertiserMeta' => AdvertiserMeta::class,
     ];
 }

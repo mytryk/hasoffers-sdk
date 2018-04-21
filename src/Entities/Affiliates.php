@@ -14,6 +14,7 @@
 
 namespace Item8\HasOffers\Entities;
 
+use Item8\HasOffers\Contain\AffiliateMeta;
 use Item8\HasOffers\Entity\Affiliate;
 use Item8\HasOffers\Contain\PaymentMethod;
 use Item8\HasOffers\Contain\AffiliateUser;
@@ -41,5 +42,6 @@ class Affiliates extends AbstractEntities
     protected $contain = [
         'PaymentMethod' => PaymentMethod::class,
         'AffiliateUser' => AffiliateUser::class,
+        'AffiliateMeta' => AffiliateMeta::class,
     ];
 }
