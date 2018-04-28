@@ -150,12 +150,6 @@ class HasOffersClient
                 'auth'       => $this->httpAuth,
             ];
 
-            error_log(
-                $requestParams['Target'] . '::' . $requestParams['Method'] . "\n",
-                3,
-                PROJECT_ROOT . '/build/methods.log'
-            );
-
             $requestParams = array_merge($requestParams, [
                 'NetworkToken' => $this->networkToken,
                 'NetworkId'    => $this->networkId,
