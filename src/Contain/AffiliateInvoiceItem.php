@@ -73,7 +73,8 @@ class AffiliateInvoiceItem extends AbstractItemContain
     protected $excludedKeys = [
         'id',
         'affiliate_id',
-        'objectId'
+        'objectId',
+        'currency'
     ];
 
     /**
