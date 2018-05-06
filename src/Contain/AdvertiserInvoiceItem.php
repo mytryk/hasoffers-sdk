@@ -74,7 +74,8 @@ class AdvertiserInvoiceItem extends AbstractItemContain
     protected $excludedKeys = [
         'id',
         'advertiser_id',
-        'objectId'
+        'objectId',
+        'currency'
     ];
 
     /**
