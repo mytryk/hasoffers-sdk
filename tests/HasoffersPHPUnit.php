@@ -133,6 +133,10 @@ abstract class HasoffersPHPUnit extends PHPUnit
      */
     protected function dumpMethodName($requestParams)
     {
+        if ($requestParams['Target'] === 'Undefined' || $requestParams['Method'] === 'Undefined') {
+            return;
+        }
+
         $dumpFile = PROJECT_BUILD . '/all-methods.log';
 
         $allMethods = '';

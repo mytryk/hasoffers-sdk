@@ -28,8 +28,8 @@ use Item8\HasOffers\Entity\AbstractEntity;
  */
 class HasOffersClient
 {
-    const HTTP_TIMEOUT    = 180;
-    const DEFAULT_API_URL = 'https://__NETWORK_ID__.api.hasoffers.com/Apiv3/json';
+    public const HTTP_TIMEOUT    = 180;
+    public const DEFAULT_API_URL = 'https://__NETWORK_ID__.api.hasoffers.com/Apiv3/json';
 
     /**
      * @var int
