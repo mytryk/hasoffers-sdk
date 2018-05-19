@@ -55,7 +55,7 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         isSame($memo, $item->memo);
         isSame($type, $item->type);
 
-        //$invoiceItem->delete(); // Clean up after test, but delete leter in tests
+        $invoiceItem->delete(); // Clean up after test, but delete leter in tests
     }
 
     public function testCanGetItemsByInvoiceId()
@@ -64,6 +64,8 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $invoice = $this->hoClient->get(AdvertiserInvoice::class, $this->testId);
 
         $items = $invoice->getItemsList()->findAll();
+
+        isTrue(count($items) > 0);
 
         foreach ($items as $item) {
             is($this->testId, $item->invoice_id);

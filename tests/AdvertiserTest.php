@@ -130,7 +130,6 @@ class AdvertiserTest extends HasoffersPHPUnit
 
     public function testCanUpdateAdvertiser()
     {
-        $this->skipIfFakeServer();
         /** @var Advertiser $advertiserBeforeSave */
         $advertiserBeforeSave = $this->hoClient->get(Advertiser::class, $this->testId);
 

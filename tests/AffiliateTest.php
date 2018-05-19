@@ -170,8 +170,6 @@ class AffiliateTest extends HasoffersPHPUnit
 
     public function testCanUpdateAffiliate()
     {
-        $this->skipIfFakeServer();
-
         $affiliateBeforeSave = $this->hoClient->get(Affiliate::class, $this->testId);
 
         $beforeCompany = $affiliateBeforeSave->company;
@@ -184,8 +182,6 @@ class AffiliateTest extends HasoffersPHPUnit
 
     public function testCanDeleteAffiliate()
     {
-        $this->skipIfFakeServer();
-
         $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $affiliate->delete();
 
@@ -196,8 +192,6 @@ class AffiliateTest extends HasoffersPHPUnit
 
     public function testCanBlockAffiliate()
     {
-        $this->skipIfFakeServer();
-
         $affiliate = $this->hoClient->get(Affiliate::class, $this->testId);
         $affiliate->block();
 

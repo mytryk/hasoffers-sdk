@@ -182,8 +182,6 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
 
     public function testCanUpdate()
     {
-        $this->skipIfFakeServer();
-
         $affReceiptBeforeSave = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
 
         $beforeMemo = $affReceiptBeforeSave->memo;
@@ -196,8 +194,6 @@ class AffiliateReceiptTest extends HasoffersPHPUnit
 
     public function testCanDelete()
     {
-        $this->skipIfFakeServer();
-
         $affReceipt = $this->hoClient->get(AffiliateReceipt::class, $this->testId);
         $affReceipt->delete();
 

@@ -129,8 +129,6 @@ class OfferTest extends HasoffersPHPUnit
 
     public function testCanUpdateOffer()
     {
-        $this->skipIfFakeServer();
-
         /** @var Offer $offerBeforeSave */
         $offerBeforeSave = $this->hoClient->get(Offer::class, $this->testId);
 
@@ -145,8 +143,6 @@ class OfferTest extends HasoffersPHPUnit
 
     public function testCanDeleteOffer()
     {
-        $this->skipIfFakeServer();
-
         /** @var Offer $offer */
         $offer = $this->hoClient->get(Offer::class, $this->testId);
         $offer->delete();

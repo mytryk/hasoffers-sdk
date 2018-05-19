@@ -86,8 +86,6 @@ class AdvertiserUserTest extends HasoffersPHPUnit
 
     public function testCanCreateAdvertiserUser()
     {
-        $this->skipIfFakeServer();
-
         $password = Str::random();
         $email = $this->faker->companyEmail;
         /** @var AdvertiserUser $advertiserUser */
@@ -113,8 +111,6 @@ class AdvertiserUserTest extends HasoffersPHPUnit
 
     public function testCanUpdateAdvertiserUser()
     {
-        $this->skipIfFakeServer();
-
         /** @var AdvertiserUser $advertiserUserBeforeSave */
         $advertiserUserBeforeSave = $this->hoClient->get(AdvertiserUser::class, $this->testId);
 
