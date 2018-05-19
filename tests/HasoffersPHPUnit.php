@@ -82,6 +82,8 @@ abstract class HasoffersPHPUnit extends PHPUnit
                     $dumpFile = $this->getDumpFilename('request');
                     $requestParams['_ho_url'] = $url;
                     file_put_contents($dumpFile . '.json', '' . json($requestParams));
+
+                    $this->dumpMethodName($requestParams);
                 }
             )
             ->on(
@@ -127,10 +129,23 @@ abstract class HasoffersPHPUnit extends PHPUnit
     }
 
     /**
-     * @return bool
+     * @param $requestParams
      */
-    protected function skipIfFakeServer()
+    protected function dumpMethodName($requestParams)
     {
-        //skip('Skip test for fake server: ' . $this->getTestName());
+        $dumpFile = PROJECT_BUILD . '/all-methods.log';
+
+        $allMethods = '';
+        if (file_exists($dumpFile)) {
+            $allMethods = file_get_contents($dumpFile);
+        }
+
+        $allMethods = Str::parseLines($allMethods, true);
+
+        $methodName = "{$requestParams['Target']}::{$requestParams['Method']}";
+        $allMethods[$methodName] = $methodName;
+        ksort($allMethods);
+
+        file_put_contents($dumpFile, implode(PHP_EOL, $allMethods) . PHP_EOL);
     }
 }

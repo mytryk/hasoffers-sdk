@@ -15,6 +15,7 @@
 namespace JBZoo\PHPUnit;
 
 use Item8\HasOffers\Entities\Affiliates;
+use Item8\HasOffers\Entities\Employees;
 use JBZoo\Profiler\Benchmark;
 use JBZoo\Utils\Env;
 use Item8\HasOffers\Entities\Conversions;
@@ -32,10 +33,16 @@ class LimitsTest extends HasoffersPHPUnit
      */
     protected $conversions;
 
+    /**
+     * @var Employees
+     */
+    protected $users;
+
     public function setUp()
     {
         parent::setUp();
         $this->conversions = $this->hoClient->get(Conversions::class);
+        $this->users = $this->hoClient->get(Employees::class);
     }
 
     public function testFindOneRow()
@@ -106,10 +113,8 @@ class LimitsTest extends HasoffersPHPUnit
 
     public function testTryToLoadUnlimit()
     {
-        $list = $this->conversions->find([
-            'fields' => ['id'],
-        ]);
-        isTrue(62165 >= count($list));
+        $list = $this->users->find(['fields' => ['id']]);
+        isTrue(2000 <= count($list));
     }
 
     public function testTryToLoadLessPageSize()
@@ -148,8 +153,8 @@ class LimitsTest extends HasoffersPHPUnit
 
     public function testCount()
     {
-        $count = $this->conversions->count();
-        isTrue(62165 >= $count);
+        $list = $this->users->count();
+        isTrue(2000 <= $list);
     }
 
     public function testCountVsFind()
@@ -161,8 +166,8 @@ class LimitsTest extends HasoffersPHPUnit
         isTrue(1500 < $clearCount);
         isSame($countFind, $clearCount);
 
-        $clearCount = $this->conversions->count();
-        $countFind = count($this->conversions->find());
+        $clearCount = $this->users->count();
+        $countFind = count($this->users->find());
         isSame($countFind, $clearCount);
     }
 
