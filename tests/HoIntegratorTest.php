@@ -14,6 +14,9 @@
 
 namespace JBZoo\PHPUnit;
 
+use Item8\HasOffers\Entities\Employees;
+use Item8\HasOffers\Entity\Employee;
+use JBZoo\Data\JSON;
 use Faker\Factory;
 use Faker\Generator;
 use Faker\Provider\pt_BR\PhoneNumber;
@@ -28,11 +31,11 @@ use Item8\HasOffers\HasOffersClient;
 use Item8\HasOffers\Helper;
 
 /**
- * Class HasoffersPHPUnit
+ * Class HoIntegratorTest
  *
  * @package JBZoo\PHPUnit
  */
-abstract class HasoffersPHPUnit extends PHPUnit
+class HoIntegratorTest extends PHPUnit
 {
     /**
      * @var HasOffersClient
@@ -49,19 +52,29 @@ abstract class HasoffersPHPUnit extends PHPUnit
      */
     protected $faker;
 
+    public $integratorId = 'Item8ReadOnly';
+    public $myClient     = 'Xy0wcH0eKC3BWndz7WvzYdzFpl2hSvbQ';
+    public $mySecret     = 'PwDUNKIOBaoA9gbOnDRQZuJp4IA1LQG6gKyQF5m0Xtia7v5QG2ONpvp2z53s_BNa';
+
     public function setUp()
     {
         parent::setUp();
 
-        $this->faker = Factory::create();
-        $this->faker->addProvider(new PhoneNumber($this->faker));
+//        $this->hoClient = new HasOffersClient(HasOffersClient::MODE_INTEGRATOR);
+//        $this->hoClient->setIntegratorAuth($this->myClient, $this->mySecret, $this->integratorId);
 
-        $this->hoClient = new HasOffersClient(HasOffersClient::MODE_CLIENT);
-        $this->hoClient->setClientAuth(
-            Env::get('HO_API_NETWORK_ID'),
-            Env::get('HO_API_NETWORK_TOKEN'),
-            Env::get('HO_API_URL') ?: HasOffersClient::DEFAULT_API_URL
-        );
+        // TODO: TOBE
+//        $this->hoClient = (new HasOffersClient)::factory(HasOffersClient::MODE_INTEGRATOR);
+//        $this->hoClient->setAuth($this->myClient, $this->mySecret, $this->integratorId);
+//        $this->hoClient->get(Employees::class);
+
+        // can't do this, because there is different params for
+//        $this->hoClient = new HasOffersClient($this->myClient, $this->mySecret, $this->integratorId);
+//        $this->hoClient->get(Employees::class);
+
+//        $this->hoClient = new IntegratorApi();
+//        $this->hoClient->setAuth($this->myClient, $this->mySecret, $this->integratorId);
+//        $this->hoClient->get(Employees::class);
 
         $httpUser = Env::get('HO_API_HTTP_USER');
         $httpPass = Env::get('HO_API_HTTP_PASS');
@@ -92,6 +105,41 @@ abstract class HasoffersPHPUnit extends PHPUnit
                     file_put_contents($dumpFile . '.json', $response->getJSON());
                 }
             );
+    }
+
+    public function testExampleRequest()
+    {
+        $jwt = httpRequest('https://integrator-auth.hasoffers.com/authorize', (new JSON([
+            'client_id'     => trim($this->myClient),
+            'client_secret' => trim($this->mySecret),
+            'audience'      => 'BrandAPI'
+        ]))->__toString(), 'POST')->getJSON();
+
+        var_dump($jwt);
+
+
+//        $response = httpRequest('https://integrator-api.hasoffers.com/Apiv3/json', [
+//            'Format'       => 'json',
+//            'NetworkId'    => 'item8demo',
+//            'Target'       => 'Preference',
+//            'Method'       => 'findAll',
+//            'IntegratorId' => $this->integratorId,
+//        ], 'GET', [
+//            'headers' => [
+//                'authorization' => "Bearer {$jwt}"
+//            ]
+//        ]);
+//
+//        print_r($response->getJSON());
+    }
+
+    public function testCanMakeRequest()
+    {
+        $employeeId = '8';
+
+        /** @var Employee $employee */
+        $employee = $this->hoClient->get(Employee::class, $employeeId);
+        is($employeeId, $employee->id);
     }
 
     /**
@@ -128,10 +176,27 @@ abstract class HasoffersPHPUnit extends PHPUnit
     }
 
     /**
-     * @return bool
+     * @param $requestParams
      */
-    protected function skipIfFakeServer()
+    protected function dumpMethodName($requestParams)
     {
-        //skip('Skip test for fake server: ' . $this->getTestName());
+        if ($requestParams['Target'] === 'Undefined' || $requestParams['Method'] === 'Undefined') {
+            return;
+        }
+
+        $dumpFile = PROJECT_BUILD . '/all-methods.log';
+
+        $allMethods = '';
+        if (file_exists($dumpFile)) {
+            $allMethods = file_get_contents($dumpFile);
+        }
+
+        $allMethods = Str::parseLines($allMethods, true);
+
+        $methodName = "{$requestParams['Target']}::{$requestParams['Method']}";
+        $allMethods[$methodName] = $methodName;
+        ksort($allMethods);
+
+        file_put_contents($dumpFile, implode(PHP_EOL, $allMethods) . PHP_EOL);
     }
 }
