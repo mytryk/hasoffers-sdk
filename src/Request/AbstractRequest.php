@@ -12,28 +12,23 @@
  * @link        https://item8.io
  */
 
-namespace Item8\HasOffers;
+namespace Item8\HasOffers\Request;
 
 use JBZoo\Event\EventManager;
-use JBZoo\HttpClient\HttpClient;
 use function JBZoo\Data\json;
-use JBZoo\Data\JSON;
 use JBZoo\Data\Data;
 use Item8\HasOffers\Entities\AbstractEntities;
 use Item8\HasOffers\Entity\AbstractEntity;
-use function JBZoo\PHPUnit\httpRequest;
+use JBZoo\HttpClient\Response;
 
 /**
  * Class Request
  *
  * @package Item8\HasOffers
  */
-abstract class HasOffersClient
+abstract class AbstractRequest
 {
     public const HTTP_TIMEOUT = 180;
-
-    public const MODE_INTEGRATOR = 'integrator';
-    public const MODE_CLIENT     = 'client';
 
     /**
      * @var int
@@ -81,17 +76,20 @@ abstract class HasOffersClient
     protected $lastResponseSave = true;
 
     /**
-     * @var string
+     * Prepare request and make request.
+     *
+     * @param string $url
+     * @param array  $requestParams
+     * @return Response
      */
-    protected $mode;
+    abstract public function getResponse($url, array $requestParams): Response;
 
     /**
-     * @param mixed  ...$args
-     * @return mixed
+     * Return API url for requests.
+     *
+     * @return string
      */
-    abstract public function setAuth(...$args); // $id, $token, $integratorId = null, $apiUrl
-    // $clientId, $clientSecret, $integratorId, $apiUrl = self::DEFAULT_INTEGRATOR_API_URL
-    // $networkId, $token, null, $apiUrl = self::DEFAULT_API_URL
+    abstract public function getApiUrl(): string;
 
     /**
      * @param string $modelClassName
@@ -131,12 +129,13 @@ abstract class HasOffersClient
     {
         $this->sleepBeforeRequest();
 
-        $url = $this->getApiUrl(); //todo
+        $url = $this->getApiUrl();
         $this->lastRequest = $requestParams;
         $this->trigger('api.request.before', [$this, &$requestParams, &$url]);
 
         try {
-            $response = $this->prepareRequest($url, $requestParams);
+            /** @var \JBZoo\HttpClient\Response $response **/
+            $response = $this->getResponse($url, $requestParams);
         } catch (\Exception $httpException) {
             throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);
         }
@@ -144,6 +143,11 @@ abstract class HasOffersClient
         // Prepare response
         $json = $response->getJSON();
         $data = $json->getArrayCopy();
+
+        if(empty($data)){
+            throw new Exception(trim($response->getBody()));
+        }
+
         $data['request']['NetworkToken'] = '*** hidden ***';
         $data['request']['NetworkId'] = '*** hidden ***';
 
@@ -176,9 +180,6 @@ abstract class HasOffersClient
 
         return $returnOnlyData ? json($json->find('response.data')) : json($json);
     }
-
-    // todo: right now this is a request actually
-    abstract public function prepareRequest($url, array $requestParams);
 
     /**
      * Setter for external EventManager

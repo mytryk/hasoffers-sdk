@@ -14,7 +14,7 @@
 
 namespace Item8\HasOffers\Traits;
 
-use Item8\HasOffers\HasOffersClient;
+use Item8\HasOffers\Request\AbstractRequest;
 use JBZoo\Data\Data as JBZooData;
 
 /**
@@ -24,7 +24,7 @@ use JBZoo\Data\Data as JBZooData;
  */
 trait DataEntity
 {
-    /** @var  HasOffersClient */
+    /** @var  AbstractRequest */
     protected $hoClient;
 
     /**

@@ -40,9 +40,9 @@ namespace PHPSTORM_META {
     use Unilead\HasOffers\Entity\Offer;
     use Unilead\HasOffers\Entity\OfferPixel;
 
-    use Unilead\HasOffers\HasOffersClient;
+    use Unilead\HasOffers\Request\AbstractRequest;
 
-    override(HasOffersClient::get(0),
+    override(AbstractRequest::get(0),
         map([
             // object
             Advertiser::class         => Advertiser::class,

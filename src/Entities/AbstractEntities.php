@@ -14,9 +14,9 @@
 
 namespace Item8\HasOffers\Entities;
 
+use Item8\HasOffers\Request\AbstractRequest;
 use JBZoo\Data\Data;
 use function JBZoo\Data\json;
-use Item8\HasOffers\HasOffersClient;
 
 /**
  * Class AbstractEntities
@@ -25,7 +25,7 @@ use Item8\HasOffers\HasOffersClient;
  */
 abstract class AbstractEntities
 {
-    const DEFAULT_LIMIT = 50000;
+    public const DEFAULT_LIMIT = 50000;
 
     /**
      * @var int
@@ -33,7 +33,7 @@ abstract class AbstractEntities
     protected $pageSize = 500;
 
     /**
-     * @var HasOffersClient
+     * @var AbstractRequest
      */
     protected $hoClient;
 
@@ -160,11 +160,11 @@ abstract class AbstractEntities
     /**
      * Setter for HasOffers Client.
      *
-     * @param HasOffersClient $hoClient
+     * @param AbstractRequest $hoClient
      *
      * @return $this
      */
-    public function setClient(HasOffersClient $hoClient)
+    public function setClient(AbstractRequest $hoClient)
     {
         $this->hoClient = $hoClient;
         return $this;

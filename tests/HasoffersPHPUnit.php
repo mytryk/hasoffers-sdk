@@ -17,15 +17,12 @@ namespace JBZoo\PHPUnit;
 use Faker\Factory;
 use Faker\Generator;
 use Faker\Provider\pt_BR\PhoneNumber;
+use Item8\HasOffers\Request\ClientApi;
 use function JBZoo\Data\json;
-use JBZoo\Data\PHPArray;
 use JBZoo\Event\EventManager;
-use JBZoo\HttpClient\HttpClient;
 use JBZoo\HttpClient\Response;
 use JBZoo\Utils\Env;
 use JBZoo\Utils\Str;
-use Item8\HasOffers\HasOffersClient;
-use Item8\HasOffers\Helper;
 
 /**
  * Class HasoffersPHPUnit
@@ -35,7 +32,7 @@ use Item8\HasOffers\Helper;
 abstract class HasoffersPHPUnit extends PHPUnit
 {
     /**
-     * @var HasOffersClient
+     * @var ClientApi
      */
     protected $hoClient;
 
@@ -56,11 +53,11 @@ abstract class HasoffersPHPUnit extends PHPUnit
         $this->faker = Factory::create();
         $this->faker->addProvider(new PhoneNumber($this->faker));
 
-        $this->hoClient = new HasOffersClient(HasOffersClient::MODE_CLIENT);
-        $this->hoClient->setClientAuth(
+        $this->hoClient = new ClientApi();
+        $this->hoClient->setAuth(
             Env::get('HO_API_NETWORK_ID'),
             Env::get('HO_API_NETWORK_TOKEN'),
-            Env::get('HO_API_URL') ?: HasOffersClient::DEFAULT_API_URL
+            Env::get('HO_API_URL') ?: ClientApi::DEFAULT_API_URL
         );
 
         $httpUser = Env::get('HO_API_HTTP_USER');

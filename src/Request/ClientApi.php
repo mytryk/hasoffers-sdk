@@ -12,23 +12,17 @@
  * @link        https://item8.io
  */
 
-namespace Item8\HasOffers;
+namespace Item8\HasOffers\Request;
 
-use JBZoo\Event\EventManager;
 use JBZoo\HttpClient\HttpClient;
-use function JBZoo\Data\json;
-use JBZoo\Data\JSON;
-use JBZoo\Data\Data;
-use Item8\HasOffers\Entities\AbstractEntities;
-use Item8\HasOffers\Entity\AbstractEntity;
-use function JBZoo\PHPUnit\httpRequest;
+use JBZoo\HttpClient\Response;
 
 /**
- * Class Request
+ * Class ClientApi
  *
  * @package Item8\HasOffers
  */
-class Client extends HasOffersClient
+class ClientApi extends AbstractRequest
 {
     public const DEFAULT_API_URL = 'https://__NETWORK_ID__.api.hasoffers.com/Apiv3/json';
 
@@ -42,14 +36,22 @@ class Client extends HasOffersClient
      */
     protected $networkToken;
 
-    public function setAuth($networkId, $token, $apiUrl = self::DEFAULT_API_URL)
+    /**
+     * @param int|string $networkId
+     * @param string     $networkToken
+     * @param string     $apiUrl
+     */
+    public function setAuth($networkId, $networkToken, $apiUrl = self::DEFAULT_API_URL): void
     {
         $this->networkId = $networkId;
-        $this->networkToken = $token;
+        $this->networkToken = $networkToken;
         $this->apiUrl = $apiUrl;
     }
 
-    public function prepareRequest($url, array $requestParams)
+    /**
+     * @inheritdoc
+     */
+    public function getResponse($url, array $requestParams): Response
     {
         $httpClientParams = [
             'timeout'    => self::HTTP_TIMEOUT,
@@ -79,7 +81,7 @@ class Client extends HasOffersClient
     /**
      * @return string
      */
-    public function getApiUrl()
+    public function getApiUrl(): string
     {
         return str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
     }
