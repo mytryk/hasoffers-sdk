@@ -12,24 +12,26 @@
  * @link        https://item8.io
  */
 
-namespace Item8\HasOffers;
+namespace Item8\HasOffers\Request;
 
 use JBZoo\Event\EventManager;
-use JBZoo\HttpClient\HttpClient;
 use function JBZoo\Data\json;
 use JBZoo\Data\Data;
 use Item8\HasOffers\Entities\AbstractEntities;
 use Item8\HasOffers\Entity\AbstractEntity;
+use JBZoo\HttpClient\Response;
 
 /**
  * Class Request
  *
  * @package Item8\HasOffers
  */
-class HasOffersClient
+abstract class AbstractRequest
 {
-    public const HTTP_TIMEOUT    = 180;
-    public const DEFAULT_API_URL = 'https://__NETWORK_ID__.api.hasoffers.com/Apiv3/json';
+    public const INTEGRATOR_MODE = 'Integrator';
+    public const CLIENT_MODE = 'Client';
+
+    public const HTTP_TIMEOUT = 180;
 
     /**
      * @var int
@@ -50,16 +52,6 @@ class HasOffersClient
      * @var string
      */
     protected $apiUrl;
-
-    /**
-     * @var string
-     */
-    protected $networkId;
-
-    /**
-     * @var string
-     */
-    protected $networkToken;
 
     /**
      * @var array
@@ -87,18 +79,20 @@ class HasOffersClient
     protected $lastResponseSave = true;
 
     /**
-     * HasOffersClient constructor.
+     * Prepare request and make request.
      *
-     * @param string $networkId
-     * @param string $token
-     * @param string $apiUrl
+     * @param string $url
+     * @param array  $requestParams
+     * @return Response
      */
-    public function __construct($networkId, $token, $apiUrl = self::DEFAULT_API_URL)
-    {
-        $this->networkId = $networkId;
-        $this->networkToken = $token;
-        $this->apiUrl = $apiUrl;
-    }
+    abstract public function getResponse($url, array $requestParams): Response;
+
+    /**
+     * Return API url for requests.
+     *
+     * @return string
+     */
+    abstract public function getApiUrl(): string;
 
     /**
      * @param string $modelClassName
@@ -143,24 +137,8 @@ class HasOffersClient
         $this->trigger('api.request.before', [$this, &$requestParams, &$url]);
 
         try {
-            $httpClientParams = [
-                'timeout'    => self::HTTP_TIMEOUT,
-                'verify'     => true,
-                'exceptions' => true,
-                'auth'       => $this->httpAuth,
-            ];
-
-            $requestParams = array_merge($requestParams, [
-                'NetworkToken' => $this->networkToken,
-                'NetworkId'    => $this->networkId,
-            ]);
-
-            // Fix limits
-            if (isset($requestParams['limit']) && (int)$requestParams['limit'] === 0) {
-                unset($requestParams['limit']);
-            }
-
-            $response = (new HttpClient($httpClientParams))->request($url, $requestParams, 'GET', $httpClientParams);
+            /** @var \JBZoo\HttpClient\Response $response **/
+            $response = $this->getResponse($url, $requestParams);
         } catch (\Exception $httpException) {
             throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);
         }
@@ -168,6 +146,11 @@ class HasOffersClient
         // Prepare response
         $json = $response->getJSON();
         $data = $json->getArrayCopy();
+
+        if(empty($data)){
+            throw new Exception(trim($response->getBody()));
+        }
+
         $data['request']['NetworkToken'] = '*** hidden ***';
         $data['request']['NetworkId'] = '*** hidden ***';
 
@@ -220,7 +203,7 @@ class HasOffersClient
      * @param array    $arguments
      * @param callback $continueCallback
      * @return int|string
-     * @throws Exception
+     * @throws \JBZoo\Event\Exception
      */
     public function trigger($eventName, array $arguments = [], $continueCallback = null)
     {
@@ -300,14 +283,6 @@ class HasOffersClient
             }
             $this->trigger('api.request.sleep.after', [$this, $isSleep]);
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function getApiUrl()
-    {
-        return str_replace('__NETWORK_ID__.', $this->networkId . '.', $this->apiUrl);
     }
 
     /**

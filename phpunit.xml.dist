@@ -27,13 +27,14 @@
 >
 
     <php>
-        <!--<env name="HO_API_HTTP_USER" value="admin﻿"/>-->
-        <!--<env name="HO_API_HTTP_PASS" value="﻿"/>-->
-        <!--<env name="HO_API_URL" value="http://unilead.item8.io/tools/ho-proxy/index.php"/>-->
         <env name="HO_API_NETWORK_ID" value=""/>
         <env name="HO_API_NETWORK_TOKEN" value=""/>
         <env name="HO_API_REQUEST_LIMIT" value="1"/>
         <env name="HO_API_REQUEST_TIMEOUT" value="1"/>
+
+        <env name="HO_INTEGRATOR_API_CLIENT_ID" value=""/>
+        <env name="HO_INTEGRATOR_API_SECRET_TOKEN" value=""/>
+        <env name="HO_INTEGRATOR_API_INTEGRATOR_ID" value=""/>
     </php>
 
     <testsuites>

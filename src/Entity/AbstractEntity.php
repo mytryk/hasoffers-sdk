@@ -14,7 +14,7 @@
 
 namespace Item8\HasOffers\Entity;
 
-use Item8\HasOffers\HasOffersClient;
+use Item8\HasOffers\Request\AbstractRequest;
 use Item8\HasOffers\Traits\DataEntity;
 
 /**
@@ -29,7 +29,7 @@ abstract class AbstractEntity
     use DataEntity;
 
     /**
-     * @var HasOffersClient
+     * @var AbstractRequest
      */
     protected $hoClient;
 
@@ -74,13 +74,13 @@ abstract class AbstractEntity
      * @param int                  $objectId
      * @param array                $data
      * @param array                $containData
-     * @param HasOffersClient|null $hoClient
+     * @param AbstractRequest|null $hoClient
      */
     public function __construct(
         $objectId = null,
         array $data = [],
         array $containData = [],
-        HasOffersClient $hoClient = null
+        AbstractRequest $hoClient = null
     ) {
         $this->objectId = (int)$objectId;
         $hoClient && $this->setClient($hoClient);
@@ -231,11 +231,11 @@ abstract class AbstractEntity
     /**
      * Setter for HasOffers Client.
      *
-     * @param HasOffersClient $hoClient
+     * @param AbstractRequest $hoClient
      *
      * @return $this
      */
-    public function setClient(HasOffersClient $hoClient)
+    public function setClient(AbstractRequest $hoClient)
     {
         $this->hoClient = $hoClient;
 
@@ -245,7 +245,7 @@ abstract class AbstractEntity
     /**
      * Getter for HasOffers Client.
      *
-     * @return HasOffersClient
+     * @return AbstractRequest
      */
     public function getClient()
     {
