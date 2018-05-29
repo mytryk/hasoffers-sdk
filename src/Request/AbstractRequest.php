@@ -28,6 +28,9 @@ use JBZoo\HttpClient\Response;
  */
 abstract class AbstractRequest
 {
+    public const INTEGRATOR_MODE = 'Integrator';
+    public const CLIENT_MODE = 'Client';
+
     public const HTTP_TIMEOUT = 180;
 
     /**
