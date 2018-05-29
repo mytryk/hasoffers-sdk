@@ -23,8 +23,8 @@
     },
     "repositories"      : {
         "item8/codestyle" : {
-            "type" : "git",
-            "url"  : "http://code.unilead.net/unilead/codestyle.git"
+            "type" : "vcs",
+            "url"  : "https://github.com/item8/codestyle"
         }
     },
     "autoload"          : {
@@ -34,15 +34,5 @@
     },
     "autoload-dev"      : {
         "classmap" : ["tests"]
-    },
-    "extra"             : {
-        "branch-alias" : {
-            "dev-master" : "1.x-dev"
-        }
-    },
-
-    "config"            : {
-        "optimize-autoloader" : false,
-        "secure-http"         : false
     }
 }
