@@ -49,6 +49,11 @@ class IntegratorApi extends AbstractRequest
     protected $jwtToken;
 
     /**
+     * @var string
+     */
+    protected $expireDate;
+
+    /**
      * @param string      $clientId
      * @param string      $clientSecret
      * @param null|string $integratorId
@@ -64,7 +69,7 @@ class IntegratorApi extends AbstractRequest
 
     /**
      * Setter for JWT token.
-     * @param $jwtToken
+     * @param string $jwtToken
      * @return $this
      */
     public function setJwtToken($jwtToken)
@@ -83,14 +88,37 @@ class IntegratorApi extends AbstractRequest
     }
 
     /**
+     * Setter for JWT token expiration date.
+     * @param $expireDate
+     * @return $this
+     */
+    public function setJwtExpireDate($expireDate)
+    {
+        $currentDate = strtotime(date('Y-m-d H:i:s'));
+        $expirationDate = $currentDate + ($expireDate - 7200); // remove two hours to insure we won't overdue the key
+
+        $this->expireDate = date('Y-m-d H:i:s', $expirationDate);
+        return $this;
+    }
+
+    /**
+     * Getter for JWT token expiration date.
+     * @return string
+     */
+    public function getJwtExpireDate()
+    {
+        return $this->expireDate;
+    }
+
+    /**
      * Request to HasOffers for new JWT token.
      * @return mixed
      * @throws Exception
      */
-    public function requestJwtToken()
+    public function updateJwtToken()
     {
         try {
-            $jwt = (new HttpClient())->request(
+            $response = (new HttpClient())->request(
                 self::DEFAULT_INTEGRATOR_API_AUTH_URL . '/authorize',
                 (new JSON([
                     'client_id'     => trim($this->clientId),
@@ -98,10 +126,7 @@ class IntegratorApi extends AbstractRequest
                     'audience'      => 'BrandAPI'
                 ]))->__toString(),
                 'POST'
-            )->getJSON()->get('access_token');
-
-            //todo: check wrong request for JWT
-
+            )->getJSON();
         } catch (\Exception $httpException) {
             throw new Exception(
                 ' Can not receive JWT token: ' . $httpException->getMessage(),
@@ -109,7 +134,10 @@ class IntegratorApi extends AbstractRequest
                 $httpException);
         }
 
-        return $jwt;
+        $this->setJwtToken($response->get('access_token'));
+        $this->setJwtExpireDate($response->get('expires_in'));
+
+        return $this;
     }
 
     /**
@@ -129,8 +157,7 @@ class IntegratorApi extends AbstractRequest
         }
 
         if (empty($this->getJwtToken())) {
-            $jwt = $this->requestJwtToken();
-            $this->setJwtToken($jwt);
+            $this->updateJwtToken();
         }
 
         $httpClientParams = [
@@ -143,8 +170,9 @@ class IntegratorApi extends AbstractRequest
             ]
         ];
 
-        try{
-            $response = (new HttpClient($httpClientParams))->request(
+        $response = new HttpClient($httpClientParams);
+        try {
+            $response = $response->request(
                 $url,
                 $requestParams,
                 'GET',
@@ -152,11 +180,10 @@ class IntegratorApi extends AbstractRequest
             );
         } catch (\Exception $httpException) {
             if (strpos($httpException->getMessage(), 'JWT is not valid or missing') !== false) {
-                $jwt = $this->requestJwtToken();
-                $this->setJwtToken($jwt);
+                $this->updateJwtToken();
 
                 $httpClientParams = array_merge_recursive([
-                    'headers'    => [
+                    'headers' => [
                         'authorization' => "Bearer {$this->getJwtToken()}"
                     ]
                 ]);
