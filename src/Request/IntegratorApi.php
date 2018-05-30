@@ -153,7 +153,8 @@ class IntegratorApi extends AbstractRequest
             throw new Exception(
                 ' Can not receive JWT token: ' . $httpException->getMessage(),
                 $httpException->getCode(),
-                $httpException);
+                $httpException
+            );
         }
 
         $this->setRawToken($response->get('body'));
