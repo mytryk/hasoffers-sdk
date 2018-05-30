@@ -138,7 +138,7 @@ abstract class AbstractRequest
         $this->trigger('api.request.before', [$this, &$requestParams, &$url]);
 
         try {
-            /** @var \JBZoo\HttpClient\Response $response * */
+            /** @var \JBZoo\HttpClient\Response $response */
             $response = $this->getResponse($url, $requestParams);
         } catch (\Exception $httpException) {
             throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);

@@ -196,12 +196,7 @@ class IntegratorApi extends AbstractRequest
 
         $response = new HttpClient($httpClientParams);
         try {
-            $response = $response->request(
-                $url,
-                $requestParams,
-                'GET',
-                $httpClientParams
-            );
+            $response = $this->makeRequest($httpClientParams, $requestParams, $url);
         } catch (\Exception $httpException) {
             if (strpos($httpException->getMessage(), 'JWT is not valid or missing') !== false) {
                 $this->updateJwtToken();
@@ -212,12 +207,7 @@ class IntegratorApi extends AbstractRequest
                     ]
                 ]);
 
-                return (new HttpClient($httpClientParams))->request(
-                    $url,
-                    $requestParams,
-                    'GET',
-                    $httpClientParams
-                );
+                return $this->makeRequest($httpClientParams, $requestParams, $url);
             }
         }
 
@@ -230,5 +220,21 @@ class IntegratorApi extends AbstractRequest
     public function getApiUrl(): string
     {
         return self::DEFAULT_INTEGRATOR_API_URL;
+    }
+
+    /**
+     * @param array $httpClientParams
+     * @param array $requestParams
+     * @param string  $url
+     * @return Response
+     */
+    protected function makeRequest($httpClientParams, $requestParams, $url)
+    {
+        return (new HttpClient($httpClientParams))->request(
+            $url,
+            $requestParams,
+            'GET',
+            $httpClientParams
+        );
     }
 }
