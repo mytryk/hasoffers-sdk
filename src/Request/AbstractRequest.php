@@ -29,7 +29,7 @@ use JBZoo\HttpClient\Response;
 abstract class AbstractRequest
 {
     public const MODE_INTEGRATOR = 'Integrator';
-    public const MODE_CLIENT = 'Client';
+    public const MODE_CLIENT     = 'Client';
 
     public const HTTP_TIMEOUT = 180;
 
@@ -104,12 +104,13 @@ abstract class AbstractRequest
      */
     public function get($modelClassName, $entityId = null, array $data = [], array $containData = [])
     {
+        $namespace = 'Item8\\HasOffers';
         if (class_exists($modelClassName)) {
             $willCreate = $modelClassName;
-        } elseif (class_exists(__NAMESPACE__ . '\\Entity\\' . $modelClassName)) {
-            $willCreate = __NAMESPACE__ . '\\Entity\\' . $modelClassName;
-        } elseif (class_exists(__NAMESPACE__ . '\\Entities\\' . $modelClassName)) {
-            $willCreate = __NAMESPACE__ . '\\Entities\\' . $modelClassName;
+        } elseif (class_exists($namespace . '\\Entity\\' . $modelClassName)) {
+            $willCreate = $namespace . '\\Entity\\' . $modelClassName;
+        } elseif (class_exists($namespace . '\\Entities\\' . $modelClassName)) {
+            $willCreate = $namespace . '\\Entities\\' . $modelClassName;
         } else {
             throw new Exception("HO Model with class name \"{$modelClassName}\" does not exist.");
         }
@@ -137,7 +138,7 @@ abstract class AbstractRequest
         $this->trigger('api.request.before', [$this, &$requestParams, &$url]);
 
         try {
-            /** @var \JBZoo\HttpClient\Response $response **/
+            /** @var \JBZoo\HttpClient\Response $response * */
             $response = $this->getResponse($url, $requestParams);
         } catch (\Exception $httpException) {
             throw new Exception($httpException->getMessage(), $httpException->getCode(), $httpException);
@@ -147,7 +148,7 @@ abstract class AbstractRequest
         $json = $response->getJSON();
         $data = $json->getArrayCopy();
 
-        if(empty($data)){
+        if (empty($data)) {
             throw new Exception(trim($response->getBody()));
         }
 
