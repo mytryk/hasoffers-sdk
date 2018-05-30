@@ -88,21 +88,18 @@ class IntegratorApi extends AbstractRequest
     }
 
     /**
-     * Setter for JWT token expiration date.
+     * Setter for JWT token expiration date in seconds.
      * @param $expireDate
      * @return $this
      */
     public function setJwtExpireDate($expireDate)
     {
-        $currentDate = strtotime(date('Y-m-d H:i:s'));
-        $expirationDate = $currentDate + ($expireDate - 7200); // remove two hours to insure we won't overdue the key
-
-        $this->expireDate = date('Y-m-d H:i:s', $expirationDate);
+        $this->expireDate = $expireDate;
         return $this;
     }
 
     /**
-     * Getter for JWT token expiration date.
+     * Getter for JWT token expiration date in seconds.
      * @return string
      */
     public function getJwtExpireDate()
