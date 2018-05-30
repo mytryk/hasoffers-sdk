@@ -73,8 +73,10 @@ class IntegratorPHPUnit extends PHPUnit
 
         $jwtToken = $this->hoClient->getJwtToken();
         $expireDate = $this->hoClient->getJwtExpireDate();
+        $rawToken = $this->hoClient->getRawToken();
         isNotEmpty($jwtToken);
         isNotEmpty($expireDate);
+        isNotEmpty($rawToken);
 
         $stats = $this->hoClient->apiRequest([
             'Target' => 'Report',
@@ -88,6 +90,7 @@ class IntegratorPHPUnit extends PHPUnit
 
         isSame($jwtToken, $this->hoClient->getJwtToken());
         isSame($expireDate, $this->hoClient->getJwtExpireDate());
+        isSame($rawToken, $this->hoClient->getRawToken());
     }
 
     public function testInvalidJwtToken()

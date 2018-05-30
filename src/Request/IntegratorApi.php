@@ -54,6 +54,11 @@ class IntegratorApi extends AbstractRequest
     protected $expireDate;
 
     /**
+     * @var string
+     */
+    protected $rawToken;
+
+    /**
      * @param string      $clientId
      * @param string      $clientSecret
      * @param null|string $integratorId
@@ -65,6 +70,26 @@ class IntegratorApi extends AbstractRequest
         $this->clientSecret = $clientSecret;
         $this->integratorId = $integratorId;
         $this->apiUrl = $apiUrl;
+    }
+
+    /**
+     * Getter for raw jwt token response.
+     * @return string
+     */
+    public function getRawToken()
+    {
+        return $this->rawToken;
+    }
+
+    /**
+     * Setter for raw jwt token response.
+     * @param string $rawToken
+     * @return $this
+     */
+    public function setRawToken($rawToken)
+    {
+        $this->rawToken = $rawToken;
+        return $this;
     }
 
     /**
@@ -123,7 +148,7 @@ class IntegratorApi extends AbstractRequest
                     'audience'      => 'BrandAPI'
                 ]))->__toString(),
                 'POST'
-            )->getJSON();
+            );
         } catch (\Exception $httpException) {
             throw new Exception(
                 ' Can not receive JWT token: ' . $httpException->getMessage(),
@@ -131,8 +156,9 @@ class IntegratorApi extends AbstractRequest
                 $httpException);
         }
 
-        $this->setJwtToken($response->get('access_token'));
-        $this->setJwtExpireDate($response->get('expires_in'));
+        $this->setRawToken($response->get('body'));
+        $this->setJwtToken($response->getJSON()->get('access_token'));
+        $this->setJwtExpireDate($response->getJSON()->get('expires_in'));
 
         return $this;
     }
