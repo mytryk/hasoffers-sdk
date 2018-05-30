@@ -2,7 +2,21 @@
 
 #### ORM/SDK for HasOffers API
 
-### Example
+### Example Init
+
+#### Client Initialization
+```php
+$hoClient = new ClientApi();
+$hoClient->setAuth('networkId', 'token');
+```
+
+#### Integrator Initialization
+```php
+$hoClient = new IntegratorApi();
+$hoClient->setAuth('clientId', 'clientSecret', 'integratorId');
+```
+
+#### Usage Example
 
 ```php
 <?php
@@ -11,7 +25,7 @@ use Item8\HasOffers\Exception;
 use Item8\HasOffers\Entity\AbstractEntity;
 use Item8\HasOffers\Entity\Affiliate;
 use Item8\HasOffers\Entity\AffiliateInvoice;
-use Item8\HasOffers\HasOffersClient;
+use Item8\HasOffers\Request\ClientApi;
 use Item8\HasOffers\Contain\PaymentMethod;
 use Item8\HasOffers\Contain\AffiliateInvoiceItem;
 use JBZoo\Event\EventManager;
@@ -20,7 +34,9 @@ use JBZoo\Event\ExceptionStop;
 // Init HasOffers Client
 try {
     // Init HasOffers Client
-    $hoClient = new HasOffersClient('networkId', 'token');
+    $hoClient = new ClientApi();
+    $hoClient->setAuth('networkId', 'token');
+    
     $eManager = new EventManager();
     $hoClient->setEventManager($eManager);
 
@@ -34,7 +50,7 @@ try {
     
     // Get & set props
     $affiliate->company = 'Test Company';
-    $sdasd = $affiliate->company;
+    $companyName = $affiliate->company;
     
     $affiliate->phone = '+7 845 845 84 54';
     $affiliate->bindData([
