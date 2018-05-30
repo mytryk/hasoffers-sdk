@@ -32,12 +32,13 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $randAmount = random_int(1, 500);
         $memo = $this->faker->text();
         $type = 'stats';
+        $offerId = '8';
 
         /** @var AdvertiserInvoice $invoice */
         $invoice = $this->hoClient->get(AdvertiserInvoice::class, $this->testId);
         $invoiceItem = $invoice->getItemsList()->addItem();
         $invoiceItem->invoice_id = $this->testId;
-        $invoiceItem->offer_id = 8;
+        $invoiceItem->offer_id = $offerId;
         $invoiceItem->memo = $memo;
         $invoiceItem->actions = $randActions;
         $invoiceItem->amount = $randAmount;
@@ -48,14 +49,19 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $invoice->getItemsList()->findById($invoiceItem->id);
 
         $invoiceItem->reload();
+        /** @var AdvertiserInvoiceItem $item **/
         $item = $invoice->getItemsList()->findById($invoiceItem->id);
 
         isNotSame(false, $item);
         isSame((string)$randActions, $item->actions);
+        isSame((float)$randAmount, (float)$item->amount);
+        isSame($this->testId, $item->invoice_id);
+        isSame($offerId, $item->offer_id);
+        isSame(AdvertiserInvoiceItem::REVENUE_TYPE_CPA_FLAT, $item->revenue_type);
         isSame($memo, $item->memo);
         isSame($type, $item->type);
 
-        $invoiceItem->delete(); // Clean up after test, but delete leter in tests
+        $invoiceItem->delete(); // Clean up after test, but delete later in tests
     }
 
     public function testCanGetItemsByInvoiceId()
@@ -74,19 +80,22 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
 
     public function testCanDeleteInvoiceItem()
     {
-        //get invoice items
+        // Get invoice items
         /** @var AdvertiserInvoice $invoice */
         $invoice = $this->hoClient->get(AdvertiserInvoice::class, $this->testId);
         $items = $invoice->getItemsList()->findAll();
 
-        // find last added and delete it
+        // Find last added and delete it
         $lastAddedItem = end($items);
         $lastAddedId = $lastAddedItem->id;
         $lastAddedItem->delete();
 
-        //check item is not among them
+        // Check item is not among them
         $notExistingItem = $invoice->getItemsList()->findById($lastAddedId);
         isSame(false, $notExistingItem);
+
+        // Clean up. Create new item for future tests.
+        $this->createNewItem($invoice);
     }
 
     public function testCanUpdateInvoiceItem()
@@ -126,5 +135,24 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
 
         // Delete item
         $invoiceItem->delete();
+    }
+
+    protected function createNewItem(AdvertiserInvoice $invoice)
+    {
+        $randActions = random_int(1, 500);
+        $randAmount = random_int(1, 500);
+        $memo = $this->faker->text();
+        $type = 'stats';
+        $offerId = '8';
+
+        $invoiceItem = $invoice->getItemsList()->addItem();
+        $invoiceItem->invoice_id = $this->testId;
+        $invoiceItem->offer_id = $offerId;
+        $invoiceItem->memo = $memo;
+        $invoiceItem->actions = $randActions;
+        $invoiceItem->amount = $randAmount;
+        $invoiceItem->type = $type;
+        $invoiceItem->revenue_type = AdvertiserInvoiceItem::REVENUE_TYPE_CPA_FLAT;
+        $invoiceItem->save();
     }
 }

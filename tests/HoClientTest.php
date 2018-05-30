@@ -110,7 +110,7 @@ class HoClientTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedException \Item8\HasOffers\Exception
+     * @expectedException \Item8\HasOffers\Request\Exception
      */
     public function testUndefinedTarget()
     {
@@ -121,7 +121,7 @@ class HoClientTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedException \Item8\HasOffers\Exception
+     * @expectedException \Item8\HasOffers\Request\Exception
      */
     public function testUndefinedMethod()
     {
@@ -132,7 +132,7 @@ class HoClientTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedException \Item8\HasOffers\Exception
+     * @expectedException \Item8\HasOffers\Request\Exception
      */
     public function testHasOffersError()
     {
@@ -143,7 +143,7 @@ class HoClientTest extends HasoffersPHPUnit
     }
 
     /**
-     * @expectedException \Item8\HasOffers\Exception
+     * @expectedException \Item8\HasOffers\Request\Exception
      */
     public function testUndefinedClass()
     {
