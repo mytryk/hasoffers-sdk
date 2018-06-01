@@ -44,7 +44,8 @@ class IntegratorPHPUnit extends PHPUnit
         $this->hoClient->setAuth(
             Env::get('HO_INTEGRATOR_API_CLIENT_ID'),
             Env::get('HO_INTEGRATOR_API_SECRET_TOKEN'),
-            Env::get('HO_INTEGRATOR_API_INTEGRATOR_ID')
+            Env::get('HO_INTEGRATOR_API_INTEGRATOR_ID'),
+            Env::get('HO_API_NETWORK_ID')
         );
 
         $httpUser = Env::get('HO_API_HTTP_USER');
@@ -132,6 +133,7 @@ class IntegratorPHPUnit extends PHPUnit
 
         $this->hoClient = new IntegratorApi();
         $this->hoClient->setAuth(
+            'test',
             'test',
             'test',
             'test'

@@ -46,6 +46,11 @@ class IntegratorApi extends AbstractRequest
     /**
      * @var string
      */
+    protected $networkId;
+
+    /**
+     * @var string
+     */
     protected $jwtToken;
 
     /**
@@ -62,13 +67,20 @@ class IntegratorApi extends AbstractRequest
      * @param string      $clientId
      * @param string      $clientSecret
      * @param null|string $integratorId
+     * @param string      $networkId
      * @param string      $apiUrl
      */
-    public function setAuth($clientId, $clientSecret, $integratorId, $apiUrl = self::DEFAULT_INTEGRATOR_API_URL): void
-    {
+    public function setAuth(
+        $clientId,
+        $clientSecret,
+        $integratorId,
+        $networkId,
+        $apiUrl = self::DEFAULT_INTEGRATOR_API_URL
+    ) {
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
         $this->integratorId = $integratorId;
+        $this->networkId = $networkId;
         $this->apiUrl = $apiUrl;
     }
 
@@ -171,7 +183,7 @@ class IntegratorApi extends AbstractRequest
     {
         $requestParams = array_merge($requestParams, [
             'Format'       => 'json',
-            'NetworkId'    => 'item8demo',
+            'NetworkId'    => $this->networkId,
             'IntegratorId' => $this->integratorId,
         ]);
 
@@ -223,9 +235,9 @@ class IntegratorApi extends AbstractRequest
     }
 
     /**
-     * @param array $httpClientParams
-     * @param array $requestParams
-     * @param string  $url
+     * @param array  $httpClientParams
+     * @param array  $requestParams
+     * @param string $url
      * @return Response
      */
     protected function makeRequest($httpClientParams, $requestParams, $url)
