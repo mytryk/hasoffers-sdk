@@ -206,11 +206,10 @@ class IntegratorApi extends AbstractRequest
             ]
         ];
 
-        $response = new HttpClient($httpClientParams);
         try {
             $response = $this->makeRequest($httpClientParams, $requestParams, $url);
-        } catch (\Exception $httpException) {
-            if (strpos($httpException->getMessage(), 'JWT is not valid or missing') !== false) {
+        } catch (\Exception $e) {
+            if (strpos($e->getMessage(), 'JWT is not valid or missing') !== false) {
                 $this->updateJwtToken();
 
                 $httpClientParams = array_merge_recursive([
@@ -221,6 +220,7 @@ class IntegratorApi extends AbstractRequest
 
                 return $this->makeRequest($httpClientParams, $requestParams, $url);
             }
+            throw new Exception($e->getMessage(), (int)$e->getCode(), $e->getPrevious());
         }
 
         return $response;
