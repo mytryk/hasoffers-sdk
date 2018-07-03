@@ -64,6 +64,9 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $invoiceItem->delete(); // Clean up after test, but delete later in tests
     }
 
+    /**
+     * @depends testCanCreateInvoiceItem
+     */
     public function testCanGetItemsByInvoiceId()
     {
         /** @var AdvertiserInvoice $invoice */
@@ -137,6 +140,9 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         $invoiceItem->delete();
     }
 
+    /**
+     * @param AdvertiserInvoice $invoice
+     */
     protected function createNewItem(AdvertiserInvoice $invoice)
     {
         $randActions = random_int(1, 500);
