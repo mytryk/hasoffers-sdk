@@ -61,6 +61,9 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         //$invoiceItem->delete(); // Clean up after test, but delete leter in tests
     }
 
+    /**
+     * @depends testCanCreateInvoiceItem
+     */
     public function testCanGetItemsByInvoiceId()
     {
         /** @var AffiliateInvoice $affiliateInvoice */
@@ -68,6 +71,7 @@ class AffiliateInvoiceItemsTest extends HasoffersPHPUnit
         $affiliateInvoice->reload();
 
         $items = $affiliateInvoice->getItemsList()->findAll();
+        isTrue(count($items) > 0);
 
         foreach ($items as $item) {
             is($this->testId, $item->invoice_id);
