@@ -36,6 +36,9 @@ class AffiliateMetaTest extends HasoffersPHPUnit
         isNull($affiliateMeta->ssn_tax);
     }
 
+    /**
+     * @depends testGetMeta
+     */
     public function testCanUpdateMeta(): void
     {
         /** @var Affiliate $affiliate */

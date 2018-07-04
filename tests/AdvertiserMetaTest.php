@@ -38,6 +38,9 @@ class AdvertiserMetaTest extends HasoffersPHPUnit
         isSame(AdvertiserMeta::DEFAULT_VAT_ID, $advertiserMeta->default_vat_id);
     }
 
+    /**
+     * @depends testGetMeta
+     */
     public function testCanUpdateMeta(): void
     {
         /** @var Advertiser $advertiser */
