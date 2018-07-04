@@ -81,6 +81,9 @@ class AdvertiserInvoiceItemsTest extends HasoffersPHPUnit
         }
     }
 
+    /**
+     * @depends testCanGetItemsByInvoiceId
+     */
     public function testCanDeleteInvoiceItem()
     {
         // Get invoice items
