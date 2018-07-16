@@ -1,8 +1,8 @@
-# Item8 HasOffers    [![Latest Stable Version](https://poser.pugx.org/item8/hasoffers-sdk/v/stable)](https://packagist.org/packages/item8/hasoffers-sdk)    [![Latest Unstable Version](https://poser.pugx.org/item8/hasoffers-sdk/v/unstable)](https://packagist.org/packages/item8/hasoffers-sdk)    [![License](https://poser.pugx.org/item8/hasoffers-sdk/license)](https://packagist.org/packages/item8/hasoffers-sdk)
+# HasOffers SDK by Item8    [![Latest Stable Version](https://poser.pugx.org/item8/hasoffers-sdk/v/stable)](https://packagist.org/packages/item8/hasoffers-sdk)    [![Latest Unstable Version](https://poser.pugx.org/item8/hasoffers-sdk/v/unstable)](https://packagist.org/packages/item8/hasoffers-sdk)    [![License](https://poser.pugx.org/item8/hasoffers-sdk/license)](https://packagist.org/packages/item8/hasoffers-sdk)    [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/item8/hasoffers-sdk/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/item8/hasoffers-sdk/?branch=master)
 
-#### ORM/SDK for HasOffers API
+ORM/SDK for HasOffers AP
 
-### Example Init
+## Code Examples
 
 #### Client Initialization
 ```php
@@ -16,7 +16,7 @@ $hoClient = new IntegratorApi();
 $hoClient->setAuth('clientId', 'clientSecret', 'integratorId');
 ```
 
-#### Usage Example
+#### Usage as ORM
 
 ```php
 <?php
@@ -128,11 +128,11 @@ try {
         });
 
 } catch(Exception $exception) {
-    echo $exception->getMessage(); // API or SDK errors
+    echo $exception->getMessage(); // Any API or SDK errors
 }
 ```
 
-## Full Event List 
+#### Full Event List
 ```
  - ho.api.request.(before|after)
  - ho.api.sleep.(before|after)
@@ -159,3 +159,6 @@ try {
 make
 make test-all
 ```
+
+## Licence
+GNU GPL v2.0 or later. [See details](https://github.com/item8/hasoffers-sdk/blob/master/LICENSE.md)
