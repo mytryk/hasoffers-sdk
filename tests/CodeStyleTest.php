@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  *
  * @package     HasOffers
- * @license     Proprietary
+ * @license     GNU GPL
  * @copyright   Copyright (C) Item8, All rights reserved.
  * @link        https://item8.io
  */
@@ -21,5 +21,6 @@ namespace JBZoo\PHPUnit;
  */
 class CodeStyleTest extends Item8CodeStyleTest
 {
-    protected $_packageName = 'HasOffers';
+    protected $_packageName    = 'HasOffers';
+    protected $_packageLicense = 'GNU GPL';
 }

@@ -6,7 +6,7 @@
 # file that was distributed with this source code.
 #
 # @package      HasOffers
-# @license      Proprietary
+# @license      GNU GPL
 # @copyright    Copyright (C) Item8, All rights reserved.
 # @link         https://item8.io
 #
