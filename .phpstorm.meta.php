@@ -18,29 +18,29 @@
 
 namespace PHPSTORM_META {
 
-    use Unilead\HasOffers\Entities\Advertisers;
-    use Unilead\HasOffers\Entities\Affiliates;
-    use Unilead\HasOffers\Entities\Employees;
-    use Unilead\HasOffers\Entities\AdvertiserInvoices;
-    use Unilead\HasOffers\Entities\AdvertiserUsers;
-    use Unilead\HasOffers\Entities\AffiliateUsers;
-    use Unilead\HasOffers\Entities\Offers;
-    use Unilead\HasOffers\Entities\OfferPixels;
-    use Unilead\HasOffers\Entities\Conversions;
+    use Item8\HasOffers\Entities\Advertisers;
+    use Item8\HasOffers\Entities\Affiliates;
+    use Item8\HasOffers\Entities\Employees;
+    use Item8\HasOffers\Entities\AdvertiserInvoices;
+    use Item8\HasOffers\Entities\AdvertiserUsers;
+    use Item8\HasOffers\Entities\AffiliateUsers;
+    use Item8\HasOffers\Entities\Offers;
+    use Item8\HasOffers\Entities\OfferPixels;
+    use Item8\HasOffers\Entities\Conversions;
 
-    use Unilead\HasOffers\Entity\Advertiser;
-    use Unilead\HasOffers\Entity\AdvertiserInvoice;
-    use Unilead\HasOffers\Entity\AdvertiserUser;
-    use Unilead\HasOffers\Entity\Affiliate;
-    use Unilead\HasOffers\Entity\AffiliateInvoice;
-    use Unilead\HasOffers\Entity\AffiliateReceipt;
-    use Unilead\HasOffers\Entity\AffiliateUser;
-    use Unilead\HasOffers\Entity\Conversion;
-    use Unilead\HasOffers\Entity\Employee;
-    use Unilead\HasOffers\Entity\Offer;
-    use Unilead\HasOffers\Entity\OfferPixel;
+    use Item8\HasOffers\Entity\Advertiser;
+    use Item8\HasOffers\Entity\AdvertiserInvoice;
+    use Item8\HasOffers\Entity\AdvertiserUser;
+    use Item8\HasOffers\Entity\Affiliate;
+    use Item8\HasOffers\Entity\AffiliateInvoice;
+    use Item8\HasOffers\Entity\AffiliateReceipt;
+    use Item8\HasOffers\Entity\AffiliateUser;
+    use Item8\HasOffers\Entity\Conversion;
+    use Item8\HasOffers\Entity\Employee;
+    use Item8\HasOffers\Entity\Offer;
+    use Item8\HasOffers\Entity\OfferPixel;
 
-    use Unilead\HasOffers\Request\AbstractRequest;
+    use Item8\HasOffers\Request\AbstractRequest;
 
     override(AbstractRequest::get(0),
         map([

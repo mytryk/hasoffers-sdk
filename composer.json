@@ -2,12 +2,12 @@
     "name"              : "item8/hasoffers-sdk",
     "type"              : "library",
     "description"       : "",
-    "license"           : "proprietary",
+    "license"           : "GPL-2.0",
     "minimum-stability" : "stable",
     "authors"           : [
         {
             "name"  : "Denis Smetannikov",
-            "email" : "denis.smetannikov@unilead.net"
+            "email" : "denis.smetannikov@item8.io"
         }
     ],
     "require"           : {
