@@ -1,6 +1,6 @@
 # HasOffers SDK by Item8    [![Latest Stable Version](https://poser.pugx.org/item8/hasoffers-sdk/v/stable)](https://packagist.org/packages/item8/hasoffers-sdk)    [![Latest Unstable Version](https://poser.pugx.org/item8/hasoffers-sdk/v/unstable)](https://packagist.org/packages/item8/hasoffers-sdk)    [![License](https://poser.pugx.org/item8/hasoffers-sdk/license)](https://packagist.org/packages/item8/hasoffers-sdk)    [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/item8/hasoffers-sdk/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/item8/hasoffers-sdk/?branch=master)
 
-ORM/SDK for HasOffers AP
+ORM/SDK for HasOffers API
 
 ## Code Examples
 
