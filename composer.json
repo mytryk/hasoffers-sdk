@@ -1,7 +1,7 @@
 {
     "name"              : "item8/hasoffers-sdk",
     "type"              : "library",
-    "description"       : "",
+    "description"       : "ORM/SDK for HasOffers API",
     "license"           : "GPL-2.0",
     "minimum-stability" : "stable",
     "authors"           : [
@@ -20,12 +20,6 @@
     "require-dev"       : {
         "item8/codestyle" : "^2.0",
         "jbzoo/profiler"  : "^1.0"
-    },
-    "repositories"      : {
-        "item8/codestyle" : {
-            "type" : "vcs",
-            "url"  : "https://github.com/item8/codestyle"
-        }
     },
     "autoload"          : {
         "psr-4" : {
