@@ -1,6 +1,9 @@
-# HasOffers SDK by Item8    [![Latest Stable Version](https://poser.pugx.org/item8/hasoffers-sdk/v/stable)](https://packagist.org/packages/item8/hasoffers-sdk)    [![Latest Unstable Version](https://poser.pugx.org/item8/hasoffers-sdk/v/unstable)](https://packagist.org/packages/item8/hasoffers-sdk)    [![License](https://poser.pugx.org/item8/hasoffers-sdk/license)](https://packagist.org/packages/item8/hasoffers-sdk)    [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/item8/hasoffers-sdk/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/item8/hasoffers-sdk/?branch=master) <img src="https://ci.item8.io/app/rest/builds/buildType:Others_HasOffersSdk/statusIcon" />
+# HasOffers Network&Integrator API SDK by item8    [![Latest Stable Version](https://poser.pugx.org/item8/hasoffers-sdk/v/stable)](https://packagist.org/packages/item8/hasoffers-sdk)    [![Latest Unstable Version](https://poser.pugx.org/item8/hasoffers-sdk/v/unstable)](https://packagist.org/packages/item8/hasoffers-sdk)    [![License](https://poser.pugx.org/item8/hasoffers-sdk/license)](https://packagist.org/packages/item8/hasoffers-sdk)    [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/item8/hasoffers-sdk/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/item8/hasoffers-sdk/?branch=master) <img src="https://ci.item8.io/app/rest/builds/buildType:Others_HasOffersSdk/statusIcon" />
 
-ORM/SDK for HasOffers API
+ORM/SDK for HasOffers API (Network and Integrator endpoints).  
+  
+SDK built by [item8 - CRM&Billing SaaS for Advertising Networks](https://item8.io "item8 CRM&Billing").  
+Free to use for developing add-ons and integrations for [HasOffers by TUNE](https://www.hasoffers.com "HasOffers").  
 
 ## Code Examples
 
