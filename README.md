@@ -2,7 +2,7 @@
 
 ORM/SDK for HasOffers API (Network and Integrator endpoints).  
   
-SDK built by [item8 - CRM&Billing SaaS for Advertising Networks](https://item8.io "item8 CRM&Billing").  
+SDK built by [item8 - CRM&Billing SaaS for Advertising Networks](https://item8.io "item8 CRM&Billing").
 Free to use for developing add-ons and integrations for [HasOffers by TUNE](https://www.hasoffers.com "HasOffers").  
 
 
@@ -14,13 +14,13 @@ Talk is cheap. Show me the code.
 use Item8\HasOffers\Request\ClientApi;
 use Item8\HasOffers\Request\IntegratorApi;
 
-// Classical brand API
+// Classical API
 $hoClient = new ClientApi();
 $hoClient->setAuth('__NETWORK_ID__', '__NETWORK_TOKEN__');
 
 // New Integrator API
 $hoClient = new IntegratorApi();
-$hoClient->setAuth('__NETWORK_ID__', 'INTEGRATOR_SECRET', 'INTEGRATOR_ID');
+$hoClient->setAuth('__NETWORK_ID__', '__INTEGRATOR_SECRET__', '__INTEGRATOR_ID__');
 ```
 
 #### Usage
