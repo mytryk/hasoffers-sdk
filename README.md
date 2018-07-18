@@ -1,25 +1,29 @@
-# HasOffers Network&Integrator API SDK by item8    [![Latest Stable Version](https://poser.pugx.org/item8/hasoffers-sdk/v/stable)](https://packagist.org/packages/item8/hasoffers-sdk)    [![Latest Unstable Version](https://poser.pugx.org/item8/hasoffers-sdk/v/unstable)](https://packagist.org/packages/item8/hasoffers-sdk)    [![License](https://poser.pugx.org/item8/hasoffers-sdk/license)](https://packagist.org/packages/item8/hasoffers-sdk)    [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/item8/hasoffers-sdk/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/item8/hasoffers-sdk/?branch=master) <img src="https://ci.item8.io/app/rest/builds/buildType:Others_HasOffersSdk/statusIcon" />
+# HasOffers Network&Integrator API SDK by item8    [![Latest Stable Version](https://poser.pugx.org/item8/hasoffers-sdk/v/stable)](https://packagist.org/packages/item8/hasoffers-sdk)    [![License](https://poser.pugx.org/item8/hasoffers-sdk/license)](https://packagist.org/packages/item8/hasoffers-sdk)    [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/item8/hasoffers-sdk/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/item8/hasoffers-sdk/?branch=master) <img src="https://ci.item8.io/app/rest/builds/buildType:Others_HasOffersSdk/statusIcon" />
 
 ORM/SDK for HasOffers API (Network and Integrator endpoints).  
   
 SDK built by [item8 - CRM&Billing SaaS for Advertising Networks](https://item8.io "item8 CRM&Billing").  
 Free to use for developing add-ons and integrations for [HasOffers by TUNE](https://www.hasoffers.com "HasOffers").  
 
+
 ## Code Examples
+Talk is cheap. Show me the code.
 
 #### Client Initialization
 ```php
+use Item8\HasOffers\Request\ClientApi;
+use Item8\HasOffers\Request\IntegratorApi;
+
+// Classical brand API
 $hoClient = new ClientApi();
-$hoClient->setAuth('networkId', 'token');
-```
+$hoClient->setAuth('__NETWORK_ID__', '__NETWORK_TOKEN__');
 
-#### Integrator Initialization
-```php
+// New Integrator API
 $hoClient = new IntegratorApi();
-$hoClient->setAuth('clientId', 'clientSecret', 'integratorId');
+$hoClient->setAuth('__NETWORK_ID__', 'INTEGRATOR_SECRET', 'INTEGRATOR_ID');
 ```
 
-#### Usage as ORM
+#### Usage
 
 ```php
 <?php
@@ -117,6 +121,7 @@ try {
     $affInvoiceItem->save();
     
     // Attach event handlers
+    // @see https://github.com/JBZoo/Event
     $eManager
         ->on('ho.*.save.before', function(AbstractEntity $entity){
             saveToLog($entity->data(), 'Snapshort before save');
@@ -135,7 +140,10 @@ try {
 }
 ```
 
+
 #### Full Event List
+More about [JBZoo Event Manager](https://github.com/JBZoo/Event)
+
 ```
  - ho.api.request.(before|after)
  - ho.api.sleep.(before|after)
@@ -157,7 +165,9 @@ try {
  - ho.{related}.reload.(before|after)
 ```
 
+
 ## Unit tests and check code style
+Notice. Before unit tests set eviroment variables via custom `phpunit.xml`. [See example](https://github.com/item8/hasoffers-sdk/blob/master/phpunit.xml.dist)
 ```sh
 make
 make test-all
