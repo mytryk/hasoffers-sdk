@@ -175,3 +175,6 @@ make test-all
 
 ## Licence
 GNU GPL v2.0 or later. [See details](https://github.com/item8/hasoffers-sdk/blob/master/LICENSE.md)
+
+
+[![Analytics](https://ga-beacon.appspot.com/UA-123168469-1/hasoffers-sdk)](https://github.com/igrigorik/ga-beacon)
